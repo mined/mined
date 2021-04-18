@@ -1,0 +1,122 @@
+#! /bin/sh -f
+
+name=$1
+
+if make UnicodeData.txt
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt
+	exit 1
+fi
+
+
+script=`echo $name | tr '[a-z]' '[A-Z]'`
+
+case "$script" in
+ETHIOPIC)	name=Amharic;;
+esac
+
+
+# generate lines:
+#	{"xa", "ぁ"},
+
+sed	-e "s/^\([^;]*\);$script LETTER /\1;LETTER /" -e "t script" \
+	-e "s/^\([^;]*\);$script SYLLABLE /\1;SYLLABLE /" -e "t script" \
+	-e d -e ": script" \
+	-e "s/LETTER SMALL /LETTER x/" \
+	-e "s/;SYLLABLE /;LETTER /" \
+	UnicodeData.txt |
+sed	-e 's, PHARYNGEAL , `,' \
+	-e 's, GLOTTAL , ,' \
+	-e 's, SEBATBEIT , #,' \
+	-e 'b generate' \
+	-e ': generate' \
+	-e 's/^\([^;]*\);LETTER \([^;]*\);.*/	printf ("	{\\\"\2\\\", \\\""); printutf8 (0x\1); printf ("\\\"},\\n");/' \
+	-e t -e d |
+tr '[A-Z]' '[a-z]' > keymaps/$name.tab
+
+if [ ! -s keymaps/$name.tab ]
+then	echo no script $name in UnicodeData.txt
+	rm -f keymaps/$name.tab
+	exit
+fi
+
+(
+cat <<\/eoc
+#include <stdio.h>
+
+int b;
+
+void
+printutf8 (unichar)
+	unsigned long unichar;
+{
+	if (unichar == '\\' || unichar == '"') {
+		printf ("\\");
+	}
+
+	if (unichar < 0x80) {
+		printf ("%c", unichar);
+	} else if (unichar < 0x800) {
+		printf ("%c", 0xC0 | (unichar >> 6));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x10000) {
+		printf ("%c", 0xE0 | (unichar >> 12));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x200000) {
+		printf ("%c", 0xF0 | (unichar >> 18));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x4000000) {
+		printf ("%c", 0xF8 | (unichar >> 24));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x80000000) {
+		printf ("%c", 0xFC | (unichar >> 30));
+		printf ("%c", 0x80 | ((unichar >> 24) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	}
+}
+
+int
+main () {
+/eoc
+
+cat keymaps/$name.tab
+
+cat <</eoc
+	return 0;
+}
+/eoc
+) > keymaps/$name.c
+
+rm -f keymaps/$name.tab
+
+if ${CC-cc} -o keymaps/$name.exe keymaps/$name.c
+then	if [ -f keymaps/$name.h ]
+	then	echo saving previous keyboard mapping file to keymaps/$name.h.sav
+		mv -i keymaps/$name.h keymaps/$name.h.sav
+	fi
+	(
+	echo "/***************************************************"
+	echo "	mined keyboard mapping table"
+	echo "	* generated with mkkbmap (mkkmudat)"
+	echo "	  from UnicodeData.txt"
+	echo "*/"
+	echo "struct keymap keymap_$name [] = {"
+	keymaps/$name.exe
+	echo "	{NIL_PTR}"
+	echo "};"
+	) > keymaps/$name.h
+
+	./mkkentry -U $name
+
+	rm -f keymaps/$name.c keymaps/$name.exe
+fi
+

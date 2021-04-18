@@ -1,0 +1,36 @@
+#############################################################################
+# mined text editor makefile	- Haiku / gcc
+
+
+include makefile.gcc
+
+
+#############################################################################
+# Where and how to install
+# installation root, usually empty
+root	= $(INSTALLROOT)
+
+# configuration of installation directories:
+# * [l]rundir refers to the "Mined runtime support library" -
+#   it contains the online help file, auxiliary scripts (some of which 
+#   might actually be installed in .../bin, too), configuration samples etc.
+# * [l]docdir is optional and refers to the mined web documentation 
+#   (a copy of the mined home page).
+
+# directories for target "make install"
+prefix	= $(root)
+bindir	= $(prefix)/boot/common/bin
+#rundir	= $(prefix)/Haiku/apps/MinEd
+rundir	= $(prefix)/boot/common/data/mined
+mandir	= $(prefix)/boot/common/documentation/man
+
+
+#############################################################################
+# system environment adaption
+
+#liblist	= echo -lncurses
+termcap	= -lncurses
+
+
+#############################################################################
+# end

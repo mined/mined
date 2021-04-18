@@ -1,0 +1,11 @@
+#! /bin/sh
+
+case `uname` in
+CYG*)	# this script should be installed as /etc/postinstall/mined.sh
+	# don't create a Start menu link
+	#don't /usr/share/mined/setup_install/bin/mkicon
+	# don't create an Explorer context menu entry
+	#don't /usr/share/mined/setup_install/bin/setupreg.sh
+	;;
+*)	;;
+esac

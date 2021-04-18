@@ -1,0 +1,122 @@
+Guide to packaging the MinEd editor
+
+
+-----------------------------------------------------------------------------
+Package contents and installation directories
+
+A mined binary package consists of 3 or 4 groups of files:
+* The binary program (mined).
+  Source: src/mined
+  Target: typically installed in /usr/bin or /usr/local/bin.
+* The manual page (mined.1).
+  Source: man/mined.1
+  Target: typically installed below /usr/share/man, 
+  /usr/local/man or /usr/local/share/man.
+  The mined makefile target "install" tries to find out if the 
+  system maintains any compressed manual pages and if so, 
+  it compresses mined.1 too.
+* The Mined runtime support library.
+  For a short description of its contents, see the file README; 
+  it does not contain any binary library.
+  Source: usrshare/*
+  Target: typically installed in /usr/share/mined, 
+  /usr/share/lib/mined or /usr/local/share/mined.
+* (Optional) Mined user documentation (HTML).
+  Source: doc/*
+  Target: typically installed in /usr/share/doc/mined.
+  Traditional systems often do not maintain this kind of documentation 
+  online.
+  If there is no obvious place to install these files, they should 
+  probably be installed in a subdirectory (help or html) of the Mined 
+  runtime support library.
+
+Older systems often have different locations to place these 
+files, e.g. /usr/man, /usr/doc, /usr/local/etc, ...
+
+The mined source package includes a number of makefiles which 
+set appropriate values for different kinds of installation files on 
+different systems.
+
+
+-----------------------------------------------------------------------------
+Makefile support for the source distribution
+
+The following makefile targets support publishing a mined source 
+distribution:
+
+make distribution
+	This makes a mined source distribution archive 
+	into the subdirectory release/.
+	Before it does that, it performs two tasks:
+	It checks a few things:
+	- if the sources do not contain remaining debug statements
+	- if the keymaps configuration file is clear of test entries
+	- if all character codes listed in the character encoding 
+	  tables are considered valid by the source code
+	- if character input mnemonics are unambiguous
+	- if the VMS link script is up-to-date
+	- if the mined version is described consistently in VERSION 
+	  and some other documentation files
+	It updates all files:
+	- it compiles mined to make sure it's compilable
+	- it generates the user documentation page that lists 
+	  character input mnemonics
+	- it generates the online help file
+	- it generates the manual page (from its HTML source)
+
+	The make target combines make release and make lsm.
+
+make lsm
+	This generates mined.lsm, the entry for the Linux Software Map 
+	(http://lsm.execpc.com/lsm/), into the subdirectory release/.
+
+make release (or make dist)
+	Make a distribution archive (like make distribution, without lsm).
+
+make archive (or make tar)
+	Like make release, but skips some integrity checking and 
+	version update enforcement
+	(for internal production of development and test archives).
+
+
+-----------------------------------------------------------------------------
+Makefile support for package generation
+
+make description.summary
+	This generates a one-line short description for mined.
+
+make description.medium
+	This generates a medium-size description for mined.
+
+make description.long
+	This generates an overview description for mined.
+
+make descriptions
+	This combines all 3 of the above.
+
+make rpm
+	This generates only a partial mined.spec file, 
+	as used with the RPM package of SuSE Linux.
+	It basically contains the name and version, 
+	and summary and long description entries for mined.
+
+make cygwin
+	This generates Cygwin source and binary packages, together 
+	with a setup.hint file, provided that a precompiled 
+	mined.exe is in the subdirectory src/, 
+	into the subdirectory release/cygwin/.
+
+make win
+	This generates a Windows self-installing executable archive, 
+	compiled with cygwin. The self-extracting archive is built 
+	with IEXPRESS (native Windows tool).
+
+make dos
+	This generates a DOS binary zip archive, compiled with djgpp.
+
+make vms
+	This generates a VMS binary zip archive, with executables 
+	for VAX, Alpha and Itanium platforms.
+
+
+-----------------------------------------------------------------------------

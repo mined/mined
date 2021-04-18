@@ -1,0 +1,54 @@
+#! /bin/sh
+
+kmap=$1
+
+name=`basename $kmap | sed -e "s,\..*,," -e "s,-,_,g"`
+
+# extract mapping entries from source file
+if egrep ^BEGINPHRASE $kmap > /dev/null
+then	sed -f $0.sed -f $0.sef $kmap
+else	# also separate multiple choices of single characters
+	# (match UTF-8 starting bytes)
+	sed -f $0.sed -e 's,\([À-þ]\), \1,g' -e 's,	 ,	,' -e 'b grouped' -f $0.sef $kmap
+fi > keymaps/$name.h0
+
+# check for multi-line entries
+sed -e 's/	.*//' keymaps/$name.h0 | uniq -d > keymaps/$name.h2
+
+if [ -s keymaps/$name.h2 ]
+then
+	# make removal patterns for multi-line entries
+	sed -e 's,\(.*\),^\1	,' keymaps/$name.h2 > keymaps/$name.h9
+	# remove multi-line entries
+	egrep -v -f keymaps/$name.h9 keymaps/$name.h0
+	# join multi-line entries and append them
+	for keys in `cat keymaps/$name.h2`
+	do
+		maps=`sed -e "s^$keys	" -e t -e d keymaps/$name.h0`
+		echo "$keys	" $maps
+	done
+else	cat keymaps/$name.h0
+fi > keymaps/$name.h1
+
+if [ -f keymaps/$name.h ]
+then	echo saving previous keyboard mapping file to keymaps/$name.h.sav
+	mv -i keymaps/$name.h keymaps/$name.h.sav
+fi
+
+# transform into table entries, embed into table structure
+(
+	echo "/***************************************************"
+	echo "	mined keyboard mapping table"
+	echo "	* generated with mkkbmap (mkkmcxt)"
+	echo "	  from $kmap"
+	echo "*/"
+	echo "struct keymap keymap_$name [] = {"
+	sed -f $0.set keymaps/$name.h1
+	echo "	{NIL_PTR}"
+	echo "};"
+) > keymaps/$name.h
+
+rm -f keymaps/$name.h[0129]
+
+./mkkentry -C $name
+

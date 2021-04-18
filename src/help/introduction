@@ -1,0 +1,41 @@
+                Unicode text editor MinEd 2015.25
+
+Introduction
+------------
+
+Mined is a powerful text editor with a comprehensive and easy-to-use 
+user interface and fast, small-footprint behaviour.
+
+It was the first editor that provided Unicode support in a 
+plain-text terminal.
+It now has both extensive Unicode and CJK support offering many 
+specific features and covering special cases that other editors 
+are not aware of (like auto-detection features and automatic handling 
+of terminal variations, or CJK character information).
+And basically, it is an editor tailored to efficient editing 
+of plain text documents and programs, with features and interactive 
+behaviour designed for this purpose.
+
+Mined has an intuitive, simple way of operation. No modes.
+Cursor positioning basic editing is intuitive, character-oriented, 
+and without weird limitations at line-end, no insert/append confusion.
+
+Editing support includes
+* paragraph adjustment (line/word wrap)
+* identifier and function definition search (also across files)
+* HTML support
+* smart quotes (typographic quote mark replacement, with automatic style)
+* versatile character input support features
+* combined character support
+* search and replacement patterns may include new-lines
+* cross-session paste buffer (copy/paste between multiple invocations)
+* multiple paste buffers (emacs-style)
+* handling of different line-end kinds with distinguished indications
+* binary transparency
+
+Mined offers security against file handling mistakes. It will not accidently 
+overwrite a file that has not explicitly been opened for editing before 
+without prompting. It will not exit from a changed text without saving 
+or explicit confirmation.
+All file handling errors are reported clearly.
+

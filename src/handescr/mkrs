@@ -1,0 +1,24 @@
+#! /bin/sh
+
+db=unihan.rsunicode
+
+min=${1-1}
+max=${2-${1-214}}
+
+rsdir=unihan.rs
+mkdir -p $rsdir
+LC_ALL=C
+export LC_ALL
+
+r=$min
+while [ $r -le $max ]
+do
+	echo ideographs with radical $r
+
+#	U+3400	kRSUnicode	1.4
+	sed -e "s,\(.*\)kRSUnicode	\($r\)\([']*\)\.\(.*\),\4	\1," -e t -e d $db |
+	../insutf8 -d | sort -n | uniq -s 2 > $rsdir/$r
+	cat $rsdir/$r
+
+	r=`expr $r + 1`
+done

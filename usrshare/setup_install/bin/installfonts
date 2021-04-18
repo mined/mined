@@ -1,0 +1,56 @@
+#! /bin/sh
+
+#############################################################################
+# Download and install X server Unicode fonts
+# for users not being root, into their home directories
+
+# configure font directory
+#fontdir=$HOME/opt/xfonts
+#fontdir=$HOME/.xfonts
+fontdir=$HOME/xfonts
+
+subdir=ucs-fonts
+
+fontdir=$fontdir/$subdir
+
+
+#############################################################################
+# create font directory
+cd
+mkdir -p $fontdir
+cd $fontdir
+
+# download
+wget -N http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts.tar.gz
+wget -N http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts-asian.tar.gz
+
+# unpack
+if gzip -cd ucs-fonts.tar.gz | tar xvf -
+then	echo "unpacked Unicode X fonts - delete archive?"
+	rm -i ucs-fonts.tar.gz
+fi
+if gzip -cd ucs-fonts-asian.tar.gz | tar xvf -
+then	echo "unpacked Unicode CJK X fonts - delete archive?"
+	rm -i ucs-fonts-asian.tar.gz
+fi
+
+PWD=`pwd`
+
+# setup X server
+xset +fp $PWD
+
+# quote directory name relative to $HOME
+dirname=`echo $PWD | sed -e "s,^$HOME/,\\$HOME/,"`
+
+echo "To configure your X server to use the new fonts, make sure that a line"
+echo "  xset +fp $dirname"
+echo "is included in a suitable startup script (e.g. $HOME/.xinitrc)."
+echo "If your X server runs on a remote machine and would access the "
+echo "font directory under a different path name, adapt the xset command "
+echo "accordingly."
+echo "If your X server does not accept BDF fonts (e.g. Windows Exceed), "
+echo "you will have to use its "Compile Fonts" configuration function."
+
+
+#############################################################################
+# end

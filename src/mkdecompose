@@ -1,0 +1,26 @@
+#! /bin/sh -f
+
+if make UnicodeData.txt
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt
+	exit 1
+fi
+
+
+# scan UnicodeData.txt:
+#	00BD;VULGAR FRACTION ONE HALF;No;0;ON;<fraction> 0031 2044 0032;;;1/2;N;FRACTION ONE HALF;;;;
+#	00C0;LATIN CAPITAL LETTER A WITH GRAVE;Lu;0;L;0041 0300;;;;N;LATIN CAPITAL LETTER A GRAVE;;;00E0;
+# generate lines:
+#	{0x00BD, decomp_fraction, {0031, 2044, 0032}},
+#	{0x00C0, 0, {0041, 0300}},
+
+sed	-e 's/^\([^;]*\);[^;]*;[^;]*;[^;]*;[^;]*;\([^;][^;]*\);.*/\1	\2/' \
+	-e t -e d UnicodeData.txt |
+sed	-e 's/	\([^<]\)/	0x\1/' -e 's/ / 0x/g' |
+sed	-e 's/<\(.*\)> /decomp_\1,	/' \
+	-e t \
+	-e 's/	/	0,	/' |
+sed	-e 's/ /, /g' \
+	-e 's/,	/, {/' -e 's/$/}},/' \
+	-e 's/	/, /' -e 's/^/	{0x/' > decompos.t
+

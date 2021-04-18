@@ -1,0 +1,54 @@
+#! /bin/sh
+
+mim=$1
+
+name=`basename $mim | sed -e "s,\..*,," -e "s,-,_,g"`
+
+LC_ALL=en_US.UTF-8
+export LC_ALL
+
+descr=`sed -e 1q $mim |
+	sed -e "s,\.*$, ," \
+	    -e "/Input method for / b" \
+	    -e "/ input method / b" \
+	    -e "/ phonetic keyboard layout/ b" \
+	    -e d |
+	sed -e "s,.*-- *, ," -e "s,Input method for ,," \
+	    -e "s, keyboar*d, KB," \
+	    -e "s, prefix, Prefix," \
+	    -e "s, postfix, Postfix," \
+	    -e "s, [a-z][^ ]*,,g" `
+
+title="`sed -e 's,.*(title  *"\([^"]*\)").*,\1,' -e t -e d $mim`"
+
+case "$descr" in
+*" KB"*)	kb=;;
+*)	case "$name" in
+	*kbd*)	kb=KB;;
+	*)	kb=;;
+	esac;;
+esac
+
+set - $descr $kb $title
+title="$*"
+
+if [ -f keymaps/$name.h ]
+then	echo saving previous keyboard mapping file to keymaps/$name.h.sav
+	mv -i keymaps/$name.h keymaps/$name.h.sav
+fi
+
+(
+echo "/***************************************************"
+echo "	mined keyboard mapping table"
+echo "	* generated with mkkbmap (mkkmmim)"
+echo "	  from $mim"
+echo "*/"
+echo "struct keymap keymap_$name [] = {"
+
+sed -f $0.sed $mim
+
+echo "	{NIL_PTR}"
+echo "};"
+) > keymaps/$name.h
+
+./mkkentry -M + "$title" $name

@@ -1,0 +1,957 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+<style>
+code.mnemo, table.ex td code {background-color: #CCC0C0;}
+#space {xbackground-color: yellow;}
+</style>
+<script language="JavaScript">top.select ("mnemodoc");</script>
+</head>
+
+<h3>MinEd Mnemonics (character input support)</h3>
+Mined mnemonic character input support recognizes character mnemonics 
+as taken from various resources:
+
+<ul>
+<li>Mnemos from <a href=http://tools.ietf.org/html/rfc1345>
+	RFC 1345</a>; in ambiguous cases, the RFC 1345 mnemos must be 
+	prepended a digit “1”.
+<li><a href=http://selfhtml.teamone.de/html/referenz/zeichen.htm#benannte_iso8859_1>
+	HTML mnemos</a>; in ambiguous cases, the HTML mnemos must be 
+	prepended a “&”.
+<li>TeX mnemos (macros) and substitutes, leaving out any “\”.
+<li><a href=#mnemotable>Supplementary mnemonics</a>: a collection of useful 
+	specific mnemonics maintained by mined (in addition to the 
+	mnemonic repository of the sources mentioned above) 
+	is listed in the second table below.
+	<br><code id=space>&nbsp;</code> means: 
+	enter a blank character (only works in two-character 
+	combination shortcut ^Vxy).
+</ul>
+
+For accented characters, there are a number of <i>mnemonic patterns</i> 
+(generic accent composing mnemonics).
+They are listed in the following overview table; replace the “x” with 
+the base letter to be combined.
+<br><i>Note:</i> For frequently used accented characters, also a 
+selection of 
+<a href=mined.html#accentprefixkeys>Accent prefix function keys</a> is 
+available, see the section in the manual.
+
+<h4>Generic mnemonics</h4>
+
+	<dl><dd><table name=genericmnemonics border=1 class=ex>
+	<tr><th>generic mnemonic
+		<th>accent placed on the base character ("<code>x</code>")
+
+	<tr><td><code>x:</code> <i>or</i> <code>"x</code>
+		<td>diaeresis (umlaut)
+	<tr><td><code>x'</code> <i>or</i> <code>´x</code>
+		<td>acute (accent d'aigu)
+	<tr><td><code>x!</code> <i>or</i> <code>`x</code>
+		<td>grave
+	<tr><td><code>x></code> <i>or</i> <code>^x</code>
+		<td>circumflex
+	<tr><td><code>x?</code> <i>or</i> <code>~x</code>
+		<td>tilde
+	<tr><td><code>x0</code> <i>or</i> <code>°x</code>
+		<td>ring above
+	<tr><td><code>x,</code>
+		<td>cedilla
+	<tr><td><code>x-</code>
+		<td>macron
+	<tr><td><code>x(</code>
+		<td>breve
+	<tr><td><code>x.</code>
+		<td>dot above / middle dot
+	<tr><td><code>x_</code> <i>or</i> <code>_x</code>
+		<td>line below
+	<tr><td><code>x/</code>
+		<td>stroke
+	<tr><td><code>x"</code> <i>or</i> <code>x''</code>
+		<td>double acute
+	<tr><td><code>x;</code>
+		<td>ogonek
+	<tr><td><code>x&lt</code>
+		<td>caron
+	<tr><td><code>x2</code>
+		<td>hook above
+	<tr><td><code>x9</code>
+		<td>horn
+	<tr><td><code>x-></code> <i>or</i> <code>>x</code>
+		<td>circumflex below
+	<tr><td><code>x-.</code> <i>or</i> <code>.x</code>
+		<td>dot below
+	<tr><td><code>x--.</code> <i>or</i> <code>.x-</code>
+		<td>dot below and macron
+	<tr><td><code>x.-.</code> <i>or</i> <code>.x.</code>
+		<td>dot below and dot above
+	<tr><td><code>x7</code> <i>or</i> <code>x.-</code>
+		<td>dot above and macron
+
+	<tr><td><code>x~-</code> <i>or</i> <code>x?-</code>
+		<td>tilde and macron
+	<tr><td><code>x;-</code>
+		<td>ogonek and macron
+	<tr><td><code>x:-</code>
+		<td>diaeresis and macron
+	<tr><td><code>x-:</code>
+		<td>macron and diaeresis
+	<tr><td><code>x-'</code>
+		<td>macron and acute
+	<tr><td><code>x-!</code>
+		<td>macron and grave
+
+	<tr><td><code>-x</code> <i>or</i> <code>x--</code>
+		<td>topbar
+	<tr><td><code>--x</code> <i>or</i> <code>x--</code>
+		<td>bar
+	<tr><td><code>,x</code> <i>or</i> <code>x-,</code>
+		<td>comma below / left hook
+	<tr><td><code>x#</code> <i>or</i> <code>x!!</code>
+		<td>double grave
+	<tr><td><code>x)</code>
+		<td>inverted breve
+	<tr><td><code>x&</code>
+		<td>hook
+	<tr><td><code>%x</code>
+		<td>retroflex hook
+	<tr><td><code>x,,</code>
+		<td>palatal hook
+	<tr><td><code>x~~</code>
+		<td>middle tilde
+	<tr><td><code>x}</code>
+		<td>curl
+
+	<tr><td><code>x-?</code> <i>or</i> <code>?x</code>
+		<td>tilde below
+	<tr><td><code>x--:</code> <i>or</i> <code>:x</code>
+		<td>diaeresis below
+	<tr><td><code>x-0</code> <i>or</i> <code>ox</code>
+		<td>ring below
+	<tr><td><code>x-(</code> <i>or</i> <code>(x</code>
+		<td>breve below
+	<tr><td><code>x(-.</code> <i>or</i> <code>.x(</code>
+		<td>breve and dot below
+	<tr><td><code>x>-.</code> <i>or</i> <code>.x></code>
+		<td>circumflex and dot below
+	<tr><td><code>x9-.</code> <i>or</i> <code>.x9</code>
+		<td>horn and dot below
+	<tr><td><code>x'.</code>
+		<td>acute and dot above
+	<tr><td><code>x('</code>
+		<td>breve and acute
+	<tr><td><code>x(!</code>
+		<td>breve and grave
+	<tr><td><code>x(2</code>
+		<td>breve and hook above
+	<tr><td><code>x(?</code>
+		<td>breve and tilde
+	<tr><td><code>x<.</code>
+		<td>caron and dot above
+	<tr><td><code>x,'</code>
+		<td>cedilla and acute
+	<tr><td><code>x,(</code>
+		<td>cedilla and breve
+	<tr><td><code>x>'</code>
+		<td>circumflex and acute
+	<tr><td><code>x>!</code>
+		<td>circumflex and grave
+	<tr><td><code>x>2</code>
+		<td>circumflex and hook above
+	<tr><td><code>x>?</code>
+		<td>circumflex and tilde
+	<tr><td><code>x:'</code>
+		<td>diaeresis and acute
+	<tr><td><code>x:<</code>
+		<td>diaeresis and caron
+	<tr><td><code>x:!</code>
+		<td>diaeresis and grave
+	<tr><td><code>x9'</code>
+		<td>horn and acute
+	<tr><td><code>x9!</code>
+		<td>horn and grave
+	<tr><td><code>x92</code>
+		<td>horn and hook above
+	<tr><td><code>x9?</code>
+		<td>horn and tilde
+	<tr><td><code>x0'</code>
+		<td>ring above and acute
+	<tr><td><code>x/'</code>
+		<td>stroke and acute
+	<tr><td><code>x?'</code>
+		<td>tilde and acute
+	<tr><td><code>x?:</code>
+		<td>tilde and diaeresis
+	</table></dl>
+
+<a name=mnemotable>
+<h4>Supplementary mnemonics</h4>
+</a>
+<table border=1>
+<tr><th>hex value<th>mnemo<th>character<th>description
+<tr><td colspan=4><br><h4> Latin-based letters </h4>
+	<tr><td><code>0131</code><td><code class=mnemo>i<span id=space>&nbsp;</span></code><td><code>&#x0131;</code><td>ı LATIN SMALL LETTER DOTLESS I 
+	<tr><td><code>0237</code><td><code class=mnemo>j<span id=space>&nbsp;</span></code><td><code>&#x0237;</code><td>ȷ LATIN SMALL LETTER DOTLESS J 
+	<tr><td><code>0237</code><td><code class=mnemo>j.</code><td><code>&#x0237;</code><td>ȷ LATIN SMALL LETTER DOTLESS J 
+	<tr><td><code>0138</code><td><code class=mnemo>k<span id=space>&nbsp;</span></code><td><code>&#x0138;</code><td>ĸ LATIN SMALL LETTER KRA 
+	<tr><td><code>0138</code><td><code class=mnemo>kra</code><td><code>&#x0138;</code><td>ĸ LATIN SMALL LETTER KRA (Greenlandic) 
+	<tr><td><code>017F</code><td><code class=mnemo>|s</code><td><code>&#x017F;</code><td>ſ LATIN SMALL LETTER LONG S 
+	<tr><td><code>017F</code><td><code class=mnemo>!s</code><td><code>&#x017F;</code><td>ſ LATIN SMALL LETTER LONG S 
+	<tr><td><code>017F</code><td><code class=mnemo>longs</code><td><code>&#x017F;</code><td>ſ LATIN SMALL LETTER LONG S 
+	<tr><td><code>1E9B</code><td><code class=mnemo>|s.</code><td><code>&#x1E9B;</code><td>ẛ LATIN SMALL LETTER LONG S WITH DOT ABOVE 
+	<tr><td><code>1E9B</code><td><code class=mnemo>!s.</code><td><code>&#x1E9B;</code><td>ẛ LATIN SMALL LETTER LONG S WITH DOT ABOVE 
+	<tr><td><code>1E9B</code><td><code class=mnemo>ſ.</code><td><code>&#x1E9B;</code><td>ẛ LATIN SMALL LETTER LONG S WITH DOT ABOVE 
+	<tr><td><code>00D0</code><td><code class=mnemo>'D</code><td><code>&#x00D0;</code><td>Ð LATIN CAPITAL LETTER ETH (windows compat) 
+	<tr><td><code>00F0</code><td><code class=mnemo>'d</code><td><code>&#x00F0;</code><td>ð LATIN SMALL LETTER ETH (windows compat) 
+	<tr><td><code>00C6</code><td><code class=mnemo>&A</code><td><code>&#x00C6;</code><td>Æ LATIN CAPITAL LETTER AE (windows compat) 
+	<tr><td><code>00E6</code><td><code class=mnemo>&a</code><td><code>&#x00E6;</code><td>æ LATIN SMALL LETTER AE (windows compat) 
+	<tr><td><code>0152</code><td><code class=mnemo>&O</code><td><code>&#x0152;</code><td>Œ LATIN CAPITAL LETTER AE (windows compat) 
+	<tr><td><code>0153</code><td><code class=mnemo>&o</code><td><code>&#x0153;</code><td>œ LATIN SMALL LETTER AE (windows compat) 
+	<tr><td><code>00DF</code><td><code class=mnemo>&s</code><td><code>&#x00DF;</code><td>ß LATIN SMALL LETTER SHARP S (windows compat) 
+	<tr><td><code>019B</code><td><code class=mnemo>v/</code><td><code>&#x019B;</code><td>ƛ LATIN SMALL LETTER LAMBDA WITH STROKE 
+	<tr><td><code>019B</code><td><code class=mnemo>lambda/</code><td><code>&#x019B;</code><td>ƛ LATIN SMALL LETTER LAMBDA WITH STROKE 
+	<tr><td><code>01BB</code><td><code class=mnemo>2/</code><td><code>&#x01BB;</code><td>ƻ LATIN LETTER TWO WITH STROKE 
+	<tr><td><code>01BE</code><td><code class=mnemo>|?/</code><td><code>&#x01BE;</code><td>ƾ LATIN LETTER INVERTED GLOTTAL STOP WITH STROKE 
+	<tr><td><code>025F</code><td><code class=mnemo>j-/</code><td><code>&#x025F;</code><td>ɟ IPA Ext: LATIN SMALL LETTER DOTLESS J WITH STROKE 
+	<tr><td><code>0284</code><td><code class=mnemo>j-/&</code><td><code>&#x0284;</code><td>ʄ IPA Ext: LATIN SMALL LETTER DOTLESS J WITH STROKE AND HOOK 
+	<tr><td><code>02A1</code><td><code class=mnemo>?/</code><td><code>&#x02A1;</code><td>ʡ IPA Ext: LATIN LETTER GLOTTAL STOP WITH STROKE 
+	<tr><td><code>02A2</code><td><code class=mnemo>-?/</code><td><code>&#x02A2;</code><td>ʢ IPA Ext: LATIN LETTER REVERSED GLOTTAL STOP WITH STROKE 
+	<tr><td><code>02A2</code><td><code class=mnemo>/?</code><td><code>&#x02A2;</code><td>ʢ IPA Ext: LATIN LETTER REVERSED GLOTTAL STOP WITH STROKE 
+	<tr><td><code>023E</code><td><code class=mnemo>T\</code><td><code>&#x023E;</code><td>Ⱦ LATIN CAPITAL LETTER T WITH DIAGONAL STROKE 
+	<tr><td><code>0241</code><td><code class=mnemo>??.</code><td><code>&#x0241;</code><td>Ɂ LATIN CAPITAL LETTER GLOTTAL STOP 
+	<tr><td><code>025A</code><td><code class=mnemo>schwa&</code><td><code>&#x025A;</code><td>ɚ IPA Ext: LATIN SMALL LETTER SCHWA WITH HOOK 
+	<tr><td><code>025D</code><td><code class=mnemo>-ue&</code><td><code>&#x025D;</code><td>ɝ IPA Ext: LATIN SMALL LETTER REVERSED OPEN E WITH HOOK 
+	<tr><td><code>0267</code><td><code class=mnemo>heng&</code><td><code>&#x0267;</code><td>ɧ IPA Ext: LATIN SMALL LETTER HENG WITH HOOK 
+	<tr><td><code>027B</code><td><code class=mnemo>::r&</code><td><code>&#x027B;</code><td>ɻ IPA Ext: LATIN SMALL LETTER TURNED R WITH HOOK 
+	<tr><td><code>029B</code><td><code class=mnemo>..G&</code><td><code>&#x029B;</code><td>ʛ IPA Ext: LATIN LETTER SMALL CAPITAL G WITH HOOK 
+	<tr><td><code>1D00</code><td><code class=mnemo>..A</code><td><code>&#x1D00;</code><td>ᴀ Phonetic Ext: LATIN LETTER SMALL CAPITAL A 
+	<tr><td><code>1D01</code><td><code class=mnemo>..AE</code><td><code>&#x1D01;</code><td>ᴁ Phonetic Ext: LATIN LETTER SMALL CAPITAL AE 
+	<tr><td><code>1D01</code><td><code class=mnemo>..Æ</code><td><code>&#x1D01;</code><td>ᴁ Phonetic Ext: LATIN LETTER SMALL CAPITAL AE 
+	<tr><td><code>0299</code><td><code class=mnemo>..B</code><td><code>&#x0299;</code><td>ʙ IPA Ext: LATIN LETTER SMALL CAPITAL B 
+	<tr><td><code>1D04</code><td><code class=mnemo>..C</code><td><code>&#x1D04;</code><td>ᴄ Phonetic Ext: LATIN LETTER SMALL CAPITAL C 
+	<tr><td><code>1D05</code><td><code class=mnemo>..D</code><td><code>&#x1D05;</code><td>ᴅ Phonetic Ext: LATIN LETTER SMALL CAPITAL D 
+	<tr><td><code>1D06</code><td><code class=mnemo>..ETH</code><td><code>&#x1D06;</code><td>ᴆ Phonetic Ext: LATIN LETTER SMALL CAPITAL ETH 
+	<tr><td><code>1D07</code><td><code class=mnemo>..E</code><td><code>&#x1D07;</code><td>ᴇ Phonetic Ext: LATIN LETTER SMALL CAPITAL E 
+	<tr><td><code>0262</code><td><code class=mnemo>..G</code><td><code>&#x0262;</code><td>ɢ IPA Ext: LATIN LETTER SMALL CAPITAL G 
+	<tr><td><code>029C</code><td><code class=mnemo>..H</code><td><code>&#x029C;</code><td>ʜ IPA Ext: LATIN LETTER SMALL CAPITAL H 
+	<tr><td><code>026A</code><td><code class=mnemo>..I</code><td><code>&#x026A;</code><td>ɪ IPA Ext: LATIN LETTER SMALL CAPITAL I 
+	<tr><td><code>1D0A</code><td><code class=mnemo>..J</code><td><code>&#x1D0A;</code><td>ᴊ Phonetic Ext: LATIN LETTER SMALL CAPITAL J 
+	<tr><td><code>1D0B</code><td><code class=mnemo>..K</code><td><code>&#x1D0B;</code><td>ᴋ Phonetic Ext: LATIN LETTER SMALL CAPITAL K 
+	<tr><td><code>029F</code><td><code class=mnemo>..L</code><td><code>&#x029F;</code><td>ʟ IPA Ext: LATIN LETTER SMALL CAPITAL L 
+	<tr><td><code>1D0C</code><td><code class=mnemo>..L/</code><td><code>&#x1D0C;</code><td>ᴌ Phonetic Ext: LATIN LETTER SMALL CAPITAL L WITH STROKE 
+	<tr><td><code>1D0D</code><td><code class=mnemo>..M</code><td><code>&#x1D0D;</code><td>ᴍ Phonetic Ext: LATIN LETTER SMALL CAPITAL M 
+	<tr><td><code>0274</code><td><code class=mnemo>..N</code><td><code>&#x0274;</code><td>ɴ IPA Ext: LATIN LETTER SMALL CAPITAL N 
+	<tr><td><code>1D0E</code><td><code class=mnemo>..-N</code><td><code>&#x1D0E;</code><td>ᴎ Phonetic Ext: LATIN LETTER SMALL CAPITAL REVERSED N 
+	<tr><td><code>1D0F</code><td><code class=mnemo>..O</code><td><code>&#x1D0F;</code><td>ᴏ Phonetic Ext: LATIN LETTER SMALL CAPITAL O 
+	<tr><td><code>0276</code><td><code class=mnemo>..OE</code><td><code>&#x0276;</code><td>ɶ IPA Ext: LATIN LETTER SMALL CAPITAL OE 
+	<tr><td><code>0276</code><td><code class=mnemo>..Œ</code><td><code>&#x0276;</code><td>ɶ IPA Ext: LATIN LETTER SMALL CAPITAL OE 
+	<tr><td><code>1D18</code><td><code class=mnemo>..P</code><td><code>&#x1D18;</code><td>ᴘ Phonetic Ext: LATIN LETTER SMALL CAPITAL P 
+	<tr><td><code>1D19</code><td><code class=mnemo>..-R</code><td><code>&#x1D19;</code><td>ᴙ Phonetic Ext: LATIN LETTER SMALL CAPITAL REVERSED R 
+	<tr><td><code>1D1A</code><td><code class=mnemo>..::R</code><td><code>&#x1D1A;</code><td>ᴚ Phonetic Ext: LATIN LETTER SMALL CAPITAL TURNED R 
+	<tr><td><code>0280</code><td><code class=mnemo>..R</code><td><code>&#x0280;</code><td>ʀ IPA Ext: LATIN LETTER SMALL CAPITAL R 
+	<tr><td><code>0281</code><td><code class=mnemo>..|R</code><td><code>&#x0281;</code><td>ʁ IPA Ext: LATIN LETTER SMALL CAPITAL INVERTED R 
+	<tr><td><code>1D1B</code><td><code class=mnemo>..T</code><td><code>&#x1D1B;</code><td>ᴛ Phonetic Ext: LATIN LETTER SMALL CAPITAL T 
+	<tr><td><code>1D1C</code><td><code class=mnemo>..U</code><td><code>&#x1D1C;</code><td>ᴜ Phonetic Ext: LATIN LETTER SMALL CAPITAL U 
+	<tr><td><code>1D20</code><td><code class=mnemo>..V</code><td><code>&#x1D20;</code><td>ᴠ Phonetic Ext: LATIN LETTER SMALL CAPITAL V 
+	<tr><td><code>1D21</code><td><code class=mnemo>..W</code><td><code>&#x1D21;</code><td>ᴡ Phonetic Ext: LATIN LETTER SMALL CAPITAL W 
+	<tr><td><code>028F</code><td><code class=mnemo>..Y</code><td><code>&#x028F;</code><td>ʏ IPA Ext: LATIN LETTER SMALL CAPITAL Y 
+	<tr><td><code>1D22</code><td><code class=mnemo>..Z</code><td><code>&#x1D22;</code><td>ᴢ Phonetic Ext: LATIN LETTER SMALL CAPITAL Z 
+	<tr><td><code>1D06</code><td><code class=mnemo>..Ð</code><td><code>&#x1D06;</code><td>ᴆ Phonetic Ext: LATIN LETTER SMALL CAPITAL ETH 
+	<tr><td><code>1D03</code><td><code class=mnemo>..-B-</code><td><code>&#x1D03;</code><td>ᴃ Phonetic Ext: LATIN LETTER SMALL CAPITAL BARRED B 
+	<tr><td><code>1D10</code><td><code class=mnemo>..uO</code><td><code>&#x1D10;</code><td>ᴐ Phonetic Ext: LATIN LETTER SMALL CAPITAL OPEN O 
+	<tr><td><code>1D10</code><td><code class=mnemo>..Ɔ</code><td><code>&#x1D10;</code><td>ᴐ Phonetic Ext: LATIN LETTER SMALL CAPITAL OPEN O 
+	<tr><td><code>1D15</code><td><code class=mnemo>..OU</code><td><code>&#x1D15;</code><td>ᴕ Phonetic Ext: LATIN LETTER SMALL CAPITAL OU 
+	<tr><td><code>1D15</code><td><code class=mnemo>..Ȣ</code><td><code>&#x1D15;</code><td>ᴕ Phonetic Ext: LATIN LETTER SMALL CAPITAL OU 
+	<tr><td><code>1D23</code><td><code class=mnemo>..EZH</code><td><code>&#x1D23;</code><td>ᴣ Phonetic Ext: LATIN LETTER SMALL CAPITAL EZH 
+	<tr><td><code>1D23</code><td><code class=mnemo>..Ʒ</code><td><code>&#x1D23;</code><td>ᴣ Phonetic Ext: LATIN LETTER SMALL CAPITAL EZH 
+	<tr><td><code>01C8</code><td><code class=mnemo>Lj</code><td><code>&#x01C8;</code><td>ǈ LATIN CAPITAL LETTER L WITH SMALL LETTER J 
+	<tr><td><code>01CB</code><td><code class=mnemo>Nj</code><td><code>&#x01CB;</code><td>ǋ LATIN CAPITAL LETTER N WITH SMALL LETTER J 
+	<tr><td><code>01F2</code><td><code class=mnemo>Dz</code><td><code>&#x01F2;</code><td>ǲ LATIN CAPITAL LETTER D WITH SMALL LETTER Z 
+	<tr><td><code>01F1</code><td><code class=mnemo>DZ</code><td><code>&#x01F1;</code><td>Ǳ LATIN CAPITAL LETTER DZ 
+	<tr><td><code>01F3</code><td><code class=mnemo>dz</code><td><code>&#x01F3;</code><td>ǳ LATIN SMALL LETTER DZ 
+	<tr><td><code>0238</code><td><code class=mnemo>db</code><td><code>&#x0238;</code><td>ȸ LATIN SMALL LETTER DB DIGRAPH 
+	<tr><td><code>0239</code><td><code class=mnemo>qp</code><td><code>&#x0239;</code><td>ȹ LATIN SMALL LETTER QP DIGRAPH 
+	<tr><td><code>019D</code><td><code class=mnemo>,N</code><td><code>&#x019D;</code><td>Ɲ LATIN CAPITAL LETTER N WITH LEFT HOOK 
+	<tr><td><code>0272</code><td><code class=mnemo>,n</code><td><code>&#x0272;</code><td>ɲ IPA Ext: LATIN SMALL LETTER N WITH LEFT HOOK 
+	<tr><td><code>027E</code><td><code class=mnemo>r//</code><td><code>&#x027E;</code><td>ɾ IPA Ext: LATIN SMALL LETTER R WITH FISHHOOK 
+	<tr><td><code>027F</code><td><code class=mnemo>-r//</code><td><code>&#x027F;</code><td>ɿ IPA Ext: LATIN SMALL LETTER REVERSED R WITH FISHHOOK 
+	<tr><td><code>1D73</code><td><code class=mnemo>r//~~</code><td><code>&#x1D73;</code><td>ᵳ Phonetic Ext: LATIN SMALL LETTER R WITH FISHHOOK AND MIDDLE TILDE 
+	<tr><td><code>02AE</code><td><code class=mnemo>::h//</code><td><code>&#x02AE;</code><td>ʮ IPA Ext: LATIN SMALL LETTER TURNED H WITH FISHHOOK 
+	<tr><td><code>02AF</code><td><code class=mnemo>::h//\</code><td><code>&#x02AF;</code><td>ʯ IPA Ext: LATIN SMALL LETTER TURNED H WITH FISHHOOK AND TAIL 
+	<tr><td><code>02AE</code><td><code class=mnemo>ɥ//</code><td><code>&#x02AE;</code><td>ʮ IPA Ext: LATIN SMALL LETTER TURNED H WITH FISHHOOK 
+	<tr><td><code>02AF</code><td><code class=mnemo>ɥ//\</code><td><code>&#x02AF;</code><td>ʯ IPA Ext: LATIN SMALL LETTER TURNED H WITH FISHHOOK AND TAIL 
+	<tr><td><code>1D91</code><td><code class=mnemo>d/\</code><td><code>&#x1D91;</code><td>ᶑ Phonetic Ext: LATIN SMALL LETTER D WITH HOOK AND TAIL 
+	<tr><td><code>1D93</code><td><code class=mnemo>%ue</code><td><code>&#x1D93;</code><td>ᶓ Phonetic Ext: LATIN SMALL LETTER OPEN E WITH RETROFLEX HOOK 
+	<tr><td><code>1D94</code><td><code class=mnemo>%-ue</code><td><code>&#x1D94;</code><td>ᶔ Phonetic Ext: LATIN SMALL LETTER REVERSED OPEN E WITH RETROFLEX HOOK 
+	<tr><td><code>1D97</code><td><code class=mnemo>%uo</code><td><code>&#x1D97;</code><td>ᶗ Phonetic Ext: LATIN SMALL LETTER OPEN O WITH RETROFLEX HOOK 
+	<tr><td><code>019E</code><td><code class=mnemo>n--</code><td><code>&#x019E;</code><td>ƞ LATIN SMALL LETTER N WITH LONG RIGHT LEG 
+	<tr><td><code>0220</code><td><code class=mnemo>N--</code><td><code>&#x0220;</code><td>Ƞ LATIN CAPITAL LETTER N WITH LONG RIGHT LEG 
+	<tr><td><code>0270</code><td><code class=mnemo>::m-</code><td><code>&#x0270;</code><td>ɰ IPA Ext: LATIN SMALL LETTER TURNED M WITH LONG LEG 
+	<tr><td><code>0270</code><td><code class=mnemo>ɯ-</code><td><code>&#x0270;</code><td>ɰ IPA Ext: LATIN SMALL LETTER TURNED M WITH LONG LEG 
+	<tr><td><code>027A</code><td><code class=mnemo>::r-</code><td><code>&#x027A;</code><td>ɺ IPA Ext: LATIN SMALL LETTER TURNED R WITH LONG LEG 
+	<tr><td><code>027A</code><td><code class=mnemo>ɹ-</code><td><code>&#x027A;</code><td>ɺ IPA Ext: LATIN SMALL LETTER TURNED R WITH LONG LEG 
+	<tr><td><code>027C</code><td><code class=mnemo>r-</code><td><code>&#x027C;</code><td>ɼ IPA Ext: LATIN SMALL LETTER R WITH LONG LEG 
+	<tr><td><code>01BA</code><td><code class=mnemo>ezh\</code><td><code>&#x01BA;</code><td>ƺ LATIN SMALL LETTER EZH WITH TAIL 
+	<tr><td><code>01BA</code><td><code class=mnemo>ʒ\</code><td><code>&#x01BA;</code><td>ƺ LATIN SMALL LETTER EZH WITH TAIL 
+	<tr><td><code>0221</code><td><code class=mnemo>d}</code><td><code>&#x0221;</code><td>ȡ LATIN SMALL LETTER D WITH CURL 
+	<tr><td><code>0234</code><td><code class=mnemo>l}</code><td><code>&#x0234;</code><td>ȴ LATIN SMALL LETTER L WITH CURL 
+	<tr><td><code>0235</code><td><code class=mnemo>n}</code><td><code>&#x0235;</code><td>ȵ LATIN SMALL LETTER N WITH CURL 
+	<tr><td><code>0236</code><td><code class=mnemo>t}</code><td><code>&#x0236;</code><td>ȶ LATIN SMALL LETTER T WITH CURL 
+	<tr><td><code>0255</code><td><code class=mnemo>c}</code><td><code>&#x0255;</code><td>ɕ IPA Ext: LATIN SMALL LETTER C WITH CURL 
+	<tr><td><code>0256</code><td><code class=mnemo>d\</code><td><code>&#x0256;</code><td>ɖ IPA Ext: LATIN SMALL LETTER D WITH TAIL 
+	<tr><td><code>026C</code><td><code class=mnemo>l(</code><td><code>&#x026C;</code><td>ɬ IPA Ext: LATIN SMALL LETTER L WITH BELT 
+	<tr><td><code>027D</code><td><code class=mnemo>r\</code><td><code>&#x027D;</code><td>ɽ IPA Ext: LATIN SMALL LETTER R WITH TAIL 
+	<tr><td><code>0286</code><td><code class=mnemo>esh}</code><td><code>&#x0286;</code><td>ʆ IPA Ext: LATIN SMALL LETTER ESH WITH CURL 
+	<tr><td><code>0286</code><td><code class=mnemo>ʃ}</code><td><code>&#x0286;</code><td>ʆ IPA Ext: LATIN SMALL LETTER ESH WITH CURL 
+	<tr><td><code>0291</code><td><code class=mnemo>z}</code><td><code>&#x0291;</code><td>ʑ IPA Ext: LATIN SMALL LETTER Z WITH CURL 
+	<tr><td><code>0293</code><td><code class=mnemo>ezh}</code><td><code>&#x0293;</code><td>ʓ IPA Ext: LATIN SMALL LETTER EZH WITH CURL 
+	<tr><td><code>0293</code><td><code class=mnemo>ʒ}</code><td><code>&#x0293;</code><td>ʓ IPA Ext: LATIN SMALL LETTER EZH WITH CURL 
+	<tr><td><code>029D</code><td><code class=mnemo>j\\/</code><td><code>&#x029D;</code><td>ʝ IPA Ext: LATIN SMALL LETTER J WITH CROSSED-TAIL 
+	<tr><td><code>023F</code><td><code class=mnemo>s-~</code><td><code>&#x023F;</code><td>ȿ LATIN SMALL LETTER S WITH SWASH TAIL 
+	<tr><td><code>0240</code><td><code class=mnemo>z-~</code><td><code>&#x0240;</code><td>ɀ LATIN SMALL LETTER Z WITH SWASH TAIL 
+	<tr><td><code>02A3</code><td><code class=mnemo>d-z</code><td><code>&#x02A3;</code><td>ʣ IPA Ext: LATIN SMALL LETTER DZ DIGRAPH 
+	<tr><td><code>02A5</code><td><code class=mnemo>d-z}</code><td><code>&#x02A5;</code><td>ʥ IPA Ext: LATIN SMALL LETTER DZ DIGRAPH WITH CURL 
+	<tr><td><code>02A8</code><td><code class=mnemo>t-c}</code><td><code>&#x02A8;</code><td>ʨ IPA Ext: LATIN SMALL LETTER TC DIGRAPH WITH CURL 
+	<tr><td><code>1E9A</code><td><code class=mnemo>a-)</code><td><code>&#x1E9A;</code><td>ẚ LATIN SMALL LETTER A WITH RIGHT HALF RING 
+	<tr><td><code>0242</code><td><code class=mnemo>.?.</code><td><code>&#x0242;</code><td>ɂ LATIN SMALL LETTER GLOTTAL STOP 
+	<tr><td><code>0244</code><td><code class=mnemo>-U</code><td><code>&#x0244;</code><td>Ʉ LATIN CAPITAL LETTER U BAR 
+	<tr><td><code>0245</code><td><code class=mnemo>::V</code><td><code>&#x0245;</code><td>Ʌ LATIN CAPITAL LETTER TURNED V 
+	<tr><td><code>024A</code><td><code class=mnemo>!q/\</code><td><code>&#x024A;</code><td>Ɋ LATIN CAPITAL LETTER SMALL Q WITH HOOK TAIL 
+	<tr><td><code>024B</code><td><code class=mnemo>q/\</code><td><code>&#x024B;</code><td>ɋ LATIN SMALL LETTER Q WITH HOOK TAIL 
+	<tr><td><code>2184</code><td><code class=mnemo>-c</code><td><code>&#x2184;</code><td>ↄ LATIN SMALL LETTER REVERSED C 
+	<tr><td><code>2C60</code><td><code class=mnemo>==L</code><td><code>&#x2C60;</code><td>Ⱡ LATIN CAPITAL LETTER L WITH DOUBLE BAR 
+	<tr><td><code>2C61</code><td><code class=mnemo>==l</code><td><code>&#x2C61;</code><td>ⱡ LATIN SMALL LETTER L WITH DOUBLE BAR 
+	<tr><td><code>2C62</code><td><code class=mnemo>L~~</code><td><code>&#x2C62;</code><td>Ɫ LATIN CAPITAL LETTER L WITH MIDDLE TILDE 
+	<tr><td><code>2C64</code><td><code class=mnemo>R\</code><td><code>&#x2C64;</code><td>Ɽ LATIN CAPITAL LETTER R WITH TAIL 
+	<tr><td><code>2C66</code><td><code class=mnemo>t\</code><td><code>&#x2C66;</code><td>ⱦ LATIN SMALL LETTER T WITH DIAGONAL STROKE 
+	<tr><td><code>2C67</code><td><code class=mnemo>H-</code><td><code>&#x2C67;</code><td>Ⱨ LATIN CAPITAL LETTER H WITH DESCENDER 
+	<tr><td><code>2C68</code><td><code class=mnemo>h-</code><td><code>&#x2C68;</code><td>ⱨ LATIN SMALL LETTER H WITH DESCENDER 
+	<tr><td><code>2C69</code><td><code class=mnemo>K-</code><td><code>&#x2C69;</code><td>Ⱪ LATIN CAPITAL LETTER K WITH DESCENDER 
+	<tr><td><code>2C6A</code><td><code class=mnemo>k-</code><td><code>&#x2C6A;</code><td>ⱪ LATIN SMALL LETTER K WITH DESCENDER 
+	<tr><td><code>2C6B</code><td><code class=mnemo>Z-</code><td><code>&#x2C6B;</code><td>Ⱬ LATIN CAPITAL LETTER Z WITH DESCENDER 
+	<tr><td><code>2C6C</code><td><code class=mnemo>z-</code><td><code>&#x2C6C;</code><td>ⱬ LATIN SMALL LETTER Z WITH DESCENDER 
+	<tr><td><code>2C67</code><td><code class=mnemo>H__</code><td><code>&#x2C67;</code><td>Ⱨ LATIN CAPITAL LETTER H WITH DESCENDER 
+	<tr><td><code>2C68</code><td><code class=mnemo>h__</code><td><code>&#x2C68;</code><td>ⱨ LATIN SMALL LETTER H WITH DESCENDER 
+	<tr><td><code>2C69</code><td><code class=mnemo>K__</code><td><code>&#x2C69;</code><td>Ⱪ LATIN CAPITAL LETTER K WITH DESCENDER 
+	<tr><td><code>2C6A</code><td><code class=mnemo>k__</code><td><code>&#x2C6A;</code><td>ⱪ LATIN SMALL LETTER K WITH DESCENDER 
+	<tr><td><code>2C6B</code><td><code class=mnemo>Z__</code><td><code>&#x2C6B;</code><td>Ⱬ LATIN CAPITAL LETTER Z WITH DESCENDER 
+	<tr><td><code>2C6C</code><td><code class=mnemo>z__</code><td><code>&#x2C6C;</code><td>ⱬ LATIN SMALL LETTER Z WITH DESCENDER 
+	<tr><td><code>2C74</code><td><code class=mnemo>v}</code><td><code>&#x2C74;</code><td>ⱴ LATIN SMALL LETTER V WITH CURL 
+	<tr><td><code>2C75</code><td><code class=mnemo>-H</code><td><code>&#x2C75;</code><td>Ⱶ LATIN CAPITAL LETTER HALF H 
+	<tr><td><code>2C76</code><td><code class=mnemo>-h</code><td><code>&#x2C76;</code><td>ⱶ LATIN SMALL LETTER HALF H 
+	<tr><td><code>2C77</code><td><code class=mnemo>--phi</code><td><code>&#x2C77;</code><td>ⱷ LATIN SMALL LETTER TAILLESS PHI 
+	<tr><td><code>2C77</code><td><code class=mnemo>-ɸ</code><td><code>&#x2C77;</code><td>ⱷ LATIN SMALL LETTER TAILLESS PHI 
+	<tr><td><code>01A7</code><td><code class=mnemo>T2</code><td><code>&#x01A7;</code><td>Ƨ LATIN CAPITAL LETTER TONE TWO 
+	<tr><td><code>01A8</code><td><code class=mnemo>t2</code><td><code>&#x01A8;</code><td>ƨ LATIN SMALL LETTER TONE TWO 
+	<tr><td><code>01BC</code><td><code class=mnemo>T5</code><td><code>&#x01BC;</code><td>Ƽ LATIN CAPITAL LETTER TONE FIVE 
+	<tr><td><code>01BD</code><td><code class=mnemo>t5</code><td><code>&#x01BD;</code><td>ƽ LATIN SMALL LETTER TONE FIVE 
+	<tr><td><code>0184</code><td><code class=mnemo>T6</code><td><code>&#x0184;</code><td>Ƅ LATIN CAPITAL LETTER TONE SIX 
+	<tr><td><code>0185</code><td><code class=mnemo>t6</code><td><code>&#x0185;</code><td>ƅ LATIN SMALL LETTER TONE SIX 
+	<tr><td><code>014A</code><td><code class=mnemo>ENG</code><td><code>&#x014A;</code><td>Ŋ LATIN CAPITAL LETTER ENG (Lappish) 
+	<tr><td><code>014B</code><td><code class=mnemo>eng</code><td><code>&#x014B;</code><td>ŋ LATIN SMALL LETTER ENG (Lappish) 
+	<tr><td><code>0186</code><td><code class=mnemo>uO</code><td><code>&#x0186;</code><td>Ɔ LATIN CAPITAL LETTER OPEN O 
+	<tr><td><code>0189</code><td><code class=mnemo>AD</code><td><code>&#x0189;</code><td>Ɖ LATIN CAPITAL LETTER AFRICAN D 
+	<tr><td><code>0189</code><td><code class=mnemo>--D</code><td><code>&#x0189;</code><td>Ɖ LATIN CAPITAL LETTER AFRICAN D 
+	<tr><td><code>018D</code><td><code class=mnemo>::delta</code><td><code>&#x018D;</code><td>ƍ LATIN SMALL LETTER TURNED DELTA 
+	<tr><td><code>018E</code><td><code class=mnemo>-E</code><td><code>&#x018E;</code><td>Ǝ LATIN CAPITAL LETTER REVERSED E 
+	<tr><td><code>018F</code><td><code class=mnemo>SCHWA</code><td><code>&#x018F;</code><td>Ə LATIN CAPITAL LETTER SCHWA 
+	<tr><td><code>0190</code><td><code class=mnemo>uE</code><td><code>&#x0190;</code><td>Ɛ LATIN CAPITAL LETTER OPEN E 
+	<tr><td><code>0194</code><td><code class=mnemo>GAMMA</code><td><code>&#x0194;</code><td>Ɣ LATIN CAPITAL LETTER GAMMA 
+	<tr><td><code>0195</code><td><code class=mnemo>hv</code><td><code>&#x0195;</code><td>ƕ LATIN SMALL LETTER HV 
+	<tr><td><code>0196</code><td><code class=mnemo>IOTA</code><td><code>&#x0196;</code><td>Ɩ LATIN CAPITAL LETTER IOTA 
+	<tr><td><code>019C</code><td><code class=mnemo>::M</code><td><code>&#x019C;</code><td>Ɯ LATIN CAPITAL LETTER TURNED M 
+	<tr><td><code>01A9</code><td><code class=mnemo>ESH</code><td><code>&#x01A9;</code><td>Ʃ LATIN CAPITAL LETTER ESH 
+	<tr><td><code>01AA</code><td><code class=mnemo>-esh..</code><td><code>&#x01AA;</code><td>ƪ LATIN LETTER REVERSED ESH LOOP 
+	<tr><td><code>01AA</code><td><code class=mnemo>-ʃ..</code><td><code>&#x01AA;</code><td>ƪ LATIN LETTER REVERSED ESH LOOP 
+	<tr><td><code>01B1</code><td><code class=mnemo>UPS</code><td><code>&#x01B1;</code><td>Ʊ LATIN CAPITAL LETTER UPSILON 
+	<tr><td><code>01B7</code><td><code class=mnemo>EZH</code><td><code>&#x01B7;</code><td>Ʒ LATIN CAPITAL LETTER EZH 
+	<tr><td><code>01B8</code><td><code class=mnemo>-EZH</code><td><code>&#x01B8;</code><td>Ƹ LATIN CAPITAL LETTER EZH REVERSED 
+	<tr><td><code>01B8</code><td><code class=mnemo>-Ʒ</code><td><code>&#x01B8;</code><td>Ƹ LATIN CAPITAL LETTER EZH REVERSED 
+	<tr><td><code>01B9</code><td><code class=mnemo>-ezh</code><td><code>&#x01B9;</code><td>ƹ LATIN SMALL LETTER EZH REVERSED 
+	<tr><td><code>01B9</code><td><code class=mnemo>-ʒ</code><td><code>&#x01B9;</code><td>ƹ LATIN SMALL LETTER EZH REVERSED 
+	<tr><td><code>01BF</code><td><code class=mnemo>wynn</code><td><code>&#x01BF;</code><td>ƿ LATIN LETTER WYNN 
+	<tr><td><code>01C0</code><td><code class=mnemo>|@</code><td><code>&#x01C0;</code><td>ǀ LATIN LETTER DENTAL CLICK 
+	<tr><td><code>01C1</code><td><code class=mnemo>||@</code><td><code>&#x01C1;</code><td>ǁ LATIN LETTER LATERAL CLICK 
+	<tr><td><code>01C2</code><td><code class=mnemo>#@</code><td><code>&#x01C2;</code><td>ǂ LATIN LETTER ALVEOLAR CLICK 
+	<tr><td><code>01C3</code><td><code class=mnemo>!@</code><td><code>&#x01C3;</code><td>ǃ LATIN LETTER RETROFLEX CLICK 
+	<tr><td><code>01C7</code><td><code class=mnemo>lLJ</code><td><code>&#x01C7;</code><td>Ǉ LATIN CAPITAL LETTER LJ 
+	<tr><td><code>01C9</code><td><code class=mnemo>llj</code><td><code>&#x01C9;</code><td>ǉ LATIN SMALL LETTER LJ 
+	<tr><td><code>01CA</code><td><code class=mnemo>lNJ</code><td><code>&#x01CA;</code><td>Ǌ LATIN CAPITAL LETTER NJ 
+	<tr><td><code>01CC</code><td><code class=mnemo>lnj</code><td><code>&#x01CC;</code><td>ǌ LATIN SMALL LETTER NJ 
+	<tr><td><code>01DD</code><td><code class=mnemo>::e</code><td><code>&#x01DD;</code><td>ǝ LATIN SMALL LETTER TURNED E 
+	<tr><td><code>01F6</code><td><code class=mnemo>HWAIR</code><td><code>&#x01F6;</code><td>Ƕ LATIN CAPITAL LETTER HWAIR 
+	<tr><td><code>01F7</code><td><code class=mnemo>WYNN</code><td><code>&#x01F7;</code><td>Ƿ LATIN CAPITAL LETTER WYNN 
+	<tr><td><code>021C</code><td><code class=mnemo>YOGH</code><td><code>&#x021C;</code><td>Ȝ LATIN CAPITAL LETTER YOGH 
+	<tr><td><code>021D</code><td><code class=mnemo>yogh</code><td><code>&#x021D;</code><td>ȝ LATIN SMALL LETTER YOGH 
+	<tr><td><code>0222</code><td><code class=mnemo>OU</code><td><code>&#x0222;</code><td>Ȣ LATIN CAPITAL LETTER OU 
+	<tr><td><code>0223</code><td><code class=mnemo>_ou</code><td><code>&#x0223;</code><td>ȣ LATIN SMALL LETTER OU 
+	<tr><td><code>0250</code><td><code class=mnemo>::a</code><td><code>&#x0250;</code><td>ɐ IPA Ext: LATIN SMALL LETTER TURNED A 
+	<tr><td><code>0251</code><td><code class=mnemo>_alpha</code><td><code>&#x0251;</code><td>ɑ IPA Ext: LATIN SMALL LETTER ALPHA 
+	<tr><td><code>0252</code><td><code class=mnemo>::alpha</code><td><code>&#x0252;</code><td>ɒ IPA Ext: LATIN SMALL LETTER TURNED ALPHA 
+	<tr><td><code>0252</code><td><code class=mnemo>::ɑ</code><td><code>&#x0252;</code><td>ɒ IPA Ext: LATIN SMALL LETTER TURNED ALPHA 
+	<tr><td><code>0254</code><td><code class=mnemo>uo</code><td><code>&#x0254;</code><td>ɔ IPA Ext: LATIN SMALL LETTER OPEN O 
+	<tr><td><code>0258</code><td><code class=mnemo>-e</code><td><code>&#x0258;</code><td>ɘ IPA Ext: LATIN SMALL LETTER REVERSED E 
+	<tr><td><code>0259</code><td><code class=mnemo>schwa</code><td><code>&#x0259;</code><td>ə IPA Ext: LATIN SMALL LETTER SCHWA 
+	<tr><td><code>025B</code><td><code class=mnemo>ue</code><td><code>&#x025B;</code><td>ɛ IPA Ext: LATIN SMALL LETTER OPEN E 
+	<tr><td><code>025C</code><td><code class=mnemo>-ue</code><td><code>&#x025C;</code><td>ɜ IPA Ext: LATIN SMALL LETTER REVERSED OPEN E 
+	<tr><td><code>025C</code><td><code class=mnemo>-ɛ</code><td><code>&#x025C;</code><td>ɜ IPA Ext: LATIN SMALL LETTER REVERSED OPEN E 
+	<tr><td><code>025E</code><td><code class=mnemo>-ue-</code><td><code>&#x025E;</code><td>ɞ IPA Ext: LATIN SMALL LETTER CLOSED REVERSED OPEN E 
+	<tr><td><code>025E</code><td><code class=mnemo>-ɛ-</code><td><code>&#x025E;</code><td>ɞ IPA Ext: LATIN SMALL LETTER CLOSED REVERSED OPEN E 
+	<tr><td><code>0261</code><td><code class=mnemo>g</code><td><code>&#x0261;</code><td>ɡ IPA Ext: LATIN SMALL LETTER SCRIPT G 
+	<tr><td><code>0263</code><td><code class=mnemo>_gamma</code><td><code>&#x0263;</code><td>ɣ IPA Ext: LATIN SMALL LETTER GAMMA 
+	<tr><td><code>0264</code><td><code class=mnemo>rams</code><td><code>&#x0264;</code><td>ɤ IPA Ext: LATIN SMALL LETTER RAMS HORN 
+	<tr><td><code>0265</code><td><code class=mnemo>::h</code><td><code>&#x0265;</code><td>ɥ IPA Ext: LATIN SMALL LETTER TURNED H 
+	<tr><td><code>0269</code><td><code class=mnemo>_iota</code><td><code>&#x0269;</code><td>ɩ IPA Ext: LATIN SMALL LETTER IOTA 
+	<tr><td><code>026E</code><td><code class=mnemo>lezh</code><td><code>&#x026E;</code><td>ɮ IPA Ext: LATIN SMALL LETTER LEZH 
+	<tr><td><code>026F</code><td><code class=mnemo>::m</code><td><code>&#x026F;</code><td>ɯ IPA Ext: LATIN SMALL LETTER TURNED M 
+	<tr><td><code>0275</code><td><code class=mnemo>-o-</code><td><code>&#x0275;</code><td>ɵ IPA Ext: LATIN SMALL LETTER BARRED O 
+	<tr><td><code>0277</code><td><code class=mnemo>--o</code><td><code>&#x0277;</code><td>ɷ IPA Ext: LATIN SMALL LETTER CLOSED OMEGA 
+	<tr><td><code>0278</code><td><code class=mnemo>_phi</code><td><code>&#x0278;</code><td>ɸ IPA Ext: LATIN SMALL LETTER PHI 
+	<tr><td><code>0279</code><td><code class=mnemo>::r</code><td><code>&#x0279;</code><td>ɹ IPA Ext: LATIN SMALL LETTER TURNED R 
+	<tr><td><code>0283</code><td><code class=mnemo>esh</code><td><code>&#x0283;</code><td>ʃ IPA Ext: LATIN SMALL LETTER ESH 
+	<tr><td><code>0285</code><td><code class=mnemo>-esh</code><td><code>&#x0285;</code><td>ʅ IPA Ext: LATIN SMALL LETTER SQUAT REVERSED ESH 
+	<tr><td><code>0285</code><td><code class=mnemo>-ʃ</code><td><code>&#x0285;</code><td>ʅ IPA Ext: LATIN SMALL LETTER SQUAT REVERSED ESH 
+	<tr><td><code>0287</code><td><code class=mnemo>::t</code><td><code>&#x0287;</code><td>ʇ IPA Ext: LATIN SMALL LETTER TURNED T 
+	<tr><td><code>0289</code><td><code class=mnemo>-u</code><td><code>&#x0289;</code><td>ʉ IPA Ext: LATIN SMALL LETTER U BAR 
+	<tr><td><code>028A</code><td><code class=mnemo>ups</code><td><code>&#x028A;</code><td>ʊ IPA Ext: LATIN SMALL LETTER UPSILON 
+	<tr><td><code>028C</code><td><code class=mnemo>::v</code><td><code>&#x028C;</code><td>ʌ IPA Ext: LATIN SMALL LETTER TURNED V 
+	<tr><td><code>028D</code><td><code class=mnemo>::w</code><td><code>&#x028D;</code><td>ʍ IPA Ext: LATIN SMALL LETTER TURNED W 
+	<tr><td><code>028E</code><td><code class=mnemo>::y</code><td><code>&#x028E;</code><td>ʎ IPA Ext: LATIN SMALL LETTER TURNED Y 
+	<tr><td><code>0292</code><td><code class=mnemo>ezh</code><td><code>&#x0292;</code><td>ʒ IPA Ext: LATIN SMALL LETTER EZH 
+	<tr><td><code>0294</code><td><code class=mnemo>?.</code><td><code>&#x0294;</code><td>ʔ IPA Ext: LATIN LETTER GLOTTAL STOP 
+	<tr><td><code>0295</code><td><code class=mnemo>.?</code><td><code>&#x0295;</code><td>ʕ IPA Ext: LATIN LETTER PHARYNGEAL VOICED FRICATIVE 
+	<tr><td><code>0296</code><td><code class=mnemo>|?</code><td><code>&#x0296;</code><td>ʖ IPA Ext: LATIN LETTER INVERTED GLOTTAL STOP 
+	<tr><td><code>0297</code><td><code class=mnemo>C_</code><td><code>&#x0297;</code><td>ʗ IPA Ext: LATIN LETTER STRETCHED C 
+	<tr><td><code>0298</code><td><code class=mnemo>o@</code><td><code>&#x0298;</code><td>ʘ IPA Ext: LATIN LETTER BILABIAL CLICK 
+	<tr><td><code>029A</code><td><code class=mnemo>ue-</code><td><code>&#x029A;</code><td>ʚ IPA Ext: LATIN SMALL LETTER CLOSED OPEN E 
+	<tr><td><code>029A</code><td><code class=mnemo>ɛ-</code><td><code>&#x029A;</code><td>ʚ IPA Ext: LATIN SMALL LETTER CLOSED OPEN E 
+	<tr><td><code>029E</code><td><code class=mnemo>::k</code><td><code>&#x029E;</code><td>ʞ IPA Ext: LATIN SMALL LETTER TURNED K 
+	<tr><td><code>02A4</code><td><code class=mnemo>d-ezh</code><td><code>&#x02A4;</code><td>ʤ IPA Ext: LATIN SMALL LETTER DEZH DIGRAPH 
+	<tr><td><code>02A6</code><td><code class=mnemo>t-s</code><td><code>&#x02A6;</code><td>ʦ IPA Ext: LATIN SMALL LETTER TS DIGRAPH 
+	<tr><td><code>02A7</code><td><code class=mnemo>t-esh</code><td><code>&#x02A7;</code><td>ʧ IPA Ext: LATIN SMALL LETTER TESH DIGRAPH 
+	<tr><td><code>02A9</code><td><code class=mnemo>f-eng</code><td><code>&#x02A9;</code><td>ʩ IPA Ext: LATIN SMALL LETTER FENG DIGRAPH 
+	<tr><td><code>02A9</code><td><code class=mnemo>f-ŋ</code><td><code>&#x02A9;</code><td>ʩ IPA Ext: LATIN SMALL LETTER FENG DIGRAPH 
+	<tr><td><code>02AA</code><td><code class=mnemo>l-s</code><td><code>&#x02AA;</code><td>ʪ IPA Ext: LATIN SMALL LETTER LS DIGRAPH 
+	<tr><td><code>02AB</code><td><code class=mnemo>l-z</code><td><code>&#x02AB;</code><td>ʫ IPA Ext: LATIN SMALL LETTER LZ DIGRAPH 
+	<tr><td><code>02AC</code><td><code class=mnemo>ww</code><td><code>&#x02AC;</code><td>ʬ IPA Ext: LATIN LETTER BILABIAL PERCUSSIVE 
+	<tr><td><code>02AD</code><td><code class=mnemo>nn</code><td><code>&#x02AD;</code><td>ʭ IPA Ext: LATIN LETTER BIDENTAL PERCUSSIVE 
+	<tr><td><code>1D02</code><td><code class=mnemo>::ae</code><td><code>&#x1D02;</code><td>ᴂ Phonetic Ext: LATIN SMALL LETTER TURNED AE 
+	<tr><td><code>1D02</code><td><code class=mnemo>::æ</code><td><code>&#x1D02;</code><td>ᴂ Phonetic Ext: LATIN SMALL LETTER TURNED AE 
+	<tr><td><code>1D77</code><td><code class=mnemo>::g</code><td><code>&#x1D77;</code><td>ᵷ Phonetic Ext: LATIN SMALL LETTER TURNED G 
+	<tr><td><code>1D09</code><td><code class=mnemo>::i</code><td><code>&#x1D09;</code><td>ᴉ Phonetic Ext: LATIN SMALL LETTER TURNED I 
+	<tr><td><code>1D11</code><td><code class=mnemo>==o</code><td><code>&#x1D11;</code><td>ᴑ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS O 
+	<tr><td><code>1D13</code><td><code class=mnemo>==o/</code><td><code>&#x1D13;</code><td>ᴓ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS O WITH STROKE 
+	<tr><td><code>1D14</code><td><code class=mnemo>::oe</code><td><code>&#x1D14;</code><td>ᴔ Phonetic Ext: LATIN SMALL LETTER TURNED OE 
+	<tr><td><code>1D14</code><td><code class=mnemo>::œ</code><td><code>&#x1D14;</code><td>ᴔ Phonetic Ext: LATIN SMALL LETTER TURNED OE 
+	<tr><td><code>1D08</code><td><code class=mnemo>::ue</code><td><code>&#x1D08;</code><td>ᴈ Phonetic Ext: LATIN SMALL LETTER TURNED OPEN E 
+	<tr><td><code>1D08</code><td><code class=mnemo>::ɛ</code><td><code>&#x1D08;</code><td>ᴈ Phonetic Ext: LATIN SMALL LETTER TURNED OPEN E 
+	<tr><td><code>1D12</code><td><code class=mnemo>==uo</code><td><code>&#x1D12;</code><td>ᴒ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS OPEN O 
+	<tr><td><code>1D12</code><td><code class=mnemo>==ɔ</code><td><code>&#x1D12;</code><td>ᴒ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS OPEN O 
+	<tr><td><code>1D79</code><td><code class=mnemo>.g.</code><td><code>&#x1D79;</code><td>ᵹ Phonetic Ext: LATIN SMALL LETTER INSULAR G 
+	<tr><td><code>1D7A</code><td><code class=mnemo>th--</code><td><code>&#x1D7A;</code><td>ᵺ Phonetic Ext: LATIN SMALL LETTER TH WITH STRIKETHROUGH 
+	<tr><td><code>1D7B</code><td><code class=mnemo>..I/</code><td><code>&#x1D7B;</code><td>ᵻ Phonetic Ext: LATIN SMALL CAPITAL LETTER I WITH STROKE 
+	<tr><td><code>1D7E</code><td><code class=mnemo>..U/</code><td><code>&#x1D7E;</code><td>ᵾ Phonetic Ext: LATIN SMALL CAPITAL LETTER U WITH STROKE 
+	<tr><td><code>1D7C</code><td><code class=mnemo>iota/</code><td><code>&#x1D7C;</code><td>ᵼ Phonetic Ext: LATIN SMALL LETTER IOTA WITH STROKE 
+	<tr><td><code>1D16</code><td><code class=mnemo>1ho</code><td><code>&#x1D16;</code><td>ᴖ Phonetic Ext: LATIN SMALL LETTER TOP HALF O 
+	<tr><td><code>1D17</code><td><code class=mnemo>2ho</code><td><code>&#x1D17;</code><td>ᴗ Phonetic Ext: LATIN SMALL LETTER BOTTOM HALF O 
+	<tr><td><code>1D1D</code><td><code class=mnemo>==u</code><td><code>&#x1D1D;</code><td>ᴝ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS U 
+	<tr><td><code>1D1E</code><td><code class=mnemo>==u:</code><td><code>&#x1D1E;</code><td>ᴞ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS DIAERESIZED U 
+	<tr><td><code>1D1E</code><td><code class=mnemo>==ü</code><td><code>&#x1D1E;</code><td>ᴞ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS DIAERESIZED U 
+	<tr><td><code>1D1F</code><td><code class=mnemo>==::m</code><td><code>&#x1D1F;</code><td>ᴟ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS TURNED M 
+	<tr><td><code>1D1F</code><td><code class=mnemo>==ɯ</code><td><code>&#x1D1F;</code><td>ᴟ Phonetic Ext: LATIN SMALL LETTER SIDEWAYS TURNED M 
+	<tr><td><code>1D24</code><td><code class=mnemo>lar</code><td><code>&#x1D24;</code><td>ᴤ Phonetic Ext: LATIN LETTER VOICED LARYNGEAL SPIRANT 
+	<tr><td><code>1D24</code><td><code class=mnemo>spir</code><td><code>&#x1D24;</code><td>ᴤ Phonetic Ext: LATIN LETTER VOICED LARYNGEAL SPIRANT 
+	<tr><td><code>1D25</code><td><code class=mnemo>ain</code><td><code>&#x1D25;</code><td>ᴥ Phonetic Ext: LATIN LETTER AIN 
+	<tr><td><code>2071</code><td><code class=mnemo>iS</code><td><code>&#x2071;</code><td>ⁱ SUPERSCRIPT LATIN SMALL LETTER I 
+	<tr><td><code>2090</code><td><code class=mnemo>__a</code><td><code>&#x2090;</code><td>ₐ LATIN SUBSCRIPT SMALL LETTER A 
+	<tr><td><code>2091</code><td><code class=mnemo>__e</code><td><code>&#x2091;</code><td>ₑ LATIN SUBSCRIPT SMALL LETTER E 
+	<tr><td><code>2095</code><td><code class=mnemo>__h</code><td><code>&#x2095;</code><td>ₕ LATIN SUBSCRIPT SMALL LETTER H 
+	<tr><td><code>1D62</code><td><code class=mnemo>__i</code><td><code>&#x1D62;</code><td>ᵢ Phonetic Ext: LATIN SUBSCRIPT SMALL LETTER I 
+	<tr><td><code>2C7C</code><td><code class=mnemo>__j</code><td><code>&#x2C7C;</code><td>ⱼ LATIN SUBSCRIPT SMALL LETTER J 
+	<tr><td><code>2096</code><td><code class=mnemo>__k</code><td><code>&#x2096;</code><td>ₖ LATIN SUBSCRIPT SMALL LETTER K 
+	<tr><td><code>2097</code><td><code class=mnemo>__l</code><td><code>&#x2097;</code><td>ₗ LATIN SUBSCRIPT SMALL LETTER L 
+	<tr><td><code>2098</code><td><code class=mnemo>__m</code><td><code>&#x2098;</code><td>ₘ LATIN SUBSCRIPT SMALL LETTER M 
+	<tr><td><code>2099</code><td><code class=mnemo>__n</code><td><code>&#x2099;</code><td>ₙ LATIN SUBSCRIPT SMALL LETTER N 
+	<tr><td><code>2092</code><td><code class=mnemo>__o</code><td><code>&#x2092;</code><td>ₒ LATIN SUBSCRIPT SMALL LETTER O 
+	<tr><td><code>209A</code><td><code class=mnemo>__p</code><td><code>&#x209A;</code><td>ₚ LATIN SUBSCRIPT SMALL LETTER P 
+	<tr><td><code>1D63</code><td><code class=mnemo>__r</code><td><code>&#x1D63;</code><td>ᵣ Phonetic Ext: LATIN SUBSCRIPT SMALL LETTER R 
+	<tr><td><code>209B</code><td><code class=mnemo>__s</code><td><code>&#x209B;</code><td>ₛ LATIN SUBSCRIPT SMALL LETTER S 
+	<tr><td><code>2094</code><td><code class=mnemo>__schwa</code><td><code>&#x2094;</code><td>ₔ LATIN SUBSCRIPT SMALL LETTER SCHWA 
+	<tr><td><code>209C</code><td><code class=mnemo>__t</code><td><code>&#x209C;</code><td>ₜ LATIN SUBSCRIPT SMALL LETTER T 
+	<tr><td><code>2094</code><td><code class=mnemo>__ə</code><td><code>&#x2094;</code><td>ₔ LATIN SUBSCRIPT SMALL LETTER SCHWA 
+	<tr><td><code>1D64</code><td><code class=mnemo>__u</code><td><code>&#x1D64;</code><td>ᵤ Phonetic Ext: LATIN SUBSCRIPT SMALL LETTER U 
+	<tr><td><code>1D65</code><td><code class=mnemo>__v</code><td><code>&#x1D65;</code><td>ᵥ Phonetic Ext: LATIN SUBSCRIPT SMALL LETTER V 
+	<tr><td><code>2093</code><td><code class=mnemo>__x</code><td><code>&#x2093;</code><td>ₓ LATIN SUBSCRIPT SMALL LETTER X 
+	<tr><td><code>1D6B</code><td><code class=mnemo>_ue</code><td><code>&#x1D6B;</code><td>ᵫ Phonetic Ext: LATIN SMALL LETTER UE 
+	<tr><td><code>1D6B</code><td><code class=mnemo>..ue</code><td><code>&#x1D6B;</code><td>ᵫ Phonetic Ext: LATIN SMALL LETTER UE 
+	<tr><td><code>0363</code><td><code class=mnemo>	a</code><td><code>&#x0363;</code><td>xͣ COMBINING LATIN SMALL LETTER A 
+	<tr><td><code>0364</code><td><code class=mnemo>	e</code><td><code>&#x0364;</code><td>xͤ COMBINING LATIN SMALL LETTER E 
+	<tr><td><code>0365</code><td><code class=mnemo>	i</code><td><code>&#x0365;</code><td>xͥ COMBINING LATIN SMALL LETTER I 
+	<tr><td><code>0366</code><td><code class=mnemo>	o</code><td><code>&#x0366;</code><td>xͦ COMBINING LATIN SMALL LETTER O 
+	<tr><td><code>0367</code><td><code class=mnemo>	u</code><td><code>&#x0367;</code><td>xͧ COMBINING LATIN SMALL LETTER U 
+	<tr><td><code>0368</code><td><code class=mnemo>	c</code><td><code>&#x0368;</code><td>xͨ COMBINING LATIN SMALL LETTER C 
+	<tr><td><code>0369</code><td><code class=mnemo>	d</code><td><code>&#x0369;</code><td>xͩ COMBINING LATIN SMALL LETTER D 
+	<tr><td><code>036A</code><td><code class=mnemo>	h</code><td><code>&#x036A;</code><td>xͪ COMBINING LATIN SMALL LETTER H 
+	<tr><td><code>036B</code><td><code class=mnemo>	m</code><td><code>&#x036B;</code><td>xͫ COMBINING LATIN SMALL LETTER M 
+	<tr><td><code>036C</code><td><code class=mnemo>	r</code><td><code>&#x036C;</code><td>xͬ COMBINING LATIN SMALL LETTER R 
+	<tr><td><code>036D</code><td><code class=mnemo>	t</code><td><code>&#x036D;</code><td>xͭ COMBINING LATIN SMALL LETTER T 
+	<tr><td><code>036E</code><td><code class=mnemo>	v</code><td><code>&#x036E;</code><td>xͮ COMBINING LATIN SMALL LETTER V 
+	<tr><td><code>036F</code><td><code class=mnemo>	x</code><td><code>&#x036F;</code><td>xͯ COMBINING LATIN SMALL LETTER X 
+<tr><td colspan=4><br><h4> Unicode 5.1 </h4>
+	<tr><td><code>1DCA</code><td><code class=mnemo>	r_</code><td><code>&#x1DCA;</code><td>᷊ COMBINING LATIN SMALL LETTER R BELOW 
+	<tr><td><code>1DD3</code><td><code class=mnemo>	'ua</code><td><code>&#x1DD3;</code><td>ᷓ COMBINING LATIN SMALL LETTER FLATTENED OPEN A ABOVE 
+	<tr><td><code>1DD4</code><td><code class=mnemo>	ae</code><td><code>&#x1DD4;</code><td>ᷔ COMBINING LATIN SMALL LETTER AE 
+	<tr><td><code>1DD5</code><td><code class=mnemo>	ao</code><td><code>&#x1DD5;</code><td>ᷕ COMBINING LATIN SMALL LETTER AO 
+	<tr><td><code>1DD6</code><td><code class=mnemo>	av</code><td><code>&#x1DD6;</code><td>ᷖ COMBINING LATIN SMALL LETTER AV 
+	<tr><td><code>1DD7</code><td><code class=mnemo>	c,</code><td><code>&#x1DD7;</code><td>ᷗ COMBINING LATIN SMALL LETTER C CEDILLA 
+	<tr><td><code>1DD7</code><td><code class=mnemo>	ç</code><td><code>&#x1DD7;</code><td>ᷗ COMBINING LATIN SMALL LETTER C CEDILLA 
+	<tr><td><code>1DD8</code><td><code class=mnemo>	()d</code><td><code>&#x1DD8;</code><td>ᷘ COMBINING LATIN SMALL LETTER INSULAR D 
+	<tr><td><code>1DD9</code><td><code class=mnemo>	eth</code><td><code>&#x1DD9;</code><td>ᷙ COMBINING LATIN SMALL LETTER ETH 
+	<tr><td><code>1DDA</code><td><code class=mnemo>	g</code><td><code>&#x1DDA;</code><td>ᷚ COMBINING LATIN SMALL LETTER G 
+	<tr><td><code>1DDB</code><td><code class=mnemo>	..G</code><td><code>&#x1DDB;</code><td>ᷛ COMBINING LATIN LETTER SMALL CAPITAL G 
+	<tr><td><code>1DDC</code><td><code class=mnemo>	k</code><td><code>&#x1DDC;</code><td>ᷜ COMBINING LATIN SMALL LETTER K 
+	<tr><td><code>1DDD</code><td><code class=mnemo>	l</code><td><code>&#x1DDD;</code><td>ᷝ COMBINING LATIN SMALL LETTER L 
+	<tr><td><code>1DDE</code><td><code class=mnemo>	..L</code><td><code>&#x1DDE;</code><td>ᷞ COMBINING LATIN LETTER SMALL CAPITAL L 
+	<tr><td><code>1DDF</code><td><code class=mnemo>	..M</code><td><code>&#x1DDF;</code><td>ᷟ COMBINING LATIN LETTER SMALL CAPITAL M 
+	<tr><td><code>1DE0</code><td><code class=mnemo>	n</code><td><code>&#x1DE0;</code><td>ᷠ COMBINING LATIN SMALL LETTER N 
+	<tr><td><code>1DE1</code><td><code class=mnemo>	..N</code><td><code>&#x1DE1;</code><td>ᷡ COMBINING LATIN LETTER SMALL CAPITAL N 
+	<tr><td><code>1DE2</code><td><code class=mnemo>	..R</code><td><code>&#x1DE2;</code><td>ᷢ COMBINING LATIN LETTER SMALL CAPITAL R 
+	<tr><td><code>1DE3</code><td><code class=mnemo>	r°</code><td><code>&#x1DE3;</code><td>ᷣ COMBINING LATIN SMALL LETTER R ROTUNDA 
+	<tr><td><code>1DE4</code><td><code class=mnemo>	_s</code><td><code>&#x1DE4;</code><td>ᷤ COMBINING LATIN SMALL LETTER S 
+	<tr><td><code>1DE5</code><td><code class=mnemo>	|s</code><td><code>&#x1DE5;</code><td>ᷥ COMBINING LATIN SMALL LETTER LONG S 
+	<tr><td><code>1DE5</code><td><code class=mnemo>	!s</code><td><code>&#x1DE5;</code><td>ᷥ COMBINING LATIN SMALL LETTER LONG S 
+	<tr><td><code>1DE6</code><td><code class=mnemo>	z</code><td><code>&#x1DE6;</code><td>ᷦ COMBINING LATIN SMALL LETTER Z 
+	<tr><td><code>A726</code><td><code class=mnemo>HENG</code><td><code>&#xA726;</code><td>Ꜧ LATIN CAPITAL LETTER HENG 
+	<tr><td><code>A727</code><td><code class=mnemo>heng</code><td><code>&#xA727;</code><td>ꜧ LATIN SMALL LETTER HENG 
+	<tr><td><code>A728</code><td><code class=mnemo>TZ</code><td><code>&#xA728;</code><td>Ꜩ LATIN CAPITAL LETTER TZ 
+	<tr><td><code>A729</code><td><code class=mnemo>tz</code><td><code>&#xA729;</code><td>ꜩ LATIN SMALL LETTER TZ 
+	<tr><td><code>A732</code><td><code class=mnemo>_AA</code><td><code>&#xA732;</code><td>Ꜳ LATIN CAPITAL LETTER AA 
+	<tr><td><code>A733</code><td><code class=mnemo>_aa</code><td><code>&#xA733;</code><td>ꜳ LATIN SMALL LETTER AA 
+	<tr><td><code>A734</code><td><code class=mnemo>_AO</code><td><code>&#xA734;</code><td>Ꜵ LATIN CAPITAL LETTER AO 
+	<tr><td><code>A735</code><td><code class=mnemo>_ao</code><td><code>&#xA735;</code><td>ꜵ LATIN SMALL LETTER AO 
+	<tr><td><code>A736</code><td><code class=mnemo>_AU</code><td><code>&#xA736;</code><td>Ꜷ LATIN CAPITAL LETTER AU 
+	<tr><td><code>A737</code><td><code class=mnemo>_au</code><td><code>&#xA737;</code><td>ꜷ LATIN SMALL LETTER AU 
+	<tr><td><code>A738</code><td><code class=mnemo>AV</code><td><code>&#xA738;</code><td>Ꜹ LATIN CAPITAL LETTER AV 
+	<tr><td><code>A739</code><td><code class=mnemo>av</code><td><code>&#xA739;</code><td>ꜹ LATIN SMALL LETTER AV 
+	<tr><td><code>A73C</code><td><code class=mnemo>_AY</code><td><code>&#xA73C;</code><td>Ꜽ LATIN CAPITAL LETTER AY 
+	<tr><td><code>A73D</code><td><code class=mnemo>_ay</code><td><code>&#xA73D;</code><td>ꜽ LATIN SMALL LETTER AY 
+	<tr><td><code>A74E</code><td><code class=mnemo>OO</code><td><code>&#xA74E;</code><td>Ꝏ LATIN CAPITAL LETTER OO 
+	<tr><td><code>A74F</code><td><code class=mnemo>oo</code><td><code>&#xA74F;</code><td>ꝏ LATIN SMALL LETTER OO 
+	<tr><td><code>A760</code><td><code class=mnemo>VY</code><td><code>&#xA760;</code><td>Ꝡ LATIN CAPITAL LETTER VY 
+	<tr><td><code>A761</code><td><code class=mnemo>vy</code><td><code>&#xA761;</code><td>ꝡ LATIN SMALL LETTER VY 
+	<tr><td><code>A768</code><td><code class=mnemo>VEND</code><td><code>&#xA768;</code><td>Ꝩ LATIN CAPITAL LETTER VEND 
+	<tr><td><code>A769</code><td><code class=mnemo>vend</code><td><code>&#xA769;</code><td>ꝩ LATIN SMALL LETTER VEND 
+	<tr><td><code>A76A</code><td><code class=mnemo>_ET</code><td><code>&#xA76A;</code><td>Ꝫ LATIN CAPITAL LETTER ET 
+	<tr><td><code>A76B</code><td><code class=mnemo>_et</code><td><code>&#xA76B;</code><td>ꝫ LATIN SMALL LETTER ET 
+	<tr><td><code>A76C</code><td><code class=mnemo>_IS</code><td><code>&#xA76C;</code><td>Ꝭ LATIN CAPITAL LETTER IS 
+	<tr><td><code>A76D</code><td><code class=mnemo>_is</code><td><code>&#xA76D;</code><td>ꝭ LATIN SMALL LETTER IS 
+	<tr><td><code>A76E</code><td><code class=mnemo>CON</code><td><code>&#xA76E;</code><td>Ꝯ LATIN CAPITAL LETTER CON 
+	<tr><td><code>A76F</code><td><code class=mnemo>con</code><td><code>&#xA76F;</code><td>ꝯ LATIN SMALL LETTER CON 
+	<tr><td><code>A771</code><td><code class=mnemo>dum</code><td><code>&#xA771;</code><td>ꝱ LATIN SMALL LETTER DUM 
+	<tr><td><code>A772</code><td><code class=mnemo>lum</code><td><code>&#xA772;</code><td>ꝲ LATIN SMALL LETTER LUM 
+	<tr><td><code>A773</code><td><code class=mnemo>mum</code><td><code>&#xA773;</code><td>ꝳ LATIN SMALL LETTER MUM 
+	<tr><td><code>A774</code><td><code class=mnemo>num</code><td><code>&#xA774;</code><td>ꝴ LATIN SMALL LETTER NUM 
+	<tr><td><code>A775</code><td><code class=mnemo>rum</code><td><code>&#xA775;</code><td>ꝵ LATIN SMALL LETTER RUM 
+	<tr><td><code>A776</code><td><code class=mnemo>..RUM</code><td><code>&#xA776;</code><td>ꝶ LATIN LETTER SMALL CAPITAL RUM 
+	<tr><td><code>A777</code><td><code class=mnemo>tum</code><td><code>&#xA777;</code><td>ꝷ LATIN SMALL LETTER TUM 
+	<tr><td><code>A778</code><td><code class=mnemo>um</code><td><code>&#xA778;</code><td>ꝸ LATIN SMALL LETTER UM 
+	<tr><td><code>A73A</code><td><code class=mnemo>AV--</code><td><code>&#xA73A;</code><td>Ꜻ LATIN CAPITAL LETTER AV WITH HORIZONTAL BAR 
+	<tr><td><code>A73A</code><td><code class=mnemo>--AV</code><td><code>&#xA73A;</code><td>Ꜻ LATIN CAPITAL LETTER AV WITH HORIZONTAL BAR 
+	<tr><td><code>A73B</code><td><code class=mnemo>av--</code><td><code>&#xA73B;</code><td>ꜻ LATIN SMALL LETTER AV WITH HORIZONTAL BAR 
+	<tr><td><code>A73B</code><td><code class=mnemo>--av</code><td><code>&#xA73B;</code><td>ꜻ LATIN SMALL LETTER AV WITH HORIZONTAL BAR 
+	<tr><td><code>A73E</code><td><code class=mnemo>-C.</code><td><code>&#xA73E;</code><td>Ꜿ LATIN CAPITAL LETTER REVERSED C WITH DOT 
+	<tr><td><code>A73F</code><td><code class=mnemo>-c.</code><td><code>&#xA73F;</code><td>ꜿ LATIN SMALL LETTER REVERSED C WITH DOT 
+	<tr><td><code>A740</code><td><code class=mnemo>K/</code><td><code>&#xA740;</code><td>Ꝁ LATIN CAPITAL LETTER K WITH STROKE 
+	<tr><td><code>A741</code><td><code class=mnemo>k/</code><td><code>&#xA741;</code><td>ꝁ LATIN SMALL LETTER K WITH STROKE 
+	<tr><td><code>A742</code><td><code class=mnemo>K\</code><td><code>&#xA742;</code><td>Ꝃ LATIN CAPITAL LETTER K WITH DIAGONAL STROKE 
+	<tr><td><code>A743</code><td><code class=mnemo>k\</code><td><code>&#xA743;</code><td>ꝃ LATIN SMALL LETTER K WITH DIAGONAL STROKE 
+	<tr><td><code>A744</code><td><code class=mnemo>K/\</code><td><code>&#xA744;</code><td>Ꝅ LATIN CAPITAL LETTER K WITH STROKE AND DIAGONAL STROKE 
+	<tr><td><code>A745</code><td><code class=mnemo>k/\</code><td><code>&#xA745;</code><td>ꝅ LATIN SMALL LETTER K WITH STROKE AND DIAGONAL STROKE 
+	<tr><td><code>A746</code><td><code class=mnemo>L##</code><td><code>&#xA746;</code><td>Ꝇ LATIN CAPITAL LETTER BROKEN L 
+	<tr><td><code>A747</code><td><code class=mnemo>l##</code><td><code>&#xA747;</code><td>ꝇ LATIN SMALL LETTER BROKEN L 
+	<tr><td><code>A748</code><td><code class=mnemo>L^/</code><td><code>&#xA748;</code><td>Ꝉ LATIN CAPITAL LETTER L WITH HIGH STROKE 
+	<tr><td><code>A749</code><td><code class=mnemo>l^/</code><td><code>&#xA749;</code><td>ꝉ LATIN SMALL LETTER L WITH HIGH STROKE 
+	<tr><td><code>A74A</code><td><code class=mnemo>O//</code><td><code>&#xA74A;</code><td>Ꝋ LATIN CAPITAL LETTER O WITH LONG STROKE OVERLAY 
+	<tr><td><code>A74B</code><td><code class=mnemo>o//</code><td><code>&#xA74B;</code><td>ꝋ LATIN SMALL LETTER O WITH LONG STROKE OVERLAY 
+	<tr><td><code>A74C</code><td><code class=mnemo>O..</code><td><code>&#xA74C;</code><td>Ꝍ LATIN CAPITAL LETTER O WITH LOOP 
+	<tr><td><code>A74D</code><td><code class=mnemo>o..</code><td><code>&#xA74D;</code><td>ꝍ LATIN SMALL LETTER O WITH LOOP 
+	<tr><td><code>A750</code><td><code class=mnemo>P_/</code><td><code>&#xA750;</code><td>Ꝑ LATIN CAPITAL LETTER P WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A751</code><td><code class=mnemo>p_/</code><td><code>&#xA751;</code><td>ꝑ LATIN SMALL LETTER P WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A752</code><td><code class=mnemo>~P~</code><td><code>&#xA752;</code><td>Ꝓ LATIN CAPITAL LETTER P WITH FLOURISH 
+	<tr><td><code>A753</code><td><code class=mnemo>~p~</code><td><code>&#xA753;</code><td>ꝓ LATIN SMALL LETTER P WITH FLOURISH 
+	<tr><td><code>A754</code><td><code class=mnemo>P\\~</code><td><code>&#xA754;</code><td>Ꝕ LATIN CAPITAL LETTER P WITH SQUIRREL TAIL 
+	<tr><td><code>A755</code><td><code class=mnemo>p\\~</code><td><code>&#xA755;</code><td>ꝕ LATIN SMALL LETTER P WITH SQUIRREL TAIL 
+	<tr><td><code>A756</code><td><code class=mnemo>Q_/</code><td><code>&#xA756;</code><td>Ꝗ LATIN CAPITAL LETTER Q WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A757</code><td><code class=mnemo>q_/</code><td><code>&#xA757;</code><td>ꝗ LATIN SMALL LETTER Q WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A758</code><td><code class=mnemo>Q\</code><td><code>&#xA758;</code><td>Ꝙ LATIN CAPITAL LETTER Q WITH DIAGONAL STROKE 
+	<tr><td><code>A759</code><td><code class=mnemo>q\</code><td><code>&#xA759;</code><td>ꝙ LATIN SMALL LETTER Q WITH DIAGONAL STROKE 
+	<tr><td><code>A75A</code><td><code class=mnemo>R°</code><td><code>&#xA75A;</code><td>Ꝛ LATIN CAPITAL LETTER R ROTUNDA 
+	<tr><td><code>A75B</code><td><code class=mnemo>r°</code><td><code>&#xA75B;</code><td>ꝛ LATIN SMALL LETTER R ROTUNDA 
+	<tr><td><code>A75C</code><td><code class=mnemo>RUM°</code><td><code>&#xA75C;</code><td>Ꝝ LATIN CAPITAL LETTER RUM ROTUNDA 
+	<tr><td><code>A75D</code><td><code class=mnemo>rum°</code><td><code>&#xA75D;</code><td>ꝝ LATIN SMALL LETTER RUM ROTUNDA 
+	<tr><td><code>A75E</code><td><code class=mnemo>V\</code><td><code>&#xA75E;</code><td>Ꝟ LATIN CAPITAL LETTER V WITH DIAGONAL STROKE 
+	<tr><td><code>A75F</code><td><code class=mnemo>v\</code><td><code>&#xA75F;</code><td>ꝟ LATIN SMALL LETTER V WITH DIAGONAL STROKE 
+	<tr><td><code>A764</code><td><code class=mnemo>THORN/</code><td><code>&#xA764;</code><td>Ꝥ LATIN CAPITAL LETTER THORN WITH STROKE 
+	<tr><td><code>A764</code><td><code class=mnemo>Þ/</code><td><code>&#xA764;</code><td>Ꝥ LATIN CAPITAL LETTER THORN WITH STROKE 
+	<tr><td><code>A765</code><td><code class=mnemo>thorn/</code><td><code>&#xA765;</code><td>ꝥ LATIN SMALL LETTER THORN WITH STROKE 
+	<tr><td><code>A765</code><td><code class=mnemo>þ/</code><td><code>&#xA765;</code><td>ꝥ LATIN SMALL LETTER THORN WITH STROKE 
+	<tr><td><code>A766</code><td><code class=mnemo>THORN_/</code><td><code>&#xA766;</code><td>Ꝧ LATIN CAPITAL LETTER THORN WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A766</code><td><code class=mnemo>Þ_/</code><td><code>&#xA766;</code><td>Ꝧ LATIN CAPITAL LETTER THORN WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A767</code><td><code class=mnemo>thorn_/</code><td><code>&#xA767;</code><td>ꝧ LATIN SMALL LETTER THORN WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A767</code><td><code class=mnemo>þ_/</code><td><code>&#xA767;</code><td>ꝧ LATIN SMALL LETTER THORN WITH STROKE THROUGH DESCENDER 
+	<tr><td><code>A779</code><td><code class=mnemo>()D</code><td><code>&#xA779;</code><td>Ꝺ LATIN CAPITAL LETTER INSULAR D 
+	<tr><td><code>A77A</code><td><code class=mnemo>()d</code><td><code>&#xA77A;</code><td>ꝺ LATIN SMALL LETTER INSULAR D 
+	<tr><td><code>A77B</code><td><code class=mnemo>()F</code><td><code>&#xA77B;</code><td>Ꝼ LATIN CAPITAL LETTER INSULAR F 
+	<tr><td><code>A77C</code><td><code class=mnemo>()f</code><td><code>&#xA77C;</code><td>ꝼ LATIN SMALL LETTER INSULAR F 
+	<tr><td><code>A77D</code><td><code class=mnemo>()G</code><td><code>&#xA77D;</code><td>Ᵹ LATIN CAPITAL LETTER INSULAR G 
+	<tr><td><code>A77E</code><td><code class=mnemo>::()G</code><td><code>&#xA77E;</code><td>Ꝿ LATIN CAPITAL LETTER TURNED INSULAR G 
+	<tr><td><code>A77F</code><td><code class=mnemo>::()g</code><td><code>&#xA77F;</code><td>ꝿ LATIN SMALL LETTER TURNED INSULAR G 
+	<tr><td><code>A780</code><td><code class=mnemo>::L</code><td><code>&#xA780;</code><td>Ꞁ LATIN CAPITAL LETTER TURNED L 
+	<tr><td><code>A781</code><td><code class=mnemo>::l</code><td><code>&#xA781;</code><td>ꞁ LATIN SMALL LETTER TURNED L 
+	<tr><td><code>A782</code><td><code class=mnemo>()R</code><td><code>&#xA782;</code><td>Ꞃ LATIN CAPITAL LETTER INSULAR R 
+	<tr><td><code>A783</code><td><code class=mnemo>()r</code><td><code>&#xA783;</code><td>ꞃ LATIN SMALL LETTER INSULAR R 
+	<tr><td><code>A784</code><td><code class=mnemo>()S</code><td><code>&#xA784;</code><td>Ꞅ LATIN CAPITAL LETTER INSULAR S 
+	<tr><td><code>A785</code><td><code class=mnemo>()s</code><td><code>&#xA785;</code><td>ꞅ LATIN SMALL LETTER INSULAR S 
+	<tr><td><code>A786</code><td><code class=mnemo>()T</code><td><code>&#xA786;</code><td>Ꞇ LATIN CAPITAL LETTER INSULAR T 
+	<tr><td><code>A787</code><td><code class=mnemo>()t</code><td><code>&#xA787;</code><td>ꞇ LATIN SMALL LETTER INSULAR T 
+	<tr><td><code>1E9C</code><td><code class=mnemo>|s\</code><td><code>&#x1E9C;</code><td>ẜ LATIN SMALL LETTER LONG S WITH DIAGONAL STROKE 
+	<tr><td><code>1E9C</code><td><code class=mnemo>!s\</code><td><code>&#x1E9C;</code><td>ẜ LATIN SMALL LETTER LONG S WITH DIAGONAL STROKE 
+	<tr><td><code>1E9D</code><td><code class=mnemo>|s^/</code><td><code>&#x1E9D;</code><td>ẝ LATIN SMALL LETTER LONG S WITH HIGH STROKE 
+	<tr><td><code>1E9D</code><td><code class=mnemo>!s^/</code><td><code>&#x1E9D;</code><td>ẝ LATIN SMALL LETTER LONG S WITH HIGH STROKE 
+	<tr><td><code>1E9E</code><td><code class=mnemo>-SS</code><td><code>&#x1E9E;</code><td>ẞ LATIN CAPITAL LETTER SHARP S 
+	<tr><td><code>1E9F</code><td><code class=mnemo>_delta</code><td><code>&#x1E9F;</code><td>ẟ LATIN SMALL LETTER DELTA 
+	<tr><td><code>1EFA</code><td><code class=mnemo>--LL</code><td><code>&#x1EFA;</code><td>Ỻ LATIN CAPITAL LETTER MIDDLE-WELSH LL 
+	<tr><td><code>1EFB</code><td><code class=mnemo>--ll</code><td><code>&#x1EFB;</code><td>ỻ LATIN SMALL LETTER MIDDLE-WELSH LL 
+	<tr><td><code>1EFC</code><td><code class=mnemo>--V</code><td><code>&#x1EFC;</code><td>Ỽ LATIN CAPITAL LETTER MIDDLE-WELSH V 
+	<tr><td><code>1EFD</code><td><code class=mnemo>--v</code><td><code>&#x1EFD;</code><td>ỽ LATIN SMALL LETTER MIDDLE-WELSH V 
+	<tr><td><code>1EFE</code><td><code class=mnemo>Y..</code><td><code>&#x1EFE;</code><td>Ỿ LATIN CAPITAL LETTER Y WITH LOOP 
+	<tr><td><code>1EFF</code><td><code class=mnemo>y..</code><td><code>&#x1EFF;</code><td>ỿ LATIN SMALL LETTER Y WITH LOOP 
+	<tr><td><code>2C6D</code><td><code class=mnemo>_ALPHA</code><td><code>&#x2C6D;</code><td>Ɑ LATIN CAPITAL LETTER ALPHA 
+	<tr><td><code>2C6E</code><td><code class=mnemo>M&</code><td><code>&#x2C6E;</code><td>Ɱ LATIN CAPITAL LETTER M WITH HOOK 
+	<tr><td><code>2C6F</code><td><code class=mnemo>::A</code><td><code>&#x2C6F;</code><td>Ɐ LATIN CAPITAL LETTER TURNED A 
+	<tr><td><code>2C71</code><td><code class=mnemo>v,</code><td><code>&#x2C71;</code><td>ⱱ LATIN SMALL LETTER V WITH RIGHT HOOK 
+	<tr><td><code>2C72</code><td><code class=mnemo>W&</code><td><code>&#x2C72;</code><td>Ⱳ LATIN CAPITAL LETTER W WITH HOOK 
+	<tr><td><code>2C73</code><td><code class=mnemo>w&</code><td><code>&#x2C73;</code><td>ⱳ LATIN SMALL LETTER W WITH HOOK 
+	<tr><td><code>2C78</code><td><code class=mnemo>e<<</code><td><code>&#x2C78;</code><td>ⱸ LATIN SMALL LETTER E WITH NOTCH 
+	<tr><td><code>2C79</code><td><code class=mnemo>::r\</code><td><code>&#x2C79;</code><td>ⱹ LATIN SMALL LETTER TURNED R WITH TAIL 
+	<tr><td><code>2C7A</code><td><code class=mnemo>ooo</code><td><code>&#x2C7A;</code><td>ⱺ LATIN SMALL LETTER O WITH LOW RING INSIDE 
+	<tr><td><code>2C7B</code><td><code class=mnemo>..::E</code><td><code>&#x2C7B;</code><td>ⱻ LATIN LETTER SMALL CAPITAL TURNED E 
+	<tr><td><code>A730</code><td><code class=mnemo>..F</code><td><code>&#xA730;</code><td>ꜰ LATIN LETTER SMALL CAPITAL F 
+	<tr><td><code>A731</code><td><code class=mnemo>..S</code><td><code>&#xA731;</code><td>ꜱ LATIN LETTER SMALL CAPITAL S 
+<tr><td colspan=4><br><h4> Unicode 5.2 </h4>
+	<tr><td><code>2C70</code><td><code class=mnemo>::Ɑ</code><td><code>&#x2C70;</code><td>Ɒ LATIN CAPITAL LETTER TURNED ALPHA 
+	<tr><td><code>2C70</code><td><code class=mnemo>::ALPHA</code><td><code>&#x2C70;</code><td>Ɒ LATIN CAPITAL LETTER TURNED ALPHA 
+	<tr><td><code>2C7E</code><td><code class=mnemo>S-~</code><td><code>&#x2C7E;</code><td>Ȿ LATIN CAPITAL LETTER S WITH SWASH TAIL 
+	<tr><td><code>2C7F</code><td><code class=mnemo>Z-~</code><td><code>&#x2C7F;</code><td>Ɀ LATIN CAPITAL LETTER Z WITH SWASH TAIL 
+	<tr><td><code>1F110</code><td><code class=mnemo>(A)</code><td><code>&#x1F110;</code><td>🄐 PARENTHESIZED LATIN CAPITAL LETTER A 
+	<tr><td><code>1F111</code><td><code class=mnemo>(B)</code><td><code>&#x1F111;</code><td>🄑 PARENTHESIZED LATIN CAPITAL LETTER B 
+	<tr><td><code>1F112</code><td><code class=mnemo>(C)</code><td><code>&#x1F112;</code><td>🄒 PARENTHESIZED LATIN CAPITAL LETTER C 
+	<tr><td><code>1F113</code><td><code class=mnemo>(D)</code><td><code>&#x1F113;</code><td>🄓 PARENTHESIZED LATIN CAPITAL LETTER D 
+	<tr><td><code>1F114</code><td><code class=mnemo>(E)</code><td><code>&#x1F114;</code><td>🄔 PARENTHESIZED LATIN CAPITAL LETTER E 
+	<tr><td><code>1F115</code><td><code class=mnemo>(F)</code><td><code>&#x1F115;</code><td>🄕 PARENTHESIZED LATIN CAPITAL LETTER F 
+	<tr><td><code>1F116</code><td><code class=mnemo>(G)</code><td><code>&#x1F116;</code><td>🄖 PARENTHESIZED LATIN CAPITAL LETTER G 
+	<tr><td><code>1F117</code><td><code class=mnemo>(H)</code><td><code>&#x1F117;</code><td>🄗 PARENTHESIZED LATIN CAPITAL LETTER H 
+	<tr><td><code>1F118</code><td><code class=mnemo>(I)</code><td><code>&#x1F118;</code><td>🄘 PARENTHESIZED LATIN CAPITAL LETTER I 
+	<tr><td><code>1F119</code><td><code class=mnemo>(J)</code><td><code>&#x1F119;</code><td>🄙 PARENTHESIZED LATIN CAPITAL LETTER J 
+	<tr><td><code>1F11A</code><td><code class=mnemo>(K)</code><td><code>&#x1F11A;</code><td>🄚 PARENTHESIZED LATIN CAPITAL LETTER K 
+	<tr><td><code>1F11B</code><td><code class=mnemo>(L)</code><td><code>&#x1F11B;</code><td>🄛 PARENTHESIZED LATIN CAPITAL LETTER L 
+	<tr><td><code>1F11C</code><td><code class=mnemo>(M)</code><td><code>&#x1F11C;</code><td>🄜 PARENTHESIZED LATIN CAPITAL LETTER M 
+	<tr><td><code>1F11D</code><td><code class=mnemo>(N)</code><td><code>&#x1F11D;</code><td>🄝 PARENTHESIZED LATIN CAPITAL LETTER N 
+	<tr><td><code>1F11E</code><td><code class=mnemo>(O)</code><td><code>&#x1F11E;</code><td>🄞 PARENTHESIZED LATIN CAPITAL LETTER O 
+	<tr><td><code>1F11F</code><td><code class=mnemo>(P)</code><td><code>&#x1F11F;</code><td>🄟 PARENTHESIZED LATIN CAPITAL LETTER P 
+	<tr><td><code>1F120</code><td><code class=mnemo>(Q)</code><td><code>&#x1F120;</code><td>🄠 PARENTHESIZED LATIN CAPITAL LETTER Q 
+	<tr><td><code>1F121</code><td><code class=mnemo>(R)</code><td><code>&#x1F121;</code><td>🄡 PARENTHESIZED LATIN CAPITAL LETTER R 
+	<tr><td><code>1F122</code><td><code class=mnemo>(S)</code><td><code>&#x1F122;</code><td>🄢 PARENTHESIZED LATIN CAPITAL LETTER S 
+	<tr><td><code>1F123</code><td><code class=mnemo>(T)</code><td><code>&#x1F123;</code><td>🄣 PARENTHESIZED LATIN CAPITAL LETTER T 
+	<tr><td><code>1F124</code><td><code class=mnemo>(U)</code><td><code>&#x1F124;</code><td>🄤 PARENTHESIZED LATIN CAPITAL LETTER U 
+	<tr><td><code>1F125</code><td><code class=mnemo>(V)</code><td><code>&#x1F125;</code><td>🄥 PARENTHESIZED LATIN CAPITAL LETTER V 
+	<tr><td><code>1F126</code><td><code class=mnemo>(W)</code><td><code>&#x1F126;</code><td>🄦 PARENTHESIZED LATIN CAPITAL LETTER W 
+	<tr><td><code>1F127</code><td><code class=mnemo>(X)</code><td><code>&#x1F127;</code><td>🄧 PARENTHESIZED LATIN CAPITAL LETTER X 
+	<tr><td><code>1F128</code><td><code class=mnemo>(Y)</code><td><code>&#x1F128;</code><td>🄨 PARENTHESIZED LATIN CAPITAL LETTER Y 
+	<tr><td><code>1F129</code><td><code class=mnemo>(Z)</code><td><code>&#x1F129;</code><td>🄩 PARENTHESIZED LATIN CAPITAL LETTER Z 
+<tr><td colspan=4><br><h4> Unicode 6.0 </h4>
+	<tr><td><code>A78D</code><td><code class=mnemo>::H</code><td><code>&#xA78D;</code><td>Ɥ LATIN CAPITAL LETTER TURNED H 
+	<tr><td><code>A78E</code><td><code class=mnemo>%l(</code><td><code>&#xA78E;</code><td>ꞎ LATIN SMALL LETTER L WITH RETROFLEX HOOK AND BELT 
+	<tr><td><code>A790</code><td><code class=mnemo>N-</code><td><code>&#xA790;</code><td>Ꞑ LATIN CAPITAL LETTER N WITH DESCENDER 
+	<tr><td><code>A791</code><td><code class=mnemo>n-</code><td><code>&#xA791;</code><td>ꞑ LATIN SMALL LETTER N WITH DESCENDER 
+	<tr><td><code>A790</code><td><code class=mnemo>N__</code><td><code>&#xA790;</code><td>Ꞑ LATIN CAPITAL LETTER N WITH DESCENDER 
+	<tr><td><code>A791</code><td><code class=mnemo>n__</code><td><code>&#xA791;</code><td>ꞑ LATIN SMALL LETTER N WITH DESCENDER 
+	<tr><td><code>A7A0</code><td><code class=mnemo>G/-</code><td><code>&#xA7A0;</code><td>Ꞡ LATIN CAPITAL LETTER G WITH OBLIQUE STROKE 
+	<tr><td><code>A7A1</code><td><code class=mnemo>g/-</code><td><code>&#xA7A1;</code><td>ꞡ LATIN SMALL LETTER G WITH OBLIQUE STROKE 
+	<tr><td><code>A7A2</code><td><code class=mnemo>K/-</code><td><code>&#xA7A2;</code><td>Ꞣ LATIN CAPITAL LETTER K WITH OBLIQUE STROKE 
+	<tr><td><code>A7A3</code><td><code class=mnemo>k/-</code><td><code>&#xA7A3;</code><td>ꞣ LATIN SMALL LETTER K WITH OBLIQUE STROKE 
+	<tr><td><code>A7A4</code><td><code class=mnemo>N/-</code><td><code>&#xA7A4;</code><td>Ꞥ LATIN CAPITAL LETTER N WITH OBLIQUE STROKE 
+	<tr><td><code>A7A5</code><td><code class=mnemo>n/-</code><td><code>&#xA7A5;</code><td>ꞥ LATIN SMALL LETTER N WITH OBLIQUE STROKE 
+	<tr><td><code>A7A6</code><td><code class=mnemo>R/-</code><td><code>&#xA7A6;</code><td>Ꞧ LATIN CAPITAL LETTER R WITH OBLIQUE STROKE 
+	<tr><td><code>A7A7</code><td><code class=mnemo>r/-</code><td><code>&#xA7A7;</code><td>ꞧ LATIN SMALL LETTER R WITH OBLIQUE STROKE 
+	<tr><td><code>A7A8</code><td><code class=mnemo>S/-</code><td><code>&#xA7A8;</code><td>Ꞩ LATIN CAPITAL LETTER S WITH OBLIQUE STROKE 
+	<tr><td><code>A7A9</code><td><code class=mnemo>s/-</code><td><code>&#xA7A9;</code><td>ꞩ LATIN SMALL LETTER S WITH OBLIQUE STROKE 
+	<tr><td><code>A7FA</code><td><code class=mnemo>..::M</code><td><code>&#xA7FA;</code><td>ꟺ LATIN LETTER SMALL CAPITAL TURNED M 
+<tr><td colspan=4><br><h4> Unicode 7.0 </h4>
+	<tr><td><code>1DE7</code><td><code class=mnemo>	_alpha</code><td><code>&#x1DE7;</code><td>ᷧ COMBINING LATIN SMALL LETTER ALPHA 
+	<tr><td><code>1DE7</code><td><code class=mnemo>	ɑ</code><td><code>&#x1DE7;</code><td>ᷧ COMBINING LATIN SMALL LETTER ALPHA 
+	<tr><td><code>1DE8</code><td><code class=mnemo>	b</code><td><code>&#x1DE8;</code><td>ᷨ COMBINING LATIN SMALL LETTER B 
+	<tr><td><code>1DE9</code><td><code class=mnemo>	_beta</code><td><code>&#x1DE9;</code><td>ᷩ COMBINING LATIN SMALL LETTER BETA 
+	<tr><td><code>1DEA</code><td><code class=mnemo>	schwa</code><td><code>&#x1DEA;</code><td>ᷪ COMBINING LATIN SMALL LETTER SCHWA 
+	<tr><td><code>1DEA</code><td><code class=mnemo>	ə</code><td><code>&#x1DEA;</code><td>ᷪ COMBINING LATIN SMALL LETTER SCHWA 
+	<tr><td><code>1DEB</code><td><code class=mnemo>	f</code><td><code>&#x1DEB;</code><td>ᷫ COMBINING LATIN SMALL LETTER F 
+	<tr><td><code>1DEC</code><td><code class=mnemo>	l~~~</code><td><code>&#x1DEC;</code><td>ᷬ COMBINING LATIN SMALL LETTER L WITH DOUBLE MIDDLE TILDE 
+	<tr><td><code>1DED</code><td><code class=mnemo>	o//</code><td><code>&#x1DED;</code><td>ᷭ COMBINING LATIN SMALL LETTER O WITH LIGHT CENTRALIZATION STROKE 
+	<tr><td><code>1DEE</code><td><code class=mnemo>	p</code><td><code>&#x1DEE;</code><td>ᷮ COMBINING LATIN SMALL LETTER P 
+	<tr><td><code>1DEF</code><td><code class=mnemo>	esh</code><td><code>&#x1DEF;</code><td>ᷯ COMBINING LATIN SMALL LETTER ESH 
+	<tr><td><code>1DEF</code><td><code class=mnemo>	ʃ</code><td><code>&#x1DEF;</code><td>ᷯ COMBINING LATIN SMALL LETTER ESH 
+	<tr><td><code>1DF0</code><td><code class=mnemo>	u//</code><td><code>&#x1DF0;</code><td>ᷰ COMBINING LATIN SMALL LETTER U WITH LIGHT CENTRALIZATION STROKE 
+	<tr><td><code>1DF1</code><td><code class=mnemo>	w</code><td><code>&#x1DF1;</code><td>ᷱ COMBINING LATIN SMALL LETTER W 
+	<tr><td><code>1DF2</code><td><code class=mnemo>	a:</code><td><code>&#x1DF2;</code><td>ᷲ COMBINING LATIN SMALL LETTER A WITH DIAERESIS 
+	<tr><td><code>1DF2</code><td><code class=mnemo>	ä</code><td><code>&#x1DF2;</code><td>ᷲ COMBINING LATIN SMALL LETTER A WITH DIAERESIS 
+	<tr><td><code>1DF3</code><td><code class=mnemo>	o:</code><td><code>&#x1DF3;</code><td>ᷳ COMBINING LATIN SMALL LETTER O WITH DIAERESIS 
+	<tr><td><code>1DF3</code><td><code class=mnemo>	ö</code><td><code>&#x1DF3;</code><td>ᷳ COMBINING LATIN SMALL LETTER O WITH DIAERESIS 
+	<tr><td><code>1DF4</code><td><code class=mnemo>	u:</code><td><code>&#x1DF4;</code><td>ᷴ COMBINING LATIN SMALL LETTER U WITH DIAERESIS 
+	<tr><td><code>1DF4</code><td><code class=mnemo>	ü</code><td><code>&#x1DF4;</code><td>ᷴ COMBINING LATIN SMALL LETTER U WITH DIAERESIS 
+	<tr><td><code>A794</code><td><code class=mnemo>c,,</code><td><code>&#xA794;</code><td>ꞔ LATIN SMALL LETTER C WITH PALATAL HOOK 
+	<tr><td><code>A795</code><td><code class=mnemo>h,,</code><td><code>&#xA795;</code><td>ꞕ LATIN SMALL LETTER H WITH PALATAL HOOK 
+	<tr><td><code>A796</code><td><code class=mnemo>~B~</code><td><code>&#xA796;</code><td>Ꞗ LATIN CAPITAL LETTER B WITH FLOURISH 
+	<tr><td><code>A797</code><td><code class=mnemo>~b~</code><td><code>&#xA797;</code><td>ꞗ LATIN SMALL LETTER B WITH FLOURISH 
+	<tr><td><code>A798</code><td><code class=mnemo>F/</code><td><code>&#xA798;</code><td>Ꞙ LATIN CAPITAL LETTER F WITH STROKE 
+	<tr><td><code>A799</code><td><code class=mnemo>f/</code><td><code>&#xA799;</code><td>ꞙ LATIN SMALL LETTER F WITH STROKE 
+	<tr><td><code>A79A</code><td><code class=mnemo>VAE</code><td><code>&#xA79A;</code><td>Ꞛ LATIN CAPITAL LETTER VOLAPUK AE 
+	<tr><td><code>A79B</code><td><code class=mnemo>vae</code><td><code>&#xA79B;</code><td>ꞛ LATIN SMALL LETTER VOLAPUK AE 
+	<tr><td><code>A79C</code><td><code class=mnemo>VOE</code><td><code>&#xA79C;</code><td>Ꞝ LATIN CAPITAL LETTER VOLAPUK OE 
+	<tr><td><code>A79D</code><td><code class=mnemo>voe</code><td><code>&#xA79D;</code><td>ꞝ LATIN SMALL LETTER VOLAPUK OE 
+	<tr><td><code>A79E</code><td><code class=mnemo>VUE</code><td><code>&#xA79E;</code><td>Ꞟ LATIN CAPITAL LETTER VOLAPUK UE 
+	<tr><td><code>A79F</code><td><code class=mnemo>vue</code><td><code>&#xA79F;</code><td>ꞟ LATIN SMALL LETTER VOLAPUK UE 
+	<tr><td><code>A7AB</code><td><code class=mnemo>-uE</code><td><code>&#xA7AB;</code><td>Ɜ LATIN CAPITAL LETTER REVERSED OPEN E 
+	<tr><td><code>A7AB</code><td><code class=mnemo>-Ɛ</code><td><code>&#xA7AB;</code><td>Ɜ LATIN CAPITAL LETTER REVERSED OPEN E 
+	<tr><td><code>A7AC</code><td><code class=mnemo>G</code><td><code>&#xA7AC;</code><td>Ɡ LATIN CAPITAL LETTER SCRIPT G 
+	<tr><td><code>A7AD</code><td><code class=mnemo>L(</code><td><code>&#xA7AD;</code><td>Ɬ LATIN CAPITAL LETTER L WITH BELT 
+	<tr><td><code>A7B0</code><td><code class=mnemo>::K</code><td><code>&#xA7B0;</code><td>Ʞ LATIN CAPITAL LETTER TURNED K 
+	<tr><td><code>A7B1</code><td><code class=mnemo>::T</code><td><code>&#xA7B1;</code><td>Ʇ LATIN CAPITAL LETTER TURNED T 
+	<tr><td><code>A7F7</code><td><code class=mnemo>==i</code><td><code>&#xA7F7;</code><td>ꟷ LATIN EPIGRAPHIC LETTER SIDEWAYS I 
+	<tr><td><code>AB30</code><td><code class=mnemo>-_alpha-</code><td><code>&#xAB30;</code><td>ꬰ LATIN SMALL LETTER BARRED ALPHA 
+	<tr><td><code>AB30</code><td><code class=mnemo>-ɑ-</code><td><code>&#xAB30;</code><td>ꬰ LATIN SMALL LETTER BARRED ALPHA 
+	<tr><td><code>AB31</code><td><code class=mnemo>a-schwa</code><td><code>&#xAB31;</code><td>ꬱ LATIN SMALL LETTER A REVERSED-SCHWA 
+	<tr><td><code>AB31</code><td><code class=mnemo>a-ə</code><td><code>&#xAB31;</code><td>ꬱ LATIN SMALL LETTER A REVERSED-SCHWA 
+	<tr><td><code>AB32</code><td><code class=mnemo>blacke</code><td><code>&#xAB32;</code><td>ꬲ LATIN SMALL LETTER BLACKLETTER E 
+	<tr><td><code>AB33</code><td><code class=mnemo>-e-</code><td><code>&#xAB33;</code><td>ꬳ LATIN SMALL LETTER BARRED E 
+	<tr><td><code>AB34</code><td><code class=mnemo>~e~</code><td><code>&#xAB34;</code><td>ꬴ LATIN SMALL LETTER E WITH FLOURISH 
+	<tr><td><code>AB35</code><td><code class=mnemo>lenisf</code><td><code>&#xAB35;</code><td>ꬵ LATIN SMALL LETTER LENIS F 
+	<tr><td><code>AB36</code><td><code class=mnemo>g\\/</code><td><code>&#xAB36;</code><td>ꬶ LATIN SMALL LETTER SCRIPT G WITH CROSSED-TAIL 
+	<tr><td><code>AB37</code><td><code class=mnemo>lCG</code><td><code>&#xAB37;</code><td>ꬷ LATIN SMALL LETTER L WITH INVERTED LAZY S 
+	<tr><td><code>AB37</code><td><code class=mnemo>l∾</code><td><code>&#xAB37;</code><td>ꬷ LATIN SMALL LETTER L WITH INVERTED LAZY S 
+	<tr><td><code>AB38</code><td><code class=mnemo>l~~~</code><td><code>&#xAB38;</code><td>ꬸ LATIN SMALL LETTER L WITH DOUBLE MIDDLE TILDE 
+	<tr><td><code>AB39</code><td><code class=mnemo>l00</code><td><code>&#xAB39;</code><td>ꬹ LATIN SMALL LETTER L WITH MIDDLE RING 
+	<tr><td><code>AB3A</code><td><code class=mnemo>m\\/</code><td><code>&#xAB3A;</code><td>ꬺ LATIN SMALL LETTER M WITH CROSSED-TAIL 
+	<tr><td><code>AB3B</code><td><code class=mnemo>n\\/</code><td><code>&#xAB3B;</code><td>ꬻ LATIN SMALL LETTER N WITH CROSSED-TAIL 
+	<tr><td><code>AB3C</code><td><code class=mnemo>eng\\/</code><td><code>&#xAB3C;</code><td>ꬼ LATIN SMALL LETTER ENG WITH CROSSED-TAIL 
+	<tr><td><code>AB3C</code><td><code class=mnemo>ŋ\\/</code><td><code>&#xAB3C;</code><td>ꬼ LATIN SMALL LETTER ENG WITH CROSSED-TAIL 
+	<tr><td><code>AB3D</code><td><code class=mnemo>blacko</code><td><code>&#xAB3D;</code><td>ꬽ LATIN SMALL LETTER BLACKLETTER O 
+	<tr><td><code>AB3E</code><td><code class=mnemo>blacko/</code><td><code>&#xAB3E;</code><td>ꬾ LATIN SMALL LETTER BLACKLETTER O WITH STROKE 
+	<tr><td><code>AB3E</code><td><code class=mnemo>ꬽ/</code><td><code>&#xAB3E;</code><td>ꬾ LATIN SMALL LETTER BLACKLETTER O WITH STROKE 
+	<tr><td><code>AB3F</code><td><code class=mnemo>uo/</code><td><code>&#xAB3F;</code><td>ꬿ LATIN SMALL LETTER OPEN O WITH STROKE 
+	<tr><td><code>AB3F</code><td><code class=mnemo>ɔ/</code><td><code>&#xAB3F;</code><td>ꬿ LATIN SMALL LETTER OPEN O WITH STROKE 
+	<tr><td><code>AB40</code><td><code class=mnemo>|oe</code><td><code>&#xAB40;</code><td>ꭀ LATIN SMALL LETTER INVERTED OE 
+	<tr><td><code>AB40</code><td><code class=mnemo>|œ</code><td><code>&#xAB40;</code><td>ꭀ LATIN SMALL LETTER INVERTED OE 
+	<tr><td><code>AB41</code><td><code class=mnemo>::oe/</code><td><code>&#xAB41;</code><td>ꭁ LATIN SMALL LETTER TURNED OE WITH STROKE 
+	<tr><td><code>AB41</code><td><code class=mnemo>::œ/</code><td><code>&#xAB41;</code><td>ꭁ LATIN SMALL LETTER TURNED OE WITH STROKE 
+	<tr><td><code>AB42</code><td><code class=mnemo>::oe--</code><td><code>&#xAB42;</code><td>ꭂ LATIN SMALL LETTER TURNED OE WITH HORIZONTAL STROKE 
+	<tr><td><code>AB42</code><td><code class=mnemo>::œ--</code><td><code>&#xAB42;</code><td>ꭂ LATIN SMALL LETTER TURNED OE WITH HORIZONTAL STROKE 
+	<tr><td><code>AB43</code><td><code class=mnemo>::ouo/</code><td><code>&#xAB43;</code><td>ꭃ LATIN SMALL LETTER TURNED O OPEN-O 
+	<tr><td><code>AB44</code><td><code class=mnemo>::oɔ/</code><td><code>&#xAB44;</code><td>ꭄ LATIN SMALL LETTER TURNED O OPEN-O WITH STROKE 
+	<tr><td><code>AB45</code><td><code class=mnemo>~/r</code><td><code>&#xAB45;</code><td>ꭅ LATIN SMALL LETTER STIRRUP R 
+	<tr><td><code>AB46</code><td><code class=mnemo>R__</code><td><code>&#xAB46;</code><td>ꭆ LATIN LETTER SMALL CAPITAL R WITH RIGHT LEG 
+	<tr><td><code>AB47</code><td><code class=mnemo>R-_</code><td><code>&#xAB47;</code><td>ꭇ LATIN SMALL LETTER R WITHOUT HANDLE 
+	<tr><td><code>AB48</code><td><code class=mnemo>rr</code><td><code>&#xAB48;</code><td>ꭈ LATIN SMALL LETTER DOUBLE R 
+	<tr><td><code>AB49</code><td><code class=mnemo>r\\/</code><td><code>&#xAB49;</code><td>ꭉ LATIN SMALL LETTER R WITH CROSSED-TAIL 
+	<tr><td><code>AB4A</code><td><code class=mnemo>rr\\/</code><td><code>&#xAB4A;</code><td>ꭊ LATIN SMALL LETTER DOUBLE R WITH CROSSED-TAIL 
+	<tr><td><code>AB4B</code><td><code class=mnemo>r</code><td><code>&#xAB4B;</code><td>ꭋ LATIN SMALL LETTER SCRIPT R 
+	<tr><td><code>AB4C</code><td><code class=mnemo>r0</code><td><code>&#xAB4C;</code><td>ꭌ LATIN SMALL LETTER SCRIPT R WITH RING 
+	<tr><td><code>AB4D</code><td><code class=mnemo>_esh_</code><td><code>&#xAB4D;</code><td>ꭍ LATIN SMALL LETTER BASELINE ESH 
+	<tr><td><code>AB4D</code><td><code class=mnemo>_ʃ_</code><td><code>&#xAB4D;</code><td>ꭍ LATIN SMALL LETTER BASELINE ESH 
+	<tr><td><code>AB4E</code><td><code class=mnemo>u-_</code><td><code>&#xAB4E;</code><td>ꭎ LATIN SMALL LETTER U WITH SHORT RIGHT LEG 
+	<tr><td><code>AB4F</code><td><code class=mnemo>-u-_</code><td><code>&#xAB4F;</code><td>ꭏ LATIN SMALL LETTER U BAR WITH SHORT RIGHT LEG 
+	<tr><td><code>AB50</code><td><code class=mnemo>ui</code><td><code>&#xAB50;</code><td>ꭐ LATIN SMALL LETTER UI 
+	<tr><td><code>AB51</code><td><code class=mnemo>::ui</code><td><code>&#xAB51;</code><td>ꭑ LATIN SMALL LETTER TURNED UI 
+	<tr><td><code>AB52</code><td><code class=mnemo>,u</code><td><code>&#xAB52;</code><td>ꭒ LATIN SMALL LETTER U WITH LEFT HOOK 
+	<tr><td><code>AB53</code><td><code class=mnemo>_chi</code><td><code>&#xAB53;</code><td>ꭓ LATIN SMALL LETTER CHI 
+	<tr><td><code>AB54</code><td><code class=mnemo>_chi_0</code><td><code>&#xAB54;</code><td>ꭔ LATIN SMALL LETTER CHI WITH LOW RIGHT RING 
+	<tr><td><code>AB54</code><td><code class=mnemo>ꭓ_0</code><td><code>&#xAB54;</code><td>ꭔ LATIN SMALL LETTER CHI WITH LOW RIGHT RING 
+	<tr><td><code>AB55</code><td><code class=mnemo>__chi</code><td><code>&#xAB55;</code><td>ꭕ LATIN SMALL LETTER CHI WITH LOW LEFT SERIF 
+	<tr><td><code>AB55</code><td><code class=mnemo>_ꭓ</code><td><code>&#xAB55;</code><td>ꭕ LATIN SMALL LETTER CHI WITH LOW LEFT SERIF 
+	<tr><td><code>AB56</code><td><code class=mnemo>x_0</code><td><code>&#xAB56;</code><td>ꭖ LATIN SMALL LETTER X WITH LOW RIGHT RING 
+	<tr><td><code>AB57</code><td><code class=mnemo>_x</code><td><code>&#xAB57;</code><td>ꭗ LATIN SMALL LETTER X WITH LONG LEFT LEG 
+	<tr><td><code>AB58</code><td><code class=mnemo>_x_0</code><td><code>&#xAB58;</code><td>ꭘ LATIN SMALL LETTER X WITH LONG LEFT LEG AND LOW RIGHT RING 
+	<tr><td><code>AB59</code><td><code class=mnemo>_x_</code><td><code>&#xAB59;</code><td>ꭙ LATIN SMALL LETTER X WITH LONG LEFT LEG WITH SERIF 
+	<tr><td><code>AB5A</code><td><code class=mnemo>y-_</code><td><code>&#xAB5A;</code><td>ꭚ LATIN SMALL LETTER Y WITH SHORT RIGHT LEG 
+	<tr><td><code>AB64</code><td><code class=mnemo>|_alpha</code><td><code>&#xAB64;</code><td>ꭤ LATIN SMALL LETTER INVERTED ALPHA 
+	<tr><td><code>AB64</code><td><code class=mnemo>|ɑ</code><td><code>&#xAB64;</code><td>ꭤ LATIN SMALL LETTER INVERTED ALPHA 
+<tr><td colspan=4><br><h4> punctuation </h4>
+	<tr><td><code>3000</code><td><code class=mnemo><span id=space>&nbsp;</span><font size=1></font><span id=space>&nbsp;</span></code><td><code>&#x3000;</code><td>ideographic space 
+	<tr><td><code>0027</code><td><code class=mnemo>^'</code><td><code>&#x0027;</code><td>straight single quote 
+	<tr><td><code>0027</code><td><code class=mnemo>'#</code><td><code>&#x0027;</code><td>straight single quote 
+	<tr><td><code>0022</code><td><code class=mnemo>^"</code><td><code>&#x0022;</code><td>straight double quote 
+	<tr><td><code>0022</code><td><code class=mnemo>"#</code><td><code>&#x0022;</code><td>straight double quote 
+	<tr><td><code>002D</code><td><code class=mnemo>-#</code><td><code>&#x002D;</code><td>straight hyphen 
+	<tr><td><code>00B4</code><td><code class=mnemo>^´</code><td><code>&#x00B4;</code><td>straight acute 
+	<tr><td><code>00B4</code><td><code class=mnemo>´#</code><td><code>&#x00B4;</code><td>straight acute 
+	<tr><td><code>0060</code><td><code class=mnemo>^`</code><td><code>&#x0060;</code><td>straight grave 
+	<tr><td><code>0060</code><td><code class=mnemo>`#</code><td><code>&#x0060;</code><td>straight grave 
+	<tr><td><code>2039</code><td><code class=mnemo><<span id=space>&nbsp;</span></code><td><code>&#x2039;</code><td>‹ SINGLE LEFT-POINTING ANGLE QUOTATION MARK 
+	<tr><td><code>203A</code><td><code class=mnemo>><span id=space>&nbsp;</span></code><td><code>&#x203A;</code><td>› SINGLE RIGHT-POINTING ANGLE QUOTATION MARK 
+	<tr><td><code>2015</code><td><code class=mnemo>-"-</code><td><code>&#x2015;</code><td>― HORIZONTAL BAR / QUOTATION DASH 
+	<tr><td><code>2018</code><td><code class=mnemo>`<span id=space>&nbsp;</span></code><td><code>&#x2018;</code><td>‘ LEFT SINGLE QUOTATION MARK 
+	<tr><td><code>201C</code><td><code class=mnemo>``</code><td><code>&#x201C;</code><td>“ LEFT DOUBLE QUOTATION MARK 
+	<tr><td><code>2019</code><td><code class=mnemo>'<span id=space>&nbsp;</span></code><td><code>&#x2019;</code><td>’ RIGHT SINGLE QUOTATION MARK 
+	<tr><td><code>201D</code><td><code class=mnemo>''</code><td><code>&#x201D;</code><td>” RIGHT DOUBLE QUOTATION MARK 
+	<tr><td><code>201A</code><td><code class=mnemo>,<span id=space>&nbsp;</span></code><td><code>&#x201A;</code><td>‚ SINGLE LOW-9 QUOTATION MARK 
+	<tr><td><code>201E</code><td><code class=mnemo>,,</code><td><code>&#x201E;</code><td>„ DOUBLE LOW-9 QUOTATION MARK 
+	<tr><td><code>201B</code><td><code class=mnemo>,`</code><td><code>&#x201B;</code><td>‛ SINGLE HIGH-REVERSED-9 QUOTATION MARK 
+	<tr><td><code>201F</code><td><code class=mnemo>,``</code><td><code>&#x201F;</code><td>‟ DOUBLE HIGH-REVERSED-9 QUOTATION MARK 
+	<tr><td><code>2010</code><td><code class=mnemo>hyphen</code><td><code>&#x2010;</code><td>hyphen ‐ 
+	<tr><td><code>2010</code><td><code class=mnemo>-</code><td><code>&#x2010;</code><td>hyphen ‐ 
+	<tr><td><code>2013</code><td><code class=mnemo>endash</code><td><code>&#x2013;</code><td>en dash – 
+	<tr><td><code>2013</code><td><code class=mnemo>--</code><td><code>&#x2013;</code><td>en dash – 
+	<tr><td><code>2014</code><td><code class=mnemo>emdash</code><td><code>&#x2014;</code><td>em dash — 
+	<tr><td><code>2014</code><td><code class=mnemo>---</code><td><code>&#x2014;</code><td>em dash — 
+	<tr><td><code>2212</code><td><code class=mnemo>$-$</code><td><code>&#x2212;</code><td>minus − 
+	<tr><td><code>00A1</code><td><code class=mnemo>!`</code><td><code>&#x00A1;</code><td>¡ 
+	<tr><td><code>00A1</code><td><code class=mnemo>!!</code><td><code>&#x00A1;</code><td>¡ 
+	<tr><td><code>00BF</code><td><code class=mnemo>?`</code><td><code>&#x00BF;</code><td>¿ 
+	<tr><td><code>00BF</code><td><code class=mnemo>??</code><td><code>&#x00BF;</code><td>¿ 
+	<tr><td><code>2027</code><td><code class=mnemo>-.</code><td><code>&#x2027;</code><td>‧ hyphenation point 
+	<tr><td><code>2043</code><td><code class=mnemo>-*</code><td><code>&#x2043;</code><td>⁃ hyphen bullet 
+	<tr><td><code>2238</code><td><code class=mnemo>.-</code><td><code>&#x2238;</code><td>∸ dot minus 
+	<tr><td><code>2242</code><td><code class=mnemo>-~</code><td><code>&#x2242;</code><td>≂ minus tilde 
+	<tr><td><code>301C</code><td><code class=mnemo>~-</code><td><code>&#x301C;</code><td>〜 wave dash 
+	<tr><td><code>2245</code><td><code class=mnemo>=~</code><td><code>&#x2245;</code><td>≅ approximately equal to 
+	<tr><td><code>2248</code><td><code class=mnemo>~~</code><td><code>&#x2248;</code><td>≈ almost equal to (double tilde) 
+	<tr><td><code>224B</code><td><code class=mnemo>~~~</code><td><code>&#x224B;</code><td>≋ triple tilde 
+	<tr><td><code>2258</code><td><code class=mnemo>corr</code><td><code>&#x2258;</code><td>≘ corresponds to 
+	<tr><td><code>2011</code><td><code class=mnemo>-0</code><td><code>&#x2011;</code><td>‑ non-breaking hyphen 
+	<tr><td><code>203D</code><td><code class=mnemo>!?</code><td><code>&#x203D;</code><td>interrobang ‽ 
+	<tr><td><code>2E18</code><td><code class=mnemo>¡¿</code><td><code>&#x2E18;</code><td>inverted interrobang ⸘ 
+	<tr><td><code>2E18</code><td><code class=mnemo>!?!?</code><td><code>&#x2E18;</code><td>inverted interrobang ⸘ 
+	<tr><td><code>2E18</code><td><code class=mnemo>?!?!</code><td><code>&#x2E18;</code><td>inverted interrobang ⸘ 
+	<tr><td><code>203D</code><td><code class=mnemo>interrobang</code><td><code>&#x203D;</code><td>interrobang ‽ 
+	<tr><td><code>2024</code><td><code class=mnemo>1dot</code><td><code>&#x2024;</code><td>1 dot leader ․ 
+	<tr><td><code>2025</code><td><code class=mnemo>2dot</code><td><code>&#x2025;</code><td>2 dot leader ‥ 
+	<tr><td><code>2026</code><td><code class=mnemo>...</code><td><code>&#x2026;</code><td>ellipsis … 
+	<tr><td><code>2026</code><td><code class=mnemo>ellipsis</code><td><code>&#x2026;</code><td>ellipsis … 
+	<tr><td><code>00B7</code><td><code class=mnemo>.<span id=space>&nbsp;</span></code><td><code>&#x00B7;</code><td>· 
+	<tr><td><code>25C4</code><td><code class=mnemo><--</code><td><code>&#x25C4;</code><td>BLACK LEFT-POINTING POINTER ◄ 
+	<tr><td><code>25BA</code><td><code class=mnemo>--></code><td><code>&#x25BA;</code><td>BLACK RIGHT-POINTING POINTER ► 
+<tr><td colspan=4><br><h4> text formatting characters </h4>
+	<tr><td><code>2027</code><td><code class=mnemo>hyphpoint</code><td><code>&#x2027;</code><td>hyphenation point ‧ 
+	<tr><td><code>00AD</code><td><code class=mnemo>-<span id=space>&nbsp;</span></code><td><code>&#x00AD;</code><td>soft hyphen ­ 
+	<tr><td><code>00A0</code><td><code class=mnemo>nbspace</code><td><code>&#x00A0;</code><td>non-breaking space   
+	<tr><td><code>00A0</code><td><code class=mnemo>~<span id=space>&nbsp;</span></code><td><code>&#x00A0;</code><td>non-breaking space   
+	<tr><td><code>00A0</code><td><code class=mnemo>n<span id=space>&nbsp;</span></code><td><code>&#x00A0;</code><td>non-breaking space   
+	<tr><td><code>2028</code><td><code class=mnemo>ls</code><td><code>&#x2028;</code><td>line separator 
+	<tr><td><code>2028</code><td><code class=mnemo>LS</code><td><code>&#x2028;</code><td>line separator 
+	<tr><td><code>2029</code><td><code class=mnemo>ps</code><td><code>&#x2029;</code><td>paragraph separator 
+	<tr><td><code>2029</code><td><code class=mnemo>PS</code><td><code>&#x2029;</code><td>paragraph separator 
+	<tr><td><code>FEFF</code><td><code class=mnemo>BOM</code><td><code>&#xFEFF;</code><td>zero width no-break space ("BOM") 
+<tr><td colspan=4><br><h4> mathematical characters </h4>
+	<tr><td><code>2115</code><td><code class=mnemo>setN</code><td><code>&#x2115;</code><td>ℕ 
+	<tr><td><code>2124</code><td><code class=mnemo>setZ</code><td><code>&#x2124;</code><td>ℤ 
+	<tr><td><code>211A</code><td><code class=mnemo>setQ</code><td><code>&#x211A;</code><td>ℚ 
+	<tr><td><code>211D</code><td><code class=mnemo>setR</code><td><code>&#x211D;</code><td>ℝ 
+	<tr><td><code>2102</code><td><code class=mnemo>setC</code><td><code>&#x2102;</code><td>ℂ 
+	<tr><td><code>2115</code><td><code class=mnemo>N|</code><td><code>&#x2115;</code><td>ℕ 
+	<tr><td><code>2124</code><td><code class=mnemo>Z|</code><td><code>&#x2124;</code><td>ℤ 
+	<tr><td><code>211A</code><td><code class=mnemo>Q|</code><td><code>&#x211A;</code><td>ℚ 
+	<tr><td><code>211D</code><td><code class=mnemo>R|</code><td><code>&#x211D;</code><td>ℝ 
+	<tr><td><code>2102</code><td><code class=mnemo>C|</code><td><code>&#x2102;</code><td>ℂ 
+	<tr><td><code>2115</code><td><code class=mnemo>NN</code><td><code>&#x2115;</code><td>ℕ 
+	<tr><td><code>2124</code><td><code class=mnemo>ZZ</code><td><code>&#x2124;</code><td>ℤ 
+	<tr><td><code>211A</code><td><code class=mnemo>QQ</code><td><code>&#x211A;</code><td>ℚ 
+	<tr><td><code>211D</code><td><code class=mnemo>RR</code><td><code>&#x211D;</code><td>ℝ 
+	<tr><td><code>2102</code><td><code class=mnemo>CC</code><td><code>&#x2102;</code><td>ℂ 
+	<tr><td><code>220C</code><td><code class=mnemo>notowns</code><td><code>&#x220C;</code><td>∌ 
+	<tr><td><code>221B</code><td><code class=mnemo>root3</code><td><code>&#x221B;</code><td>∛ 
+	<tr><td><code>221C</code><td><code class=mnemo>root4</code><td><code>&#x221C;</code><td>∜ 
+	<tr><td><code>228F</code><td><code class=mnemo>sqsubset</code><td><code>&#x228F;</code><td>⊏ 
+	<tr><td><code>2290</code><td><code class=mnemo>sqsupset</code><td><code>&#x2290;</code><td>⊐ 
+	<tr><td><code>00AC</code><td><code class=mnemo>-,</code><td><code>&#x00AC;</code><td>¬ 
+	<tr><td><code>2033</code><td><code class=mnemo>dprime</code><td><code>&#x2033;</code><td>″ 
+	<tr><td><code>2034</code><td><code class=mnemo>tprime</code><td><code>&#x2034;</code><td>‴ 
+	<tr><td><code>2057</code><td><code class=mnemo>qprime</code><td><code>&#x2057;</code><td>⁗ QUADRUPLE PRIME 
+	<tr><td><code>2057</code><td><code class=mnemo>4'</code><td><code>&#x2057;</code><td>⁗ QUADRUPLE PRIME 
+	<tr><td><code>2118</code><td><code class=mnemo>powerset</code><td><code>&#x2118;</code><td>℘ 
+	<tr><td><code>2215</code><td><code class=mnemo>fraction</code><td><code>&#x2215;</code><td>∕ 
+	<tr><td><code>221A</code><td><code class=mnemo>root</code><td><code>&#x221A;</code><td>√ 
+	<tr><td><code>221E</code><td><code class=mnemo>infinity</code><td><code>&#x221E;</code><td>∞ 
+	<tr><td><code>2225</code><td><code class=mnemo>||</code><td><code>&#x2225;</code><td>∥ 
+	<tr><td><code>2229</code><td><code class=mnemo>cut</code><td><code>&#x2229;</code><td>∩ 
+	<tr><td><code>222A</code><td><code class=mnemo>union</code><td><code>&#x222A;</code><td>∪ 
+	<tr><td><code>2293</code><td><code class=mnemo>sqcut</code><td><code>&#x2293;</code><td>⊓ 
+	<tr><td><code>2294</code><td><code class=mnemo>squnion</code><td><code>&#x2294;</code><td>⊔ 
+	<tr><td><code>22C0</code><td><code class=mnemo>AND</code><td><code>&#x22C0;</code><td>⋀ 
+	<tr><td><code>22C1</code><td><code class=mnemo>OR</code><td><code>&#x22C1;</code><td>⋁ 
+	<tr><td><code>22C2</code><td><code class=mnemo>CUT</code><td><code>&#x22C2;</code><td>⋂ 
+	<tr><td><code>22C3</code><td><code class=mnemo>UNION</code><td><code>&#x22C3;</code><td>⋃ 
+	<tr><td><code>22C2</code><td><code class=mnemo>CAP</code><td><code>&#x22C2;</code><td>⋂ 
+	<tr><td><code>22C3</code><td><code class=mnemo>CUP</code><td><code>&#x22C3;</code><td>⋃ 
+<tr><td colspan=4><br><h4> additional special characters and symbols </h4>
+	<tr><td><code>20AC</code><td><code class=mnemo>ee</code><td><code>&#x20AC;</code><td>€ 
+	<tr><td><code>20AC</code><td><code class=mnemo>EE</code><td><code>&#x20AC;</code><td>€ 
+	<tr><td><code>00A5</code><td><code class=mnemo>=Y</code><td><code>&#x00A5;</code><td>¥ 
+	<tr><td><code>00A3</code><td><code class=mnemo>=L</code><td><code>&#x00A3;</code><td>£ 
+	<tr><td><code>00A5</code><td><code class=mnemo>=y</code><td><code>&#x00A5;</code><td>¥ 
+	<tr><td><code>00A3</code><td><code class=mnemo>=l</code><td><code>&#x00A3;</code><td>£ 
+	<tr><td><code>00A5</code><td><code class=mnemo>-y</code><td><code>&#x00A5;</code><td>¥ 
+	<tr><td><code>00A5</code><td><code class=mnemo>-Y</code><td><code>&#x00A5;</code><td>¥ 
+	<tr><td><code>00A3</code><td><code class=mnemo>L-</code><td><code>&#x00A3;</code><td>£ 
+	<tr><td><code>00A3</code><td><code class=mnemo>l-</code><td><code>&#x00A3;</code><td>£ 
+	<tr><td><code>00A2</code><td><code class=mnemo>c|</code><td><code>&#x00A2;</code><td>¢ 
+	<tr><td><code>00A4</code><td><code class=mnemo>xo</code><td><code>&#x00A4;</code><td>¤ 
+	<tr><td><code>20B7</code><td><code class=mnemo>Sm</code><td><code>&#x20B7;</code><td>Esperanto Spesmilo ₷ 
+	<tr><td><code>00B0</code><td><code class=mnemo>^0</code><td><code>&#x00B0;</code><td>° 
+	<tr><td><code>00B9</code><td><code class=mnemo>^1</code><td><code>&#x00B9;</code><td>¹ 
+	<tr><td><code>00B2</code><td><code class=mnemo>^2</code><td><code>&#x00B2;</code><td>² 
+	<tr><td><code>00B3</code><td><code class=mnemo>^3</code><td><code>&#x00B3;</code><td>³ 
+	<tr><td><code>00BD</code><td><code class=mnemo>1/2</code><td><code>&#x00BD;</code><td>½ 
+	<tr><td><code>00BC</code><td><code class=mnemo>1/4</code><td><code>&#x00BC;</code><td>¼ 
+	<tr><td><code>0020</code><td><code class=mnemo>3/4</code><td><code>&#x0020;</code><td>¾ 
+	<tr><td><code>00D7</code><td><code class=mnemo>xx</code><td><code>&#x00D7;</code><td>× 
+	<tr><td><code>00A6</code><td><code class=mnemo>|<span id=space>&nbsp;</span></code><td><code>&#x00A6;</code><td>¦ 
+	<tr><td><code>00AF</code><td><code class=mnemo>_-</code><td><code>&#x00AF;</code><td>¯ 
+	<tr><td><code>00B8</code><td><code class=mnemo>,.</code><td><code>&#x00B8;</code><td>¸ 
+	<tr><td><code>00A8</code><td><code class=mnemo>"<span id=space>&nbsp;</span></code><td><code>&#x00A8;</code><td>diaeresis ¨ 
+	<tr><td><code>00B5</code><td><code class=mnemo>m<span id=space>&nbsp;</span></code><td><code>&#x00B5;</code><td>µ 
+	<tr><td><code>00A7</code><td><code class=mnemo>section</code><td><code>&#x00A7;</code><td>section § 
+	<tr><td><code>00B6</code><td><code class=mnemo>paragraph</code><td><code>&#x00B6;</code><td>paragraph ¶ 
+	<tr><td><code>00B6</code><td><code class=mnemo>PG</code><td><code>&#x00B6;</code><td>paragraph ¶ 
+	<tr><td><code>260E</code><td><code class=mnemo>ph</code><td><code>&#x260E;</code><td>black telephone ☎ 
+	<tr><td><code>2022</code><td><code class=mnemo>**</code><td><code>&#x2022;</code><td>• 
+	<tr><td><code>2022</code><td><code class=mnemo>BULLET</code><td><code>&#x2022;</code><td>• 
+	<tr><td><code>2023</code><td><code class=mnemo>|></code><td><code>&#x2023;</code><td>‣ TRIANGULAR BULLET 
+	<tr><td><code>2023</code><td><code class=mnemo>tbull</code><td><code>&#x2023;</code><td>‣ TRIANGULAR BULLET 
+	<tr><td><code>25E6</code><td><code class=mnemo>0w</code><td><code>&#x25E6;</code><td>◦ WHITE BULLET 
+	<tr><td><code>25E6</code><td><code class=mnemo>wbull</code><td><code>&#x25E6;</code><td>◦ WHITE BULLET 
+	<tr><td><code>25CB</code><td><code class=mnemo>wcirc</code><td><code>&#x25CB;</code><td>○ WHITE CIRCLE 
+	<tr><td><code>25CC</code><td><code class=mnemo>0d</code><td><code>&#x25CC;</code><td>◌ DOTTED CIRCLE 
+	<tr><td><code>25CC</code><td><code class=mnemo>dcirc</code><td><code>&#x25CC;</code><td>◌ DOTTED CIRCLE 
+	<tr><td><code>25EF</code><td><code class=mnemo>lcirc</code><td><code>&#x25EF;</code><td>◯ LARGE CIRCLE 
+	<tr><td><code>2023</code><td><code class=mnemo>triang</code><td><code>&#x2023;</code><td>‣ 
+	<tr><td><code>2030</code><td><code class=mnemo>per00</code><td><code>&#x2030;</code><td>‰ 
+	<tr><td><code>2031</code><td><code class=mnemo>per000</code><td><code>&#x2031;</code><td>‱ 
+	<tr><td><code>2713</code><td><code class=mnemo>cm</code><td><code>&#x2713;</code><td>✓ CHECK MARK 
+	<tr><td><code>21D4</code><td><code class=mnemo><=></code><td><code>&#x21D4;</code><td>⇔ LEFT RIGHT DOUBLE ARROW 
+	<tr><td><code>219A</code><td><code class=mnemo></-</code><td><code>&#x219A;</code><td>↚ LEFTWARDS ARROW WITH STROKE 
+	<tr><td><code>219B</code><td><code class=mnemo>-/></code><td><code>&#x219B;</code><td>↛ RIGHTWARDS ARROW WITH STROKE 
+	<tr><td><code>21AE</code><td><code class=mnemo><-/></code><td><code>&#x21AE;</code><td>↮ LEFT RIGHT ARROW WITH STROKE 
+	<tr><td><code>21CD</code><td><code class=mnemo></=</code><td><code>&#x21CD;</code><td>⇍ LEFTWARDS DOUBLE ARROW WITH STROKE 
+	<tr><td><code>21CE</code><td><code class=mnemo><=/></code><td><code>&#x21CE;</code><td>⇎ LEFT RIGHT DOUBLE ARROW WITH STROKE 
+	<tr><td><code>21CF</code><td><code class=mnemo>=/></code><td><code>&#x21CF;</code><td>⇏ RIGHTWARDS DOUBLE ARROW WITH STROKE 
+	<tr><td><code>21AF</code><td><code class=mnemo>zigzag</code><td><code>&#x21AF;</code><td>↯ DOWNWARDS ZIGZAG ARROW 
+	<tr><td><code>21AF</code><td><code class=mnemo>zz</code><td><code>&#x21AF;</code><td>↯ DOWNWARDS ZIGZAG ARROW 
+	<tr><td><code>26A1</code><td><code class=mnemo>voltage</code><td><code>&#x26A1;</code><td>⚡ HIGH VOLTAGE SIGN 
+	<tr><td><code>26A0</code><td><code class=mnemo>warning</code><td><code>&#x26A0;</code><td>⚠ WARNING SIGN 
+	<tr><td><code>001E</code><td><code class=mnemo>^^</code><td><code>&#x001E;</code><td>control-circumflex 
+	<tr><td><code>001F</code><td><code class=mnemo>__</code><td><code>&#x001F;</code><td>control-underline 
+	<tr><td><code>2639</code><td><code class=mnemo>:(</code><td><code>&#x2639;</code><td>frowning face ☹ 
+	<tr><td><code>263A</code><td><code class=mnemo>:)</code><td><code>&#x263A;</code><td>smiling face ☺ 
+	<tr><td><code>263B</code><td><code class=mnemo>):</code><td><code>&#x263B;</code><td>black smiling face ☻ 
+	<tr><td><code>262F</code><td><code class=mnemo>yinyang</code><td><code>&#x262F;</code><td>yin yang ☯ 
+</table>

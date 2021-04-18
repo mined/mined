@@ -1,0 +1,147 @@
+#! /bin/sh
+
+
+checktags () {
+# source:	big5	B5	Big5 HK/Traditional	Big5 HKSCS	B
+# check tags ("B5", "B") for uniqueness
+  (
+    sed -e "/^#/ d" \
+        -e "s/^\.*\([^ 	]*\)[ 	][ 	]*\([^ 	]*\)[ 	][ 	]*\([^	]*\)[ 	][ 	]*\([^	]*\)	*\([^	]*\).*/\2/" \
+        -e t -e d charmaps.cfg
+    sed -e "/^#/ d" \
+        -e "s/^\.*\([^ 	]*\)[ 	][ 	]*\([^ 	]*\)[ 	][ 	]*\([^	]*\)[ 	][ 	]*\([^	]*\)	*\([^	]*\).*/\5/" \
+        -e t -e d charmaps.cfg
+  ) | grep . | sort | uniq -d |
+  sed -e "s,^,[41m," -e "s,$,[0m," |
+  if grep .
+  then	echo ERROR: duplicate tags in charmaps.cfg
+  	false
+  else true
+  fi
+}
+
+
+mkcharmaps () {
+# charmaps.t:	charmaps.cfg
+# from:		big5	B5	Big5 HK/Traditional	Big5 HKSCS	B
+# generate:		{big5_table, & big5_table_len, "Big5 HKSCS", "B5", 'B'},
+    sed -e "/^#/ d" \
+        -e "/^++/ d" \
+        -e "s,^!begin CJK,#ifdef use_CJKcharmaps," -e "s,^!end CJK,#endif," \
+        -e "s/^\.*\([^ 	]*\)[ 	][ 	]*\([^ 	]*\)[ 	][ 	]*\([^	]*\)[ 	][ 	]*\([^	]*\)	*\([^	]*\).*/	{\1_table, \& \1_table_len, \"\4\", \"\2\", '\5'},/" \
+        -e t -e d charmaps.cfg |
+    sed -e "s/, ''//" |
+    sed -e ": l" -e 's/^\([^-"]*\)-/\1_/g' -e "t l" > charmaps.t
+}
+
+
+mkextern () {
+# charmaps.h:	charmaps.cfg
+# from:		big5	B5	Big5 HK/Traditional	Big5 HKSCS	B
+# generate:	extern struct encoding_table_entry big5_table [];
+#		extern unsigned int big5_table_len;
+    sed -e "/^[-+#]/ d" \
+        -e "s,^!begin CJK,#ifdef use_CJKcharmaps," -e "s,^!end CJK,#endif," \
+        -e "s/^\.*\([^ 	]*\)[ 	][ 	]*\([^ 	]*\)[ 	][ 	]*\([^ 	]*\).*/extern struct encoding_table_entry \1_table [];@extern unsigned int \1_table_len;/" \
+        -e t -e d charmaps.cfg |
+    tr '\055@' '_\n' > charmaps.h
+}
+
+
+mkmenu () {
+# charemen.t:	charmaps.cfg
+# from:		big5	B5	Big5 HK/Traditional	Big5 HKSCS	B
+# generate:		{"Big5 HK/Traditional", select_encoding, "Big5 HKSCS", encodingon},
+# from:		---- Group
+# generate:		{"Group", separator, ""},
+# from:		++++++++ Submenu
+# generate:		{"submenu ...", opensubmenu_Submenu, "", onsubmenu_Submenu},
+    sed -e "/^[#.]/ d" \
+        -e "s,^!begin CJK,#ifdef use_CJKcharmaps," -e "s,^!end CJK,#endif," \
+        -e '/^++/ s,[ /],_,g' \
+        -e 's/^+++*_*\(.*\)_*/@	{label_\1, opensubmenu_\1, "", onsubmenu_\1, extra_\1},@++/' \
+        -e '/^+-/ b' \
+        -e 's/^--* *\(.*\) */@	{"\1", separator, ""},/' \
+        -e t \
+        -e "s/^\([^#	]*\)[ 	][ 	]*\([^	]*\)[ 	][ 	]*\([^	]*\)[ 	][ 	]*\([^	]*\)	*\([^	]*\).*/	{\"\3\", select_encoding, \"\4\", encodingon},/" \
+        -e t -e d charmaps.cfg |
+    tr '@' '\n' |
+    sed -e '/^++/,/^+-/ d' > charemen.t
+}
+
+
+mksubmenus () {
+# charesub.t:	charmaps.cfg
+    egrep "^\+\+" charmaps.cfg |
+    while read line
+    do
+	title=`echo $line |
+		 sed -e 's,^+* *,,' -e 's, *$,,'`
+	submenu=`echo $title | sed -e 's,[ /],_,g'`
+
+	cat <</eoc
+#define label_$submenu "$title"
+#define extra_$submenu "▶"
+#define title_$submenu "$title"
+
+local int
+	onsubitem_$submenu (item, i)
+	menuitemtype * item;
+	int i;
+{
+	return streq (item->hopitemname, get_text_encoding ());
+}
+
+local menuitemtype submenu_$submenu [] =
+{
+/eoc
+
+	linepat=`echo "$line" | sed -e 's,/,.,g'`
+	sed -e "1,/^$linepat/ d" -e "/^+-/,$ d" charmaps.cfg |
+	sed -e "/^#/ d" -e "/^\.\./ d" \
+	    -e 's/^--* *\(.*\) */@	{"\1", separator, ""},/' \
+	    -e t \
+	    -e "s/^\.*\([^#	]*\)[ 	][ 	]*\([^	]*\)[ 	][ 	]*\([^	]*\)[ 	][ 	]*\([^	]*\)	*\([^	]*\).*/	{\"\3\", select_encoding, \"\4\", onsubitem_$submenu},/" \
+	    -e t -e d |
+	    tr '@' '\n'
+
+	cat <</eoc
+};
+
+local int
+	onsubmenu_$submenu (item, i)
+	menuitemtype * item;
+	int i;
+{
+	int k;
+	for (k = 0; k < arrlen (submenu_$submenu); k ++) {
+		if (streq (submenu_$submenu [k].hopitemname, get_text_encoding ())) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+local void
+	opensubmenu_$submenu (menu, i)
+	menuitemtype * menu;
+	int i;
+{
+	int column = last_popup_column + utf8_col_count (label_$submenu) + 2;
+	int line = last_popup_line + i;
+	(void) popup_menu (submenu_$submenu, arrlen (submenu_$submenu), column, line, title_$submenu, True, False, NIL_PTR);
+}
+
+/eoc
+
+    done > charesub.t
+}
+
+
+case "$1" in
+charmaps.t)	mkcharmaps;;
+charmaps.h)	mkextern;;
+charemen.t)	mkmenu;;
+charesub.t)	mksubmenus;;
+checktags)	checktags;;
+esac

@@ -1,0 +1,10 @@
+
+#############################################################################
+# terminator configuration by mined
+# this should be copied or merged/appended to the file $HOME/.terminator/options
+
+# Use alt key as meta key
+Terminator*useAltAsMeta: true
+
+#############################################################################
+# end

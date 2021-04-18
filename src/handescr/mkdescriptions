@@ -1,0 +1,93 @@
+#! /bin/sh
+
+# for new pronunciations, check also descriptions.sed, and list them in makefile and pronunciations
+
+# input: descriptions.sh
+
+# convert listing section:
+
+#code 04E09
+#m="san1 san4"
+
+#code 04E09
+#c="saam1 saam3"
+
+#code 04E09
+#j="mitsu mitabi"
+
+#code 04E09
+#s="san"
+
+#code 04E09
+#k="sam"
+
+#code 04E09
+#h="삼"
+
+#code 04E09
+#v="tam"
+
+#code 04E09
+#p="san1"
+
+#code 04E09
+#x="0982.010:sān"
+# code 03576
+#x="0811.021:ň 0826.021:ňg"
+# code 0379E
+#x="1092.070*,1092.071:sóng"
+# code 039D1
+#x="0500.030,0500.031*:huī"
+# code 04E0E
+#x="1407.050:yú 1413.010:yǔ 1415.110:yù"
+
+#code 04E09
+#t="*sɑm sɑm"
+
+#code 04E09
+#d="three"
+
+# into C data table entry:
+#	{0x04E09, "san1 san4", "saam1 saam3", "mitsu mitabi", "san", "삼", "sam", "tam", "san1", "sān", "*sɑm sɑm", "three"},
+
+
+(
+cat <<\/EOS
+
+current=
+
+flush () {
+	#x="`echo "$x" | sed -e "s,[0-9.*:,]*,,g"`"
+	echo "	{0x$current, \"$m\", \"$c\", \"$j\", \"$s\", \"$h\", \"$k\", \"$v\", \"$p\", \"$y\", \"$x\", \"$t\", \"$d\"},"
+}
+
+code () {
+	if [ "$1" != "$current" ]
+	then	if [ "$current" != "" ]
+		then	flush
+		fi
+		# initialise record data
+		m=
+		c=
+		j=
+		s=
+		h=
+		k=
+		v=
+		p=
+		y=
+		x=
+		t=
+		d=
+		current=$1
+	fi
+}
+
+/EOS
+
+cat $1 |
+sed "/^x=/ s,[0-9.*:,]*,,g"
+
+echo flush
+
+) | sh

@@ -1,0 +1,22 @@
+-----------------------------------------------------------------------------
+What is MinEd? (Pronounce "min-ed")
+
+Mined is a powerful text editor with a comprehensive and easy-to-use 
+user interface and fast, small-footprint behaviour.
+
+For an overview of major features and highlights, see http://towo.net/mined/
+
+-----------------------------------------------------------------------------
+
+The DOS version of mined should be installed in a binary directory in 
+your DOS search path (PATH variable).
+In a command prompt, type
+	MINED options files
+to invoke mined in the DOS console.
+
+-----------------------------------------------------------------------------
+
+Info: The DOS version of mined was built with djgpp.
+It supports console codepages on MSDOS and FreeDOS.
+
+-----------------------------------------------------------------------------

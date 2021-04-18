@@ -1,0 +1,2 @@
+?package(mined):needs="text" section="Applications/Editors" title="mined" command="/usr/bin/mined"
+

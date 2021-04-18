@@ -1,0 +1,213 @@
+<head>
+<meta name="description" content="Unicode terminal starter script.">
+<meta name="manheader" content="Unicode terminal window starter">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+<style>
+code {background-color: #CCC0C0;}
+</style>
+
+<script language="JavaScript">
+top.select2 ("unicode", "uterm");
+</script>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>uterm: Unicode terminal starter</title>
+
+</head>
+
+<body>
+
+<h2>NAME</h2>
+<dl><dd>
+    uterm &ndash; start script for a Unicode capable terminal window
+</dl>
+
+
+<h2>SYNTAX</h2>
+<dl><dd>
+
+    <code>uterm</code>
+	[ <code>-</code>terminal-options ]
+	[ <code>-e</code> program arguments ... ]
+<p>
+    <code>uterm</code>
+	[ <code>-rx</code> | <code>-rxvt</code> ]
+	[ <code>-</code>rxvt-options ]
+	[ <code>-e</code> program arguments ... ]
+<br>
+    <code>uterm</code>
+	[ <code>-xt</code> | <code>-xterm</code> ]
+	[ <code>-</code>xterm-options ]
+	[ <code>-e</code> program arguments ... ]
+</dl>
+
+
+<h2>DESCRIPTION</h2>
+<dl><dd>
+	<dd>Invoke a terminal window with a reasonably optimized range 
+	of Unicode support, enforcing UTF-8 mode and using the best 
+	Unicode fonts found.
+	<dd>Many systems are not yet properly configured to enable 
+	easy and straight-forward use of Unicode in a text-mode terminal 
+	environment (such as xterm or rxvt).
+	The purpose of uterm is to help users to start a terminal 
+	with good Unicode capabilities without much hassle.
+
+<h3>Terminal selection</h3>
+	Either of xterm or rxvt-unicode is selected as the terminal 
+	application to start, depending on:
+	<ul>
+	<li>Availability of rxvt-unicode: The script checks whether 
+	rxvt-unicode is available under the name urxvt (e.g. on 
+	cygwin), or if rxvt is available, whether it actually is 
+	rxvt-unicode (and not an older version). Only if this check is 
+	positive, rxvt is considered.
+	<li>User preference, implicit: If the environment variable TERM starts with 
+	"rxvt", rxvt-unicode is preferred.
+	<li>User preference, explicit: With the command line option 
+	<code>-rx</code> or <code>-rxvt</code>, rxvt-unicode is preferred.
+	With <code>-xt</code> or <code>-xterm</code>, xterm is preferred.
+	<li>Font selection: If the GNU unifont is selected, rxvt is chosen.
+	<li>In all other cases, xterm is chosen.
+	</ul>
+	Users of mlterm are assumed to start mlterm themselves directly, 
+	so mlterm is not considered.
+	Neither of KDE konsole or gnome-terminal is currently considered 
+	since they cannot be font-configured on-the-fly.
+
+<h3>Font selection</h3>
+	The uterm script tries its best to use fonts that provide a 
+	maximum of Unicode support.
+	<ul>
+	<li>First it checks if you have the 10x20 Unicode font and a 
+	matching 20x20 double width font installed (see explanation below 
+	about CJK coverage).
+	<li>If not, it checks if you have the 9x18 Unicode font and a 
+	matching 18x18 double width font installed and uses them.
+	<li>If both are not found, it tries to invoke rxvt with the GNU unifont.
+	<li>If either GNU unifont or rxvt are not installed, efont is tried.
+	<li>As a last resort, it tries to invoke xterm with 6x13 and 12x13 fonts.
+	<li>As a very last fallback, it invokes xterm with its configured default fonts.
+	</ul>
+	<dd>
+	<br><i>Note:</i> The efonts are installed on fewer systems than 
+	the misc-fixed fonts so only 1 size of them is considered and at 
+	a lower priority. If you prefer efont, you should configure 
+	xterm font usage yourself (using X resource configuration) and 
+	invoke xterm directly.
+	<br><i>Note:</i> GNU unifont does unfortunately not work with xterm 
+	(or rather xterm with GNU unifont), so in this case rxvt is invoked.
+
+<h4>Information about font usage</h4>
+	Font selection is a matter of both taste and script coverage.
+	The uterm script uses fonts with a good coverage of Unicode 
+	script ranges, but its order of precedence may not suit your 
+	specific needs. In that case you should configure your exact 
+	desired font preference and invoke the desired terminal 
+	(xterm, rxvt) directly.
+	<dd>Coverage of certain scripts would suggest certain font 
+	preferences:
+	<ul>
+	<li>Korean Hangul: GNU unifont
+	<li>Devanagari: efont
+	<li>Georgian: efont, misc X fonts
+	<li><i>(to be continued)</i>
+	</ul>
+
+<h4>CJK coverage and the 10x20 fonts</h4>
+	Among the Unicode "misc" X fonts (misc-fixed-...), the 20 
+	pixel size fonts are much clearer in appearance than the 18 
+	pixel fonts for which CJK wide fonts (using double cell width 
+	in a fixed-width terminal) are available.
+	Unfortunately, xterm is not yet capable of padding an 18x18 
+	font up to 20x20 pixel character cells for use together with 
+	a 10x20 pixel font.
+	<dd>The bdf18to20 script, packaged with the mined editor like 
+	uterm, helps with this issue and generates the missing fonts 
+	from the 18 pixel double width fonts by padding blank pixels.
+	If you have installed those, uterm will select 20 pixel fonts 
+	as its first preference.
+	<dd>
+	<br><i>Note:</i> 20x20 fonts (padded with bdf18to20) are already 
+	installed as part of the xterm package with SuSE Linux 10.0.
+	<br><i>Note:</i> The 6x13 pixel font from Unicode misc-fixed-... 
+	also has a matching 12x13 CJK font but that size is really 
+	much too small for serious application on modern desktops which 
+	often provide higher resolutions than traditional workstations.
+
+<h3>UTF-8 environment setup</h3>
+	<dd>The uterm script enforces UTF-8 mode with the terminal and 
+	also sets up the locale variable environment to reflect UTF-8 
+	terminal encoding.
+	If necessary, all LC_* and LANG environment variables are 
+	modified to provide a proper environment for applications started 
+	inside the Unicode terminal. (See the inline documentation of 
+	the uterm script for how this is done.)
+
+<h3>X resource class</h3>
+	When starting xterm, uterm uses the X resource class UXTerm so 
+	you can configure the desired appearance of UTF-8 mode 
+	terminal windows in your X resource configuration.
+	For rxvt-unicode, the class URxvt can be used for X resources.
+
+<h3>Unicode width data version</h3>
+	If called with an -e option to invoke a specific program in it, 
+	uterm enables the -mk_width option of xterm (if xterm version 201 
+	or newer is available).
+	This tells xterm to use its own, compiled-in character width 
+	property tables, rather than using system locale information.
+	The advantage is that this information is often newer (referring 
+	to a newer version of Unicode) than the installed system data.
+	Thus the user is enabled to use up-to-date Unicode data by 
+	using a self-installed copy of xterm, rather than being stuck with 
+	the Unicode data that the system administrator cares to install.
+	This is especially useful if the application is known to be able to 
+	recognise that Unicode version, like the Unicode editor mined.
+	The umined script makes use of this feature to invoke mined in 
+	a Unicode terminal with a maximum of Unicode support.
+
+<h3>Keyboard resources for application use</h3>
+	If called with an -e option to invoke a specific program in it, 
+	uterm also enables a number of other xterm resources in order to 
+	enable best keyboard and terminal control for applications:
+	<dl>
+	<dt>*VT100*eightBitOutput:true
+	<dd>to enable 8 Bit output (actually not needed in UTF-8 mode)
+	<dt>*VT100*metaSendsEscape:true
+	<dd>to enable ESC prefixing triggered by Alt-key
+	<dt>*VT100*eightBitInput:false
+	<dd>to enable ESC prefixing triggered by Alt-key in old xterm versions
+	<dt>*VT100*deleteIsDEL:true
+	<dd>to enable distinguishing the two DEL keys on the keyboard
+	<dt>*utf8Title:true
+	<dd>to enable UTF-8 window title strings
+	</dl>
+
+</dl>
+
+
+<p><hr width=95%>
+<h2>FILES</h2>
+<dl><dd>
+	<dl>
+	<dt><code>$HOME/.Xdefaults</code> or <code>$HOME/.Xresources</code>
+	<dd>typical location of user's X resource configuration
+	</dl>
+</dl>
+
+
+<p><hr width=95%>
+<h2>AUTHOR</h2>
+<dl><dd>
+	The uterm script is an auxiliary script packaged with the 
+	mined editor by Thomas Wolff.
+	Please send comments, suggestions, bug reports to 
+	<a href=mailto:mined@towo.net>mined@towo.net</a>.
+
+</dl>
+
+
+<p><hr width=95%>
+
+</body>

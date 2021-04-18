@@ -1,0 +1,27 @@
+{{Infobox Software |
+  name = Mined |
+  screenshot = [[Image:mined.png|300px|A screenshot of Mined]] |
+  caption = Mined editing Unicode text |
+  developer = [http://towo.net/mined Thomas Wolff] |
+  latest_release_version = VERSION |
+  latest_release_date = DATE |
+  operating_system = OS-independent |
+  genre = [[Text editor]] |
+  license = [[GNU General Public License|GPL]] |
+  website = [http://mined.sourceforge.net]
+}}
+
+
+
+== See also ==
+* [[List of text editors]]
+* [[Comparison of text editors]]
+
+==External links==
+* [http://mined.sourceforge.net mined homepage]
+* [http://sourceforge.net/projects/mined mined project page @ sourceforge]
+
+[[Category:Text editors]]
+[[Category:Linux text editors]]
+[[Category:Mac OS text editors]]
+[[Category:Free text editors]]

@@ -1,0 +1,31 @@
+#! /bin/sh
+
+# Start application (default: MinEd editor in Windows keyboard emulation mode)
+# embedded in a mintty terminal with Windows look-and-feel
+
+# Note: mintty 0.6 or higher required for -o option
+
+#############################################################################
+# Select application
+case "$0" in
+*ed)	prog="mined";;
+*)	prog=;;
+esac
+
+#############################################################################
+# Set appropriate parameters
+
+locale=`echo ${LC_ALL:-${LC_CTYPE:-${LANG:-C}}} | sed -e "s,\..*,,"`
+
+charset="-oLocale=$locale -oCharset=UTF-8"
+colour="-oUseSystemColours=1 -oBoldAsBright=0"
+window="-oScrollbar=0"
+keyboard="-oWindowShortcuts=0 -oZoomShortcuts=0"
+
+#############################################################################
+# Start terminal
+
+mintty $charset $colour $window $keyboard $prog "$@"
+
+#############################################################################
+# End

@@ -1,0 +1,34 @@
+Source: mined
+Section: editors
+Priority: optional
+Maintainer: Thomas Wolff <mined@towo.net>
+Build-Depends: cdbs (>= 0.4.51), debhelper (>= 7), make, gcc
+Standards-Version: 3.8.3
+Homepage: http://mined.sf.net/
+
+Package: mined
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: 
+Description: powerful Unicode text editor with user-friendly interface
+ Mined is a powerful text editor with a comprehensive yet concise and 
+ easy-to-use user interface supporting modern interaction paradigms, 
+ and fast, small-footprint behaviour.
+ .
+ Mined provides both extensive Unicode and CJK support offering many 
+ specific features and covering special cases that other editors are 
+ not aware of (like auto-detection features and automatic handling of 
+ terminal variations, or Han character information).
+ .
+ Mined supports full mouse control and menu system in plain-text terminals 
+ (and it was the first editor supporting Unicode in xterm).
+ .
+ Mined offers a full set of text and file management features, like 
+ data loss prevention (using backup, recovery files, and file locking 
+ interoperable with other editors, and file change monitoring), 
+ and an interactive file chooser.
+ .
+ Basically, mined is an editor tailored to reliable and efficient 
+ editing of plain text documents and programs, with comfortable 
+ features and intuitive interactive behaviour designed for this purpose.
+

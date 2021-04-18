@@ -1,0 +1,232 @@
+Cygwin package of current MinEd version
+
+[This file installs to /usr/share/doc/Cygwin/mined.README]
+
+
+-----------------------------------------------------------------------------
+Overview
+
+Mined is a text editor with extensive Unicode and CJK support.
+See the generic README file or http://towo.net/mined/ for an overview.
+This file mentions issues specific to the cygwin release of mined.
+
+
+Character encoding support
+
+Mined can edit Unicode text (encoded in UTF-8) or CJK encoded text in 
+any terminal; proper display, however, depends on terminal support.
+
+
+Terminal environment
+
+Mined runs in any plain text terminal environment, especially:
+
+* mintty which provides optimal xterm-compatible support
+  Start it with a locale variable asking for UTF-8 mode, or you may 
+  configure it to apply a specific character set, automatically 
+  overriding and adjusting the environment.
+
+* xterm running on an X server; to be started with
+	xterm -en UTF-8
+  or
+	xterm +lc -u8
+  - also set the locale environment properly with the invocation, like:
+	LC_ALL=en_US.UTF-8 xterm -en UTF-8
+  to indicate UTF-8 terminal mode to applications (not needed for mined); 
+  for this purpose, it can still be set within the running xterm but then 
+  it's not effective for the shell which has already started.
+  Note: It is recommended to use the script
+	uterm
+  or (to ensure using xterm)
+	uterm -xt
+  (provided with the mined package) which also tries a best approach 
+  to select suitable fonts for Unicode display.
+  Note that the script uxterm provided with xterm itself does not work 
+  on cygwin.
+
+* urxvt running on an X server; to be started with
+	LC_ALL=en_US.UTF-8 urxvt
+  (or another recognized UTF-8 locale setting).
+  Note: Since cygwin 1.7.0-45, the non-standard setting LC_CTYPE=C-UTF-8 
+  should not be used anymore; it causes urxvt not to be fully functional.
+
+* rxvt (old version) running with or without X server
+  This legacy terminal only supports ISO Latin-1 terminal encoding.
+
+* Cygwin console (cygwin running in a Windows console window)
+  Since cygwin 1.7.0-45, the character encoding applied by the cygwin 
+  console is selected with the usual locale variables mechanism;
+  either of LC_ALL, LC_CTYPE, or LANG (checked in this order) should be 
+  set before starting a cygwin session or application (typically a shell 
+  started by Cygwin.bat).
+  If none of these variables is set, the default encoding is UTF-8; 
+  the environment variable LANG will be set by the login profile script.
+  You can tune your invocation by modifying the Cygwin.bat script, e.g.:
+	set LC_CTYPE=en_US.CP850
+	bash --login -i
+  or
+	set LC_CTYPE=ja_JP.UTF-8
+	bash --login -i
+
+  Note: For mined running in cygwin 1.7, the terminal encoding should 
+  be properly indicated with an LC_CTYPE (or LC_ALL or LANG) environment 
+  variable because UTF-8 auto-detection does not work in a cygwin console.
+
+  Note: Cygwin console in UTF-8 mode provides extended Unicode font 
+  support if you select "Lucida Console" TrueType font from its 
+  Properties menu.
+
+  Note: See also notes on Windows console below.
+
+* Cygwin legacy console (cygwin 1.5 running in a Windows console window)
+  Cygwin 1.5 used to emulate the Windows "ANSI" character encoding 
+  (default system codepage, e.g. codepage 1252) by default for the 
+  cygwin console.
+  Cygwin 1.5 can also be configured to run "codepage" CP850 (the DOS 
+  encoding of the Latin-1 character set) by environment setting 
+  "CYGWIN=codepage:oem" (to be set before starting the cygwin shell).
+  (Cygwin 1.7 before 1.7.0-45 would also run UTF-8 by environment setting 
+  "CYGWIN=codepage:utf8".)
+  Mined detects and handles these settings.
+
+* Windows console
+  In a Windows console window the terminal encoding does not depend on 
+  the terminal (i.e., the console window) but on the runtime 
+  environment used by the application (e.g. the cygwin dll), and the 
+  interface it uses to send output to the screen, and even sometimes 
+  on the font.
+  So when you edit files with either of cygwin mined or djgpp mined, 
+  the effective terminal encoding will be different within the same 
+  window, regardless of whether the editor is started from a cygwin session 
+  or from a plain DOS/Windows command prompt.
+  (You can also observe the difference if you output the same file 
+  by either cat (cygwin) or type (DOS cmd.exe) in the same window.)
+  When using non-ASCII command line arguments (esp. filenames) to 
+  applications started in different environments, weird inconsistencies 
+  may arise.
+
+  Note: After remote login from a cygwin console - more precisely, 
+  after remote login using a cygwin tool (rlogin, rsh, telnet), 
+  whether started from a cygwin console or a plain DOS-mode Windows 
+  console window - it is advisable to make sure that the correct 
+  character set as run by the cygwin environment is properly declared 
+  by appropriate setting of a locale variable (e.g. LC_CTYPE) on the remote 
+  machine, e.g.:
+	export LC_CTYPE=en_US.UTF-8
+  In any case, mined can also be told explicitly which character set to 
+  assume with the +E option, e.g. +EP (for CP850) or +U (for UTF-8).
+
+
+-----------------------------------------------------------------------------
+Cygwin-specific terminal problems
+
+Cygwin console terminal problems
+
+* [Fixed in cygwin 1.5.13, reappeared later, fixed again in cygwin 1.7]
+  Colour handling by cygwin in a cygwin console is unusual in some cases; 
+  depending on the default colour setting of your shell environment, 
+  reverse display (as used for mined menu headers and status line) 
+  may be hard to read because cygwin does not reverse foreground 
+  and background properly.
+  See http://sourceware.org/bugzilla/show_bug.cgi?id=514
+  Fixed with patch http://cygwin.com/ml/cygwin-patches/2004-q4/msg00206.html
+  The bug shows up again in a later version of cygwin, fixed with 
+  new patch http://www.cygwin.com/ml/cygwin-patches/2006-q4/msg00016.html
+* In cygwin 1.7, another colour handling bug occurs when combining 
+  bold with coloured background.
+* Mined 2000.15 applies a workaround for both bugs so menu display is 
+  better recognizable.
+
+* Setting CYGWIN=tty is NOT recommended for mined. There is a bug 
+  in the cygwin terminal handling of cursor position reports which 
+  used to cause an error message on the first keyboard input.
+  Although there is now a work-around for this in mined, CYGWIN=tty 
+  is still not advised as there is no need for it.
+  See http://sourceware.org/bugzilla/show_bug.cgi?id=513
+
+* The cygwin console terminal emulation does not support
+  Shift-F1, Shift-F2 (which cannot be distinguished from F11, F12), 
+  Shift-F11, Shift-F12, nor any Control or Alt modified function keys.
+  Control and Alt modifier support is added in cygwin 1.7.2.
+
+* [Fixed in cygwin 1.5.13]
+  When a cygwin console window is scrolled down with its own scrollbar, 
+  or implicitly by getting output, the cygwin mouse driver gets the 
+  wrong idea about the position of the mouse pointer. Clicking the 
+  mouse in a program is then next to useless as cygwin reports the 
+  wrong line position to the program (relative to the scrolled-out 
+  memory, not the visible screen as it should).
+  See http://sourceware.org/bugzilla/show_bug.cgi?id=512
+  Fixed with patch http://cygwin.com/ml/cygwin-patches/2004-q4/msg00175.html
+
+* With cygwin 1.7.10, the console does not report subsequent bytes of 
+  multi-byte input (whether non-ASCII or function key) immediately 
+  to the select() function.
+  See https://cygwin.com/ml/cygwin/2014-12/msg00118.html
+  Mined 2014.24.3 provides a workaround by substituting terminal input 
+  with an input pipe thread.
+
+
+Cygwin X terminal problem
+
+* [This appears to be fixed in current Cygwin/X as of January 2009.]
+  When a larger xterm is started in Cygwin/X, the "tty" I/O driver 
+  (running the communication between program and terminal) may obtain 
+  the wrong idea about the size of the xterm. This affects all 
+  screen-oriented programs. With xterm, mined now has a work-around 
+  for this, adjusting the window height to what the tty thinks it is 
+  (this does not work with rxvt).
+  A general remedy is to resize the window once it has started; as a 
+  work-around, I recommend to include the following in your .profile 
+  or .bashrc:
+	resize > /dev/null
+  See http://sourceware.org/bugzilla/show_bug.cgi?id=511
+
+
+-----------------------------------------------------------------------------
+Compilation
+
+To compile mined on cygwin, you need the usual basics (gcc, make); 
+the ncurses-devel package (providing the termcap API) is not needed 
+for default compilation.
+Go to the main directory of the mined distribution and invoke 'make' 
+(there is a dummy configure script to conform to the usual cygwin 
+production environment but it is not needed).
+Then invoke 'make install' to install all files in their standard locations.
+See COMPILE.DOC and INSTALL.DOC for more details.
+
+
+-----------------------------------------------------------------------------
+Package generation
+
+Some cygwin source packages generate a binary package when invoking 'make'.
+This is, however, very non-standard and it doesn't suit well in a 
+generic make environment.
+To generate cygwin source and binary packages into the subdirectory 'release',
+please invoke 'make cygwin'.
+
+
+-----------------------------------------------------------------------------
+Stand-alone release
+
+The precompiled binary cygwin release of mined runs with only the 
+cygwin1.dll library available, even without an installed cygwin 
+system. For this purpose, it uses a standalone build with some 
+statically linked libraries; to generate it, invoke 'make win' in the 
+src subdirectory, this makes src/win/mined.exe.
+The stand-alone package includes a mintty terminal (also statically linked) 
+and an install.bat script; it registers MinEd for invocation from the 
+Windows Explorer context menu for text files (mintty 0.6 required).
+
+
+-----------------------------------------------------------------------------
+Contact
+
+See http://towo.net/mined/ for documentation and download of the 
+current mined version (including a Windows package based on a cygwin 
+stand-alone binary version).
+Send comments, feature requests, suggestions, bug reports etc. to:
+mined@towo.net
+
+
+-----------------------------------------------------------------------------

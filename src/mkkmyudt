@@ -1,0 +1,109 @@
+#! /bin/sh
+
+kmap=$1
+
+name=`basename $kmap | sed -e "s,\..*,," -e "s,-,_,g"`
+
+(
+cat <<\/eoc
+#include <stdio.h>
+
+int b;
+
+void
+printutf8 (unichar)
+	unsigned long unichar;
+{
+	if (unichar == '\\' || unichar == '"') {
+		printf ("\\");
+	}
+
+	if (unichar < 0x80) {
+		printf ("%c", unichar);
+	} else if (unichar < 0x800) {
+		printf ("%c", 0xC0 | (unichar >> 6));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x10000) {
+		printf ("%c", 0xE0 | (unichar >> 12));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x200000) {
+		printf ("%c", 0xF0 | (unichar >> 18));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x4000000) {
+		printf ("%c", 0xF8 | (unichar >> 24));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x80000000) {
+		printf ("%c", 0xFC | (unichar >> 30));
+		printf ("%c", 0x80 | ((unichar >> 24) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	}
+}
+
+void
+printchar (ch)
+	unsigned long ch;
+{
+	if (ch == '\\' || ch == '"') {
+		printf ("\\");
+	}
+	printf ("%c", ch);
+}
+
+void
+prints (s)
+	char * s;
+{
+	if (b == 1 || strcmp (s, " ") != 0) {
+		printf (s);
+	}
+}
+
+int
+main () {
+/eoc
+
+sed -f $0.sed $kmap
+
+cat <</eoc
+	return 0;
+}
+/eoc
+) > keymaps/$name.c
+
+if ${CC-cc} -o keymaps/$name.exe keymaps/$name.c
+then	if [ -f keymaps/$name.h ]
+	then	echo saving previous keyboard mapping file to keymaps/$name.h.sav
+		mv -i keymaps/$name.h keymaps/$name.h.sav
+	fi
+	(
+	echo "/***************************************************"
+	echo "	mined keyboard mapping table"
+	echo "	* generated with mkkbmap (mkkmyudt)"
+	echo "	  from $kmap"
+	echo "*/"
+	echo "struct keymap keymap_$name [] = {"
+	keymaps/$name.exe
+	echo "	{NIL_PTR}"
+	echo "};"
+	) > keymaps/$name.h
+
+	# check if trailing blanks are used in every entry, strip them
+	if [ `egrep '	{"' keymaps/$name.h | wc -l` = `egrep ' ",' keymaps/$name.h | wc -l` ]
+	then	sed -e 's/ ",/",/' keymaps/$name.h > keymaps/$name.h0
+		/bin/mv keymaps/$name.h0 keymaps/$name.h
+	fi
+
+	./mkkentry -Y $name
+
+	rm -f keymaps/$name.c keymaps/$name.exe
+fi
+

@@ -1,0 +1,35 @@
+Topics for online help:
+
+Editing text with mined
+          Mouse control and Menus
+          Multiple paste buffers
+          Text position markers, marker stack
+          Paragraph justification
+          Search features
+Input support features
+Handling files
+          Tags file support
+          Memory of file position and editing style parameters
+          Version control integration
+          ?Long line splitting
+Working with mined
+          Mode indication flags
+          HTML support
+          Visible indication of line contents
+Character input support
+          Accented and mnemonic input support
+          Keyboard Mapping and Input Methods 
+Unicode support
+          Smart quotes
+          Combining characters
+CJK encoding support
+          CJK input method support
+          Han character information display
+Major commands (excerpt from Mined command reference)
+Environment interworking and configuration hints
+                Terminal interworking problems
+          Keyboard Mapping / Input Method pre-selection
+          MINEDDETECT
+          Han info configuration
+          Keypad configuration
+

@@ -1,0 +1,376 @@
+#! /bin/sh
+
+# depends on X tools: xrdb, xlsfonts, xterm
+
+#############################################################################
+# Invoke xterm in UTF-8 mode, using best Unicode fonts found.
+
+# Make sure sufficient Unicode fonts are installed with your X server:
+#	http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts.tar.gz
+#	http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts-asian.tar.gz
+# The script installfonts may help to install and configure them.
+
+# For direct invocation of xterm (or the uxterm script which comes with 
+# xterm), configure fonts to be used with X resource entries 
+# (typically in $HOME/.Xdefaults), see Xdefaults.mined sample 
+# resource file, also in the mined runtime support library.
+
+# NOTE: This script, however, tries its best to use fonts that provide 
+# a maximum of Unicode support - that's what this script is for.
+# That means, it checks if you have the 10x20 Unicode font and a 
+# matching 20x20 double width font installed (see explanation below).
+# If not, it checks if you have the 9x18 Unicode font and a 
+# matching 18x18 double width font installed and uses them.
+# If both are not found, it tries to invoke rxvt with the GNU unifont.
+# If either GNU unifont or rxvt are not installed, efont is tried.
+# As a last resort, it tries to invoke xterm with 6x13 and 12x13 fonts.
+# As a very last fallback, it invokes xterm with its configured default fonts.
+
+
+#############################################################################
+# Information about font usage
+# Font selection is a matter of both taste and script coverage.
+# This script uses fonts with a good coverage of Unicode script ranges, 
+# but its order of precedence may not suit your specific needs. In that 
+# case you should configure your exact desired font preference and 
+# invoke the desired terminal (xterm, rxvt) directly.
+# Coverage of certain scripts would suggest certain font preferences:
+#	Korean Hangul: GNU unifont
+#	Devanagari: efont
+#	Georgian: efont, X fonts
+#	...
+
+
+# The safest way to start an xterm with a maximum of Unicode support is to 
+# use 18 pixel size and specify single and double width fonts as follows:
+#	-fn "-misc-fixed-medium-r-*--18-*-*-*-*-90-iso10646-1"
+#	-fw "-misc-fixed-medium-r-*-*-18-*-*-*-*-180-iso10646-1"
+
+# The 20 pixel size fonts are much clearer in appearance. 
+# Unfortunately the X Unicode fonts distribution does not include 
+# matching double width fonts and xterm is not yet capable of combining 
+# 18 pixel single width with 20 pixel double width fonts.
+
+# The bdf18to20 script, also in the mined runtime support library, 
+# helps with this issue and generates the missing fonts from the 
+# 18 pixel double width fonts by padding blank pixels.
+# If you have installed those, you can start xterm with these 
+# font specifications:
+#	-fn "-misc-fixed-medium-r-*--20-*-*-*-*-100-iso10646-1"
+#	-fw "-misc-fixed-medium-r-*-*-20-*-*-*-*-200-iso10646-1"
+
+# The following font combines single width and double width characters 
+# and works with rxvt but NOT with xterm; for use with rxvt, it should 
+# be specified twice, for bold display as well - otherwise rxvt may 
+# not display bold characters:
+#	-fn -gnu-unifont-medium-r-*--16-160-75-75-c-80-iso10646-1
+#	-fb -gnu-unifont-medium-r-*--16-160-75-75-c-80-iso10646-1
+
+# If the standard Unicode X fonts are not installed, the efont is an 
+# alternative. Its 16 pixel size font seems to have the best (not 
+# the largest) coverage of Unicode scripts.
+# Note: efont is said to be unsuitable for Polytonic Greek
+#	-fn "-efont-fixed-medium-r-normal--16-160-75-75-c-80-iso10646-1"
+#	-fw "-efont-fixed-medium-r-normal--16-160-75-75-c-160-iso10646-1"
+
+# The Unicode VGA font by Dmitry Bolkhovityanov could be used together 
+# with the double-with 16 pixel efont. The bolkhov font has a better 
+# coverage of Arabic and some Cyrillic characters than the single-width 
+# efont but is missing Devanagari, Thai, Georgian, Runic and some Greek.
+#	-fn "-bolkhov-vga-medium-r-normal--16-160-75-75-c-80-iso10646-1"
+#	-fw "-efont-fixed-medium-r-normal--16-160-75-75-c-160-iso10646-1"
+
+# The following is a rather tiny alternative for use with xterm:
+#	-fn "-misc-fixed-medium-r-*--13-*-*-*-*-60-iso10646-1"
+#	-fw "-misc-fixed-medium-r-*-*-13-*-*-*-*-120-iso10646-1"
+
+
+#############################################################################
+# Fix display reference
+case " $*" in
+*" -display "*)	DISPLAY=`echo " $*" | sed -e 's,.* -display \([^ 	]*\).*,\1,'`
+		export DISPLAY;;
+esac
+
+
+#############################################################################
+# Make X tools accessible
+PATH=$PATH:/usr/X11/bin
+
+
+#############################################################################
+# Check available fonts
+
+retrievefontlist () {
+	#echo retrieving $fontlist
+	xlsfonts -fn "*10646*" > $fontlist &
+	xlsfonts=$!
+	sleep 0.5 2> /dev/null || sleep 1
+	(sleep 11; kill $xlsfonts 2> /dev/null) &
+	wait $xlsfonts
+}
+
+cachefontlist=false
+
+fontlist=/tmp/xlsfonts.$DISPLAY
+if $cachefontlist
+then	if [ ! -f "$fontlist" ]
+	then	retrievefontlist
+	fi
+else	retrievefontlist
+fi
+
+
+#############################################################################
+# Select suitable terminal
+
+# check terminal preference command line option
+case "$1" in
+-rx|-rxvt)
+	TERM=rxvt
+	shift;;
+-xt|-xterm)
+	TERM=xterm
+	shift;;
+esac
+
+# find rxvt-unicode
+if type urxvt > /dev/null 2>&1
+then	rxvt=urxvt
+elif type urxvt-unicode > /dev/null 2>&1
+then	rxvt=urxvt-unicode
+elif type rxvt > /dev/null 2>&1
+then	if rxvt -help 2>&1 | sed -e 1q | grep rxvt-unicode > /dev/null
+	then	rxvt=rxvt
+	else	rxvt=
+	fi
+fi
+
+# check user preference
+case "$TERM" in
+rxvt*)	if type "$rxvt" > /dev/null 2>&1
+	then	term="$rxvt"
+	else	term=xterm
+	fi;;
+*)	term=xterm;;
+esac
+
+
+#############################################################################
+# Check typical Unicode fonts
+
+# set font names
+f20w="-misc-fixed-medium-r-[^-]*-[^-]*-20-[^-]*-[^-]*-[^-]*-[^-]*-200-iso10646-1"
+f20="-misc-fixed-medium-r-[^-]*--20-[^-]*-[^-]*-[^-]*-[^-]*-100-iso10646-1"
+f18w="-misc-fixed-medium-r-[^-]*-[^-]*-18-[^-]*-[^-]*-[^-]*-[^-]*-180-iso10646-1"
+f18="-misc-fixed-medium-r-[^-]*--18-[^-]*-[^-]*-[^-]*-[^-]*-90-iso10646-1"
+fgnu="-gnu-unifont-medium-r-[^-]*--16-160-75-75-c-80-iso10646-1"
+e16w="-efont-fixed-medium-r-normal--16-160-75-75-c-160-iso10646-1"
+e16="-efont-fixed-medium-r-normal--16-160-75-75-c-80-iso10646-1"
+f13w="-misc-fixed-medium-r-[^-]*-[^-]*-13-[^-]*-[^-]*-[^-]*-[^-]*-120-iso10646-1"
+f13="-misc-fixed-medium-r-[^-]*--13-[^-]*-[^-]*-[^-]*-[^-]*-60-iso10646-1"
+
+# check font availability
+if egrep -e "$f20w" $fontlist > /dev/null && egrep -e "$f20" $fontlist > /dev/null
+then	fn="-misc-fixed-medium-r-*--20-*-*-*-*-100-iso10646-1"
+	fw="-misc-fixed-medium-r-*-*-20-*-*-*-*-200-iso10646-1"
+elif egrep -e "$f18w" $fontlist > /dev/null && egrep -e "$f18" $fontlist > /dev/null
+then	fn="-misc-fixed-medium-r-*--18-*-*-*-*-90-iso10646-1"
+	fw="-misc-fixed-medium-r-*-*-18-*-*-*-*-180-iso10646-1"
+	echo 20x20 font not found, using 9x18 with 18x18.
+elif egrep -e "$fgnu" $fontlist > /dev/null && type "$rxvt" > /dev/null 2>&1
+then	term="$rxvt"
+	fn="-gnu-unifont-medium-r-*--16-160-75-75-c-80-iso10646-1"
+	echo Large misc-fixed Unicode fonts not found, using rxvt with GNU unifont.
+elif egrep -e "$e16w" $fontlist > /dev/null && egrep -e "$e16" $fontlist > /dev/null
+then	fn="-efont-fixed-medium-r-normal--16-160-75-75-c-80-iso10646-1"
+	fw="-efont-fixed-medium-r-normal--16-160-75-75-c-160-iso10646-1"
+	echo Large misc-fixed Unicode fonts and GNU unifont fonts not found, using efont.
+elif egrep -e "$f13w" $fontlist > /dev/null && egrep -e "$f13" $fontlist > /dev/null
+then	fn="-misc-fixed-medium-r-*--13-*-*-*-*-60-iso10646-1"
+	fw="-misc-fixed-medium-r-*-*-13-*-*-*-*-120-iso10646-1"
+	echo Large Unicode fonts, GNU unifont, efont not found, using smaller Unicode font.
+else	echo No Unicode fonts with suitable character repertoire found.
+	echo Starting xterm with configured default font.
+	term=xterm.def
+fi
+
+# clean up font list (unless kept for caching)
+$cachefontlist || rm -f $fontlist
+
+
+#############################################################################
+# Modify locale environment to indicate UTF-8 mode:
+
+# If the effective locale variable (defined and "non-null" environment 
+# variable in the order of precedence LC_ALL, LC_CTYPE, LANG) 
+# already indicates UTF-8, nothing needs to be modified.
+# Otherwise all variables that affect the locale environment need 
+# to be manipulated to indicate a UTF-8 locale:
+# For all of them, we first check if they already indicate UTF-8 
+# (using locale charmap; note that not all UTF-8 locales have the proper 
+# ".UTF-8" or ".utf8" suffix), otherwise:
+# an appropriate suffix is appended, then we further check if the 
+# resulting locale exists, otherwise:
+# we fall back to a default locale.
+
+debug=false
+
+defutf8=en_US.UTF-8	# UTF-8 locale most likely to be installed at least
+
+setutf8 () {
+case "${LC_ALL:-${LC_CTYPE:-$LANG}}" in
+*.UTF-8 | *.utf8)	return;;
+esac
+if type locale > /dev/null 2>&1
+then	# check if it's a UTF-8 locale without clear indication
+	if [ "`locale charmap 2> /dev/null`" = "UTF-8" ]
+	then	return
+	fi
+
+	lcvars=`env | sed -e "s,^LANG=.*,LANG," -e "s,^\(LC_[A-Z]*\)=.*,\1," -e t -e d`
+	$debug && echo LC vars: $lcvars
+
+	for lcvar in ${lcvars:-LC_CTYPE}
+	do	$debug && echo $lcvar :
+		lc=`eval echo '$'$lcvar`
+		$debug && echo lc=$lc
+		if [ "`LC_ALL=$lc locale charmap 2> /dev/null`" = "UTF-8" ]
+		then	true
+		else	lc=`echo $lc | sed -e "s,[.@].*,,"`.UTF-8
+			$debug && echo lc=$lc
+			if [ "`LC_ALL=$lc locale charmap 2> /dev/null`" = "UTF-8" ]
+			then	true
+			else	lc=$defutf8
+				$debug && echo lc=$lc
+			fi
+			eval $lcvar=$lc
+			eval export $lcvar
+		fi
+	done
+else
+	lcvars=`env | sed -e "s,^LANG=.*,LANG," -e "s,^\(LC_[A-Z]*\)=.*,\1," -e t -e d`
+	$debug && echo LC vars: $lcvars
+
+	for lcvar in ${lcvars:-LC_CTYPE}
+	do	$debug && echo $lcvar :
+		lc=`eval echo '$'$lcvar`
+		$debug && echo lc=$lc
+		case "$lc" in
+		*.UTF-8 | *.utf8)	true;;
+		*)	lc=`echo $lc | sed -e "s,[.@].*,,"`.UTF-8
+			$debug && echo lc=$lc
+			eval $lcvar=$lc
+			eval export $lcvar
+			;;
+		esac
+	done
+fi
+}
+
+setutf8
+
+$debug && echo LC_ALL=${LC_ALL-<undefined>}, LC_CTYPE=${LC_CTYPE-<undefined>}, LANG=${LANG-<undefined>}
+$debug && exit
+
+
+#############################################################################
+# Further xterm configuration
+
+case "$term" in
+xterm*)
+
+# Retrieve X font resource for class UXTerm and use it if available;
+# this should actually be achieved with -class UXTerm instead, 
+# but due to an xterm bug, -e is ignored when -class is used, 
+# so uterm wouldn't work with any -e parameter.
+# Fixed with xterm 162.
+xtermversion=`xterm -version 2> /dev/null | sed -e 's,.*(\([0-9]*\)).*,\1,' -e t -e d`
+if [ 0$xtermversion -ge 162 ]
+then	uresources="-class UXTerm"
+else	# work-around for buggy xterm that ignores -e when -class is present
+	# also for xterm that understands neither -version nor -class 
+	# (e.g. SunOS /usr/openwin/bin/xterm)
+	uresources="`
+		xrdb -query |
+		sed -e ': start' -e '/\\$/ b cont' -e b -e ': cont' -e N -e 'b start' |
+		sed -e "/^UXTerm/ s,[ 	],,g" -e "s,^UXTerm,-xrm XTerm," -e t -e d
+	`"
+fi
+
+# Enforce UTF-8 mode with xterm. Also make sure that environment settings 
+# do not override UTF-8 mode as given with -u8 (which used to happen 
+# with an older version of xterm, even involving luit and hanging the 
+# terminal in combination with the -e option in that case).
+# This is achieved with the X resource UXTerm*locale:false.
+uparams="-u8 -xrm UXTerm*locale:UTF-8"
+
+# Add the -mk_width option if available. Only if invoked with -e option.
+# Reasons:
+# * This option tells xterm to use its own, compiled-in character 
+#   width property tables, rather than using system locale information.
+#   The advantage is that this information is often newer (referring 
+#   to a newer version of Unicode) than the installed system data.
+#   Thus the user is enabled to use up-to-date Unicode data by 
+#   using a self-installed copy of xterm, rather than being stuck with 
+#   the Unicode data that the system administrator cares to install.
+# * This is especially useful if the application is known to be able to 
+#   recognise that Unicode version, like mined. Thus this feature is 
+#   enabled if the -e option is used, like in the "umined" script which 
+#   calls uterm +sb -e mined.
+# * If uterm is called for a general terminal session, other applications 
+#   might be invoked that rely themselves on the system locale mechanism.
+#   Therefore, this feature is not enabled in that case.
+if [ 0$xtermversion -ge 201 ]
+then	case "$*" in
+	*-e\ *)	uparams="$uparams -mk_width";;
+	esac
+fi
+
+;;
+esac
+
+
+#############################################################################
+# Add useful X resources for xterm
+
+# resource preferences that are generally useful
+uparams="$uparams \
+	-xrm *VT100*eightBitOutput:true \
+	-xrm *VT100*metaSendsEscape:true \
+	-xrm *VT100*eightBitInput:false \
+	-xrm *VT100*allowTitleOps:true \
+	-xrm *VT100*allowTcapOps:true \
+	"
+#	-xrm *VT100.Translations:#override\n<Key>Home:string([H)\n<Key>End:string([F) \
+
+# additional resource preferences with application being invoked (esp mined)
+case "$*" in
+*-e\ *)	uparams="$uparams \
+	-xrm *VT100*deleteIsDEL:true \
+	-xrm *utf8Title:true \
+	";;
+esac
+
+
+#############################################################################
+# Start Unicode terminal
+set -f
+case $term in
+xterm.def)
+	exec xterm $uparams $uresources "$@"
+	;;
+xterm)
+	exec xterm $uparams $uresources -fn "$fn" -fw "$fw" "$@"
+	;;
+"$rxvt")
+	exec "$rxvt" -fn "$fn" -fb "$fn" "$@"
+	;;
+*)
+	echo Error: no terminal program selected.
+	;;
+esac
+
+
+#############################################################################
+# End

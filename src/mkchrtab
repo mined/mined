@@ -1,0 +1,109 @@
+#! /bin/sh
+
+compile1=true
+compile2=true
+clean=true
+OBJDIR=.
+
+case "$1" in
+-E)	compile1=false; shift;;
+-S)	compile2=false; shift;;
+-O)	OBJDIR="$2"; shift; shift;;
+-)	clean=false; shift;;
+esac
+
+for map in "$@"
+do
+
+charmap=`basename $map .map`
+
+name=`echo $charmap | sed -e "s,\..*,," -e "s,-,_,g" -e "s,^cjk_,,"`
+
+case $name in
+gb*)	split=splitgb;;
+*)	split=split;;
+esac
+
+CC=${CC-cc}
+
+(
+cat <</eoc
+#include <stdio.h>
+#include "charcode.h"
+struct {unsigned int cjk; unsigned int unicode;} raw_table [] = {
+/eoc
+
+# include mapping table rather than #include statement;
+# needed for cygwin where compiler would otherwise fail on 
+# some of the files with weird messages
+cat charmaps/$charmap.map
+
+cat <</eoc
+};
+
+void
+split (cjk, unicode)
+	unsigned int cjk;
+	unsigned int unicode;
+{
+	printf ("	{0x%02X, 0x%02X, 0x%04X, 0x%04X},\n",
+		(cjk >> 16) & 0xFF, unicode >> 16, 
+		cjk & 0xFFFF, unicode & 0xFFFF);
+}
+
+void
+splitgb (cjk, unicode)
+	unsigned int cjk;
+	unsigned int unicode;
+{
+    if (cjk < 0x10000) {
+	printf ("	{0x%02X, 0x%02X, 0x%04X, 0x%04X},\n",
+		0xFF, unicode >> 16, cjk, unicode & 0xFFFF);
+    } else {
+	printf ("	{0x%02X, 0x%02X, 0x%04X, 0x%04X},\n",
+		((cjk >> 12) & 0xF0) | (cjk & 0x0F), (unicode) >> 16, 
+		(cjk & 0xFF00) | (cjk >> 24), (unicode) & 0xFFFF);
+    }
+}
+
+int
+main () {
+	unsigned int i;
+	for (i = 0; i < arrlen (raw_table); i ++) {
+		$split (raw_table [i].cjk, raw_table [i].unicode);
+	}
+	return 0;
+}
+/eoc
+) > charmaps/$charmap-gen.c
+
+if $compile1 && $CC $OPT -I. -o charmaps/$charmap-gen.exe charmaps/$charmap-gen.c
+then	(
+	echo '#include "charcode.h"'
+	echo "struct encoding_table_entry ${name}_table [] = {"
+
+	# make generated program executable;
+	# needed for cygwin if compiling on remote nfs file system
+	# - with Hummingbird nfs, this only works if Hummingbird chmod 
+	# - is being invoked (by PATH arrangement or shell script)
+	chmod +x charmaps/$charmap-gen.exe
+	# use generated program to generate table;
+	charmaps/$charmap-gen.exe > charmaps/$charmap.cc
+	# filter out junk interspersed to stdout by EMX compiler
+	sed -e "/^Warning/ d" charmaps/$charmap.cc
+	rm -f charmaps/$charmap.cc
+
+	echo "};"
+	echo "unsigned int ${name}_table_len = arrlen (${name}_table);"
+	) > charmaps/$charmap.c
+
+	rm -f charmaps/$charmap-gen.*
+
+	if $compile2 && $CC $OPT -I. -c charmaps/$charmap.c -o $OBJDIR/charmaps/$charmap.o
+	then	if false && $clean
+		then	rm -f charmaps/$charmap.c
+		fi
+	fi
+fi
+
+done

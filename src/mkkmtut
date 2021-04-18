@@ -1,0 +1,37 @@
+#! /bin/sh
+
+# generate TUT code keyboard mapping from 
+# <http://plone.crew.sfc.keio.ac.jp/groups/tut-code/tut-architecture/tut-code-list>
+# obsolete, as the already integrated TUT roma input method is a superset
+
+LC_ALL=C
+export LC_ALL
+
+file=$1
+
+name=`basename $file | sed -e "s,\..*,," -e "s,-list,," -e "s,-,_,g"`
+title=`echo $name | sed -e "s,code,Code," -e "s,^tut,TUT,"`
+
+if [ -f keymaps/$name.h ]
+then	echo saving previous keyboard mapping file to keymaps/$name.h.sav
+	mv -i keymaps/$name.h keymaps/$name.h.sav
+fi
+
+(
+echo "/***************************************************"
+echo "	mined keyboard mapping table"
+echo "	* generated with mkkbmap (mkkmtut)"
+echo "	  from $file"
+echo "*/"
+echo "struct keymap keymap_$name [] = {"
+
+cat $1 | tr '\015' '\012' |
+sed -e "s,^<br>,," -e "s,<[^>]*>,,g" |
+sed -e "s,^\([^ a-z][^ a-z]*\) \([!-z][!-z]*\)$,\2	\1," -e t -e d |
+sed -e 's/\(.*\)	\(.*\)/	{"\1", "\2"},/'
+
+echo "	{NIL_PTR}"
+echo "};"
+) > keymaps/$name.h
+
+./mkkentry + $title $name

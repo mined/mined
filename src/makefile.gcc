@@ -1,0 +1,178 @@
+#############################################################################
+# mined text editor makefile	- GCC or Linux
+
+
+#############################################################################
+# Where and how to install
+# installation root, usually empty
+root	= $(INSTALLROOT)
+
+# configuration of installation directories:
+# * [l]rundir refers to the "Mined runtime support library" -
+#   it contains the online help file, auxiliary scripts (some of which 
+#   might actually be installed in .../bin, too), configuration samples etc.
+# * [l]docdir is optional and refers to the mined web documentation 
+#   (a copy of the mined home page).
+
+# directories for target "make install"
+prefix	= $(root)/usr
+bindir	= $(prefix)/bin
+mandir	= $(prefix)/share/man
+rundir	= $(prefix)/share/mined
+# Debian, Fedora:
+#docdir	= $(prefix)/share/doc/mined
+# SuSE:
+#docdir	= $(prefix)/share/doc/packages/mined
+
+# directories for target "make localinstall"
+lprefix	= $(root)/usr/local
+lbindir	= $(lprefix)/bin
+lmandir	= $(lprefix)/man
+lrundir	= $(lprefix)/share/mined
+
+#INSTALL = install --mode=+r,u+w
+INSTALL = install -m 644
+INSTALLBIN = install
+#INSTALL = /bin/cp -p
+#INSTALLBIN = /bin/cp -p
+
+
+#############################################################################
+# system environment adaption
+
+# for 64-bit systems, check whether /lib/64 or /lib64 exists
+#LIBARCH=$(shell uname -m | sed -e "s,.*_64,64," -e t -e d )
+#LIBDIR=$(shell ls -1d /lib /lib/$(LIBARCH) /lib$(LIBARCH) /lib 2> /dev/null | sed -e "$$ p" -e d )
+# derive /lib64 from uname -m ending on _64:
+#LIBDIR=$(shell if uname -m | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; else ls -d /lib; fi 2> /dev/null | sed -e "1 p" -e d )
+# also derive /lib64 from IRIX64 but not from CYGWIN_NT-6.1-WOW64:
+LIBDIR=$(shell if (uname | sed -e "s,^[^-]*64,_64," ; uname -m) | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; else ls -d /lib; fi 2> /dev/null | sed -e "1 p" -e d )
+
+# select user library directory
+USRLIBDIR	= /usr$(LIBDIR)
+# select root library directory
+ROOTLIBDIR	= $(LIBDIR)
+# prefer linking with self-installed ncurses library
+ncursesdevel = $(shell echo ${LDFLAGS} | sed -e "s,-L\([^ ]*\),ls \1/libncurses.a; ,g" -e "s,-[^ ]*,,g" )
+
+# find library with termcap API
+# prefer static linking (with ".a") rather than dynamic linking (with ".so")
+# this may yield a more portable program in a heterogeneous network
+liblist	= \
+	$(ncursesdevel) \
+	ls $(ROOTLIBDIR)/libtinfo.a	$(USRLIBDIR)/libtinfo.a; \
+	ls $(ROOTLIBDIR)/libncurses.a	$(USRLIBDIR)/libncurses.a; \
+	ls $(ROOTLIBDIR)/libtermcap.a	$(USRLIBDIR)/libtermcap.a; \
+	ls 				$(USRLIBDIR)/termcap/libtermcap.a; \
+	ls $(ROOTLIBDIR)/libtinfo.so*	$(USRLIBDIR)/libtinfo.so*; \
+	ls $(ROOTLIBDIR)/libncursesw.so*	$(USRLIBDIR)/libncursesw.so*; \
+	ls $(ROOTLIBDIR)/libncurses.so*	$(USRLIBDIR)/libncurses.so*; \
+	ls $(ROOTLIBDIR)/libtermcap.so*	$(USRLIBDIR)/libtermcap.so*; \
+	ls 				$(USRLIBDIR)/termcap/libtermcap.so*; \
+	ls /lib/*/libtinfo.so*; \
+	ls /lib/*/libncursesw.so*; \
+	ls /lib/*/libncurses.so*; \
+	ls /lib/*/libtermcap.so*; \
+
+#	ls $(ROOTLIBDIR)/*/libtinfo.so*	$(USRLIBDIR)/*/libtinfo.so*; \
+#	ls $(ROOTLIBDIR)/*/libncursesw.so*	$(USRLIBDIR)/*/libncursesw.so*; \
+#	ls $(ROOTLIBDIR)/*/libncurses.so*	$(USRLIBDIR)/*/libncurses.so* \
+#	ls $(ROOTLIBDIR)/*/libtermcap.so*	$(USRLIBDIR)/*/libtermcap.so* \
+
+# the /lib/*/ attempts are needed for newer Debian/Ubuntu which hides these 
+# libraries in something like /lib/i386-linux-gnu/ or /lib/x86_64-linux-gnu/, 
+# and neither in /lib nor /lib64
+
+# select first library found from list, replace with -l... if static
+firstlib = sed -e "1 p" -e d
+
+libargs = sed -e "s,\($(USRLIBDIR).*\)/lib\([^/]*\)\.a,-L\1 -l\2," -e t -e "s,\($(ROOTLIBDIR).*\)/lib\([^/]*\)\.a,-L\1 -l\2,"
+termcap = $(shell ( $(liblist) ) 2> /dev/null | $(libargs) | $(firstlib) )
+
+# libtest: target at bottom (must not be first target)
+
+
+#############################################################################
+# compilation target options
+
+# terminal handling mode 1: termio
+SCREEN	= -DTERMIO
+# link termcap functions:
+#SLIB	= -ltermcap	# usual termcap library
+#SLIB	= -L/usr/lib/termcap -ltermcap	# if deprecated (Linux)
+#SLIB	= -lcurses	# may work on System V Unix too (Solaris)
+# newer Linux includes the termcap API in the ncurses library:
+#SLIB	= -lncurses
+SLIB	= $(termcap)
+
+# terminal handling mode 2: sgtty (old, BSD)
+#SCREEN	= -DSGTTY
+#SLIB	= -ltermcap
+
+# terminal handling mode 3: curses
+# Choose curses only if other options don't work 
+# (see COMPILE.DOC for discussion).
+# Use target "make minced" to use UTF-8 enabled ncurses (>= 5.4), 
+# or see separate makefile.curses for options with legacy curses.
+
+
+# select operating system flavour (define sysV if on System V flavour)
+SYSTEM	= -Dunix -DsysV
+#SYSTEM	= -Dunix -DsysV -DFDSET
+#SYSTEM	= -Dunix
+
+# select operating system environment
+DEFS	= -Dunix
+
+
+# collection of system parameters for compilation
+SYSFLAGS	= $(SCREEN) $(SYSTEM) $(DEFS)
+
+
+#############################################################################
+# link options
+
+# link dynamically
+LDOPTS=-d y	# -dn or -Bstatic links statically
+GLDOPTS=	# -[B]static links statically
+
+
+#############################################################################
+# compiler selection and compiler-specific options
+# (source warnings, optimisation and debug)
+
+CC=gcc
+include mkinclud.gcc	# facilitate make CC=clang
+
+
+#############################################################################
+# make actions
+
+#this is rather handled explicitly, via makefile.minix:
+#EXTRALIBS=$(shell if [ `uname` = Minix ]; then echo -lcompat_minix; fi)
+
+KEYMAPSDEP=keymaps.t
+
+include mkinclud.mak
+
+
+#############################################################################
+# test targets
+
+libtest:
+	echo libdirs checked: $(ROOTLIBDIR) $(USRLIBDIR)
+	echo ---------- liblist:
+	( $(liblist) ) || true
+	echo ---------- firstlib:
+	echo $(termcap)
+
+termlib:
+	find /lib* /usr/lib* -name "*libtinfo*" -print -o -name "*libtermcap*" -print -o -name "*libtermlib*" -print -o -name "*lib*curses*" -print
+
+dyntest:
+	echo CHARMAPS: $(CHARMAPS)
+	echo KEYMAPS: $(KEYMAPS)
+
+
+#############################################################################
+# end

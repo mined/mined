@@ -1,0 +1,112 @@
+#! /bin/sh
+
+cat << /END
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+<style>
+code.mnemo, table.ex td code {background-color: #CCC0C0;}
+#space {xbackground-color: yellow;}
+</style>
+<script language="JavaScript">top.select ("mnemodoc");</script>
+</head>
+
+<h3>MinEd Mnemonics (character input support)</h3>
+Mined mnemonic character input support recognizes character mnemonics 
+as taken from various resources:
+
+<ul>
+<li>Mnemos from <a href=http://tools.ietf.org/html/rfc1345>
+	RFC 1345</a>; in ambiguous cases, the RFC 1345 mnemos must be 
+	prepended a digit “1”.
+<li><a href=http://selfhtml.teamone.de/html/referenz/zeichen.htm#benannte_iso8859_1>
+	HTML mnemos</a>; in ambiguous cases, the HTML mnemos must be 
+	prepended a “&”.
+<li>TeX mnemos (macros) and substitutes, leaving out any “\”.
+<li><a href=#mnemotable>Supplementary mnemonics</a>: a collection of useful 
+	specific mnemonics maintained by mined (in addition to the 
+	mnemonic repository of the sources mentioned above) 
+	is listed in the second table below.
+	<br><code id=space>&nbsp;</code> means: 
+	enter a blank character (only works in two-character 
+	combination shortcut ^Vxy).
+</ul>
+
+For accented characters, there are a number of <i>mnemonic patterns</i> 
+(generic accent composing mnemonics).
+They are listed in the following overview table; replace the “x” with 
+the base letter to be combined.
+<br><i>Note:</i> For frequently used accented characters, also a 
+selection of 
+<a href=mined.html#accentprefixkeys>Accent prefix function keys</a> is 
+available, see the section in the manual.
+
+<h4>Generic mnemonics</h4>
+
+/END
+
+
+# be independent of iconv (which may be an outdated installation)
+(cat <</eoc
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+int
+main ()
+{
+	unsigned char c;
+	while (read (STDIN_FILENO, & c, 1) > 0) {
+		if (c & 0x80) {
+			printf ("%c%c", 0xC0 | (c >> 6), 0x80 | (c & 0x3F));
+		} else {
+			printf ("%c", c);
+		}
+	}
+	exit (0);
+}
+/eoc
+) > mkltou.c
+
+${CC-cc} -o mkltou.exe mkltou.c || exit 1
+
+ltou (){
+	# iconv -f ISO_8859-1 -t UTF-8
+	./mkltou.exe
+}
+
+sed -e "/<table .*name=genericmnemonics.*>/,/<\/table>/ b" -e d ../doc/mined.html |
+ltou || exit 1
+
+rm -f mkltou.c mkltou.exe
+
+
+cat << /END
+
+<a name=mnemotable>
+<h4>Supplementary mnemonics</h4>
+</a>
+<table border=1>
+<tr><th>hex value<th>mnemo<th>character<th>description
+/END
+
+# prevent sed from skipping non-BMP entries !?!
+LC_ALL=C
+export LC_ALL
+
+#	{"|T", 0x00DE /* Þ */},
+
+sed	-e 's,^[ 	]*/\*\(.*\)\*/,<tr><td colspan=4><br><h4>\1</h4>,' \
+	-e t \
+	-e 's,{"",{"  ",' \
+	-e 's/},.*/},/' \
+	-e '/^[	 ]*{/ b entry' -e d \
+	-e ': entry' \
+	-e 's,\\",",g' \
+	-e 's+{"\(.*\)", *0x\([0-9A-Fa-f]*\) */\* *\(.*\) *\*/},*+<tr><td><code>\2</code><td><code class=mnemo>\1</code><td><code>\&#x\2;</code><td>\3+' \
+	-e 's,  </code>,<span id=space>\&nbsp;</span><font size=1></font><span id=space>\&nbsp;</span></code>,' \
+	-e 's, </code>,<span id=space>\&nbsp;</span></code>,' \
+	mnemos.sup
+
+echo '</table>'
+

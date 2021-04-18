@@ -1,0 +1,6 @@
+#! /bin/sh
+
+# this script installs a link to the suitable makefile in src/
+
+./makemined configure
+

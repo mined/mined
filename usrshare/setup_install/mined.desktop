@@ -1,0 +1,92 @@
+# To be deployed as
+#	/usr/share/applications/mined.desktop
+# or
+#	$HOME/.local/share/applications/mined.desktop
+
+[Desktop Entry]
+Encoding=UTF-8
+
+Name=MinEd
+Type=Application
+MimeType=text/plain;
+Icon=mined.xpm
+
+#Path=
+# use start script to embed mined preferably into xterm
+Terminal=false
+Exec=umined %F
+# don't implicitly use gnome-terminal or konsole to avoid their deficiencies
+#Terminal=true
+#Exec=mined %F
+
+Categories=TextEditor;Utility
+GenericName=Text Editor
+GenericName[af]=Teks Redigeerder
+GenericName[ar]=محرر نصوص
+GenericName[az]=Mətn Editoru
+GenericName[be]=Тэкставы рэдактар
+GenericName[bg]=Текстов редактор
+GenericName[bn]=টেক্সট সম্পাদক
+GenericName[bs]=Tekst editor
+GenericName[ca]=Editor de text
+GenericName[cs]=Textový editor
+GenericName[cy]=Golygydd Testun
+GenericName[da]=Teksteditor
+GenericName[de]=Texteditor
+GenericName[el]=Διορθωτής κειμένου
+GenericName[eo]=Tekstredaktilo
+GenericName[es]=Editor de texto
+GenericName[et]=Tekstiredaktor
+GenericName[eu]=Testu Editorea
+GenericName[fa]=ویرایشگر متن
+GenericName[fi]=Tekstieditori
+GenericName[fo]=Tekstritil
+GenericName[fr]=Éditeur de texte
+GenericName[gl]=Editor de Textos
+GenericName[he]=עורך טקסט
+GenericName[hi]=पाठ संपादक
+GenericName[hr]=Uređivač teksta
+GenericName[hu]=Szövegszerkesztő
+GenericName[is]=Textaritill
+GenericName[it]=Editor di testi
+GenericName[ja]=テキストエディタ
+GenericName[ko]=글월 편집기
+GenericName[lo]=ເຄື່ອງມືແກ້ໄຂຂໍ້ຄວາມ
+GenericName[lt]=Teksto redaktorius
+GenericName[lv]=Teksta Redaktors
+GenericName[mk]=Текст уредувач
+GenericName[mn]=Текст боловсруулагч
+GenericName[ms]=Penyunting Teks
+GenericName[mt]=Editur tat-test
+GenericName[nb]=Skriveprogram
+GenericName[nds]=Texteditor
+GenericName[nl]=Teksteditor
+GenericName[nn]=Skriveprogram
+GenericName[nso]=Mofetosi wa Sengwalwana
+GenericName[pa]=ਪਾਠ ਸੰਪਾਦਕ
+GenericName[pl]=Edytor tekstowy
+GenericName[pt]=Editor de Texto
+GenericName[pt_BR]=Editor de Texto
+GenericName[ro]=Editor de text
+GenericName[ru]=Текстовый редактор
+GenericName[se]=Čállinprográmma
+GenericName[sk]=Textový editor
+GenericName[sl]=Urejevalnik besedil
+GenericName[sr]=Уређивач текста
+GenericName[sr@Latn]=Uređivač teksta
+GenericName[ss]=Sihleli sembhalo
+GenericName[sv]=Texteditor
+GenericName[ta]=உரை தொகுப்பாளர்
+GenericName[tg]=Муҳаррири матн
+GenericName[th]=เครื่องมือแก้ไขข้อความ
+GenericName[tr]=Metin Düzenleyici
+GenericName[uk]=Редактор текстів
+GenericName[uz]=Матн таҳрирчи
+GenericName[ven]=Musengulusi wa Manwalwa
+GenericName[vi]=Trình soạn văn bản
+GenericName[wa]=Aspougneu di tecse
+GenericName[xh]=Umhleli Wombhalo
+GenericName[zh_CN]=文本编辑器
+GenericName[zh_TW]=文字編輯器
+GenericName[zu]=Umlungisi wombhalo
+

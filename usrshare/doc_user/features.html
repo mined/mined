@@ -1,0 +1,444 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
+<meta name="keywords" content="editor, text mode editor, programmers editor, programming editor, Unicode editor, UTF-8 editor, Unicode text editor, UTF-8 text editor, Unicode text mode editor, UTF-8 text mode editor, text mode Unicode editor, text mode UTF-8 editor, text mode HTML editor, CJK editor">
+<meta name="robots" content="index">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Unicode text editor MinEd</title>
+
+<style>
+code {background-color: #CCC0C0;}
+</style>
+
+<script>
+top.select ("features");
+</script>
+
+</head>
+
+<body>
+<br>
+<center>
+<h3>MinEd Features</h3>
+</center>
+
+<table width=100% cellpadding=4><tr><td bgcolor=#FFD000>
+<dd>This is a rather extensive listing of mined features.
+If you just want to try the editor, you may skip to the 
+<a href=download.html>download page</a> and consult the 
+<a href=mined.html>mined manual</a> for detailed instructions.
+</table>
+
+<dl>
+<dd>
+
+<table align=right>
+<!-- graphic tag -->
+</table>
+
+<ul type=circle>
+<li><a href=#unicode>Unicode support and features</a>
+<li><a href=#cjk>CJK support</a>
+<li><a href=#mapped>8 bit encoding support</a>
+<li><a href=#terminal>Versatile terminal feature support</a>
+<li><a href=#userinterface>User interface</a>
+<li><a href=#screen>Screen interaction</a>
+<li><a href=#editing>Text editing features</a>
+<li><a href=#searching>Search functions</a>
+<li><a href=#textfile>Secure text and file handling</a>
+<li><a href=#other>Other useful features</a>
+<li><a href=#system>Operating environment and portability</a>
+</ul>
+</dl>
+
+
+<a name=unicode>
+<br>
+<ul>
+<h4>Unicode support and features</h4>
+<li> Works with UTF-8 text mode terminals or windows like xterm.
+     <br><i>See also the <a href=unicode.html>Unicode howto</a> with 
+     information on how to set up a UTF-8 terminal.</i>
+<li> Supports independent <i>mix of text encoding and terminal encoding</i>; 
+     can edit text in any supported encoding in any terminal encoding.
+<li> <i>File encoding auto-detection</i> (Latin-1, UTF-8, UTF-16, East Asian encodings).
+     UTF-16 encoded files with BOM or without BOM will be handled 
+     transparently and written back in UTF-16.
+<li> <img align=absmiddle src=handr.gif>
+     Editing of <i>mixed encoding files</i> (like e.g. mailbox files); 
+     interactive switching of character encoding interpretation.
+<p>
+<li> Handles single-width and <i>double-width characters</i> 
+	(works with dual-width Han fonts; xterm 145 or newer recommended).
+<li> <img align=absmiddle src=handr.gif>
+     Complete handling of <i>combining characters</i> (display, 
+     edit, search, input support, ...).
+     <br>Partial editing and <i>optional separated display mode</i>.
+     <br>Taking care of <i>isolated combining characters</i> 
+     (after line beginning or TAB character) and new Unicode combining 
+     characters (which the terminal does not handle yet).
+<li> Transparent handling of illegal UTF-8 sequences, with visible indications.
+<li> Optional handling of <i>Unicode line ends</i> (line and paragraph separator).
+<li> Display support in non-Unicode terminals:
+     Characters that cannot be displayed are substituted by a 
+     <img align=absmiddle src=handr.gif> representation using their 
+     base character according to Unicode decomposition.
+<p>
+<li> <i>Mnemonic input support</i> 
+     (RFC1345 with completions to cover Unicode with generic accent 
+     mnemonic patterns, HTML, TeX and other mnemos supported).
+<li> Extensive accented character input support, including 
+     multiple accent prefix keys, covering frequent accents of all 
+     Latin-based languages (macron, breve, dot above, ogonek, caron, stroke), and 
+     Control-punctuation keys as accent prefix, e.g. Control-comma (with xterm and mintty).
+<li> Support for Greek (monotonic and polytonic).
+<li> Support for Cyrillic accented characters.
+<li> Special input support supplements for Vietnamese multiple accented 
+     characters, including composing precomposed characters (e.g. with 
+     one accent) with further accents, working in all text encodings.
+<li> Numeric input support, conforming to ISO 14755.
+<li> Interactive conversion support to or from Unicode.
+<li> Enhanced character information display, including character code, 
+     Unicode value and a configurable selection of Unicode script, 
+     Unicode character name, <img align=absmiddle src=new-rot.gif title=2015.25>
+     Unicode named sequence, Unicode decomposition, character input mnemonics.
+     Available in all text encodings.
+<li> <img align=absmiddle src=handr.gif>
+     Configurable <i>smart quotes</i> (automatic replacement of 
+     entered keyboard quotes into suitable typographic quotation marks), 
+     applicable in all text encodings.
+     Automatic quotation marks style detection on file loading.
+<li> Smart dashes and smart arrows for various styles.
+<li> <img align=absmiddle src=handr.gif>
+     Bidirectional terminal support (for handling 
+     <i>right-to-left scripts</i>), including 
+     support for Arabic ligature joining (LAM/ALEF).
+<li> Support for Arabic ligature joining on all terminals.
+<li> Optional “poor man's bidi” mode (basic input support for 
+     <i>right-to-left scripts</i> on non-bidi terminals).
+<li> <img align=absmiddle src=handr.gif>
+     <i>Input methods:</i> Keyboard mapping for input support of 
+     non-Latin scripts on Latin keyboards (popular CJK input methods, 
+     and mappings for Greek, Cyrillic, Hebrew, Arabic, Vietnamese and 
+     Thai input methods are pre-configured, others can be added).
+     <br>
+     Keyboard mapping supports multiple choice mappings by offering 
+     a “pick list” (selection menu) 
+     with configurable function of the space key;
+     characters in the pick list being sorted by relevance of Unicode ranges.
+     <br>
+     <img align=absmiddle src=handr.gif>
+     Radical/stroke lookup input method for Han characters supports 
+     especially occasional Han character input for not CJK speaking users.
+<li> Highlighting (colouring) of certain Unicode Script ranges 
+     (compile-time configurable, Greek and Cyrillic preconfigured).
+<p>
+<li> Supplemental scripts <a href=uterm.html><code>uterm</code></a> 
+     and <code>umined</code> to invoke a best-choice configured Unicode 
+     terminal window, optionally with mined running in it.
+</ul>
+
+<a name=cjk>
+<br>
+<ul>
+<h4>CJK support</h4>
+<li> CJK input methods are supported using the generic keyboard mapping 
+     mechanism including selection menus for multiple choice mappings.
+     Further keyboard mappings or CJK input methods can be added by 
+     compile-time configuration.
+<li> <img align=absmiddle src=handr.gif>
+     Han character information with description and pronunciations 
+     of CJK characters as listed in the Unihan database can optionally 
+     be displayed while browsing text or input method pick lists.
+<li> Major CJK encodings (mainly double-byte encodings for 
+     Chinese/Japanese/Korean character sets) are supported 
+     (handled in any terminal encoding).
+     For Big5 and JIS encodings, character codes that map to two Unicode 
+     characters are supported.
+<li> CJK encodings are auto-detected.
+     The encodings to be auto-detected are configurable.
+<li> Combining characters are supported for GB18030 and Japanese, 
+     including partial editing and optional separated display mode.
+</ul>
+
+<a name=mapped>
+<br>
+<ul>
+<h4>8 bit encoding support</h4>
+<li> Large number of 8 bit encodings supported that appear to be in 
+     use or unique for a region.
+<li> Encoding menu is structured with sub-menus to provide a 
+     concise menu selection feature.
+<li> Combining characters are supported (Vietnamese TCVN, Thai, 
+     ISO Arabic, Mac Arabic, ISO Hebrew, Windows Hebrew), 
+     including partial editing and optional separated display mode.
+<li> Handling of combining text characters is properly coordinated 
+     with the set of combining characters supported by the terminal.
+</ul>
+
+<a name=terminal>
+<br>
+<ul>
+<h4>Versatile terminal feature support</h4>
+<li> <img align=absmiddle src=handr.gif>
+     Auto-detection of UTF-8 terminal encoding and UTF-8 terminal features 
+     (different width data versions, handling of double-width, 
+     combining and joining characters).
+<li> Auto-detection of CJK terminal properties (handling of non-EUC 
+     code points, GB18030, 3-byte and 4-byte encodings).
+     Auto-detection of kterm encoding.
+<li> Auto-detection of 8 bit terminal support for combining characters.
+<li> Standard-comformant but yet flexible locale configuration for both 
+     text and terminal encoding.
+<li> Interoperable with a large number of popular and legacy terminals 
+     with respect to display features and function key detection, 
+     including detection of shifted function keys (Shift, Control, Alt), 
+     <img align=absmiddle src=handr.gif>
+     distinction between (often redundant) small and large keypads where possible.
+     <br>
+     Application of specific workarounds and conditional usage of features 
+     (even version specific).
+<li> Supporting extended mouse-coordinates mode (xterm 262 and 268, 
+     mintty 0.9), for up to 2015 lines/columns screen width.
+<li> Applying computed dim screen attribute for line indications (in xterm).
+<li> Automatically adjusting HTML highlighting colour to dark background.
+<li> Optional 8 bit character input and output support for 
+     antique character set switching 7-bit terminals.
+<li> <img align=absmiddle src=handr.gif>
+     Works (in typical terminals) even if “terminfo” database is not installed.
+</ul>
+
+<a name=userinterface>
+<br>
+<ul>
+<h4>User interface</h4>
+<li> Intuitive and <i>easy operation</i>. No modes.
+     Intuitive cursor position handling, no weird limitations 
+     (e.g. at line-end) or insert/append confusion.
+<li> “Geometric” control-key layout for basic cursor movements (classic 
+     “WordStar”-like navigation). (Of course you can also use cursor keys.)
+<li> <img align=absmiddle src=handr.gif>
+     Use of a “HOP” key which amplifies or expands any subsequent 
+     movement command (and some other commands) in an intuitive sense. 
+     This way, a lot of functions can be achieved quickly without 
+     remembering as many control or function keys.
+     HOP and function key assignment to numeric keypad such that 
+     most frequently used functions are easily available.
+<p>
+<li> <img align=absmiddle src=handr.gif>
+     <a href=keyboard.html#keypad><i>Keypad assignment</i></a> 
+     optimized for most important navigation and paste buffer functions.
+<li> Two-key commands (starting with escape key) for less frequent functions.
+<li> <img align=absmiddle src=handr.gif>
+     Text position stack to go backward and forward along text positions 
+     after search and other operations.
+<p>
+<li> <i>Mouse control</i> available for all versions (Unix and DOS).
+<li> Pull-down <i>menus</i>, 
+     flag menus with marked options, 
+     and a quick pop-up menu for text-position related functions.
+     <br>
+     Menu navigation and control with mouse (click / drag or scroll wheel) 
+     or keyboard.
+     <br>
+     Menus structured with subtitles, nice configurable menu appearance.
+<li> <i>Scrollbar</i>.
+<p>
+<li> Configurable visible indications of different line-end types 
+     (Unix/DOS/Mac/Unicode line-ends, paragraphs) and TAB characters.
+     TAB width can be toggled.
+<li> <img align=absmiddle src=handr.gif>
+     <i>HTML syntax highlighting</i> distinguishes HTML tags, 
+     HTML comments and JSP.
+<li> Help function; 
+     optional help status line of (shifted) function key assignments.
+<li> View only and restricted modes.
+<p>
+<li>Interactive file chooser for file selection.
+<li>Interactive file switcher for tab-like switching between the opened files.
+</ul>
+
+<a name=screen>
+<br>
+<ul>
+<h4>Screen interaction</h4>
+<li> <img align=absmiddle src=handr.gif>
+     Perfect responsiveness to terminal/window size changes. On resizing 
+     the window, mined will immediately adjust and update its display &ndash; 
+     the text cursor position will stay where it was.
+     Resizing also works while prompting for input (e.g. search text).
+<li> Screen output starting from current position and growing to the 
+     top and bottom &ndash; on slow (e.g. remote) terminal connections 
+     this gives the user a quick visual focus on the cursor position 
+     and provides better orientation when paging or searching.
+<li> Display of filename and modification status in window header line and icon.
+<li> Automatic adaptation of Backspace and Delete functions to 
+     user preference as set in the environment (stty); additional 
+     configuration options.
+<li> Function key sequences for many common terminal types are always 
+     activated (vt100, vt100 application mode, Sun, various xterm 
+     settings, Linux console, HP and Iris workstation X windows, PC 
+     keyboard). The operating environment that is supposed to handle 
+     terminal-specific input setup (termcap/terminfo) is often poorly 
+     configured &ndash; with explicitly coded sequences much more function 
+     keys can be recognised than other applications can; 
+     also in many situations of remote operation the mined approach 
+     works better.
+     <br>
+     Configuration option to select among ambiguous function key sets.
+</ul>
+
+<a name=editing>
+<br>
+<ul>
+<h4>Text editing features</h4>
+<li> Multiple paste buffers (emacs-style).
+<li> Optional rectangular copy/paste area, 
+     <img align=absmiddle src=new.gif title=2014.24>
+     also toggled by using Alt with mouse movement.
+<li> Interactive selection highlighting (with mouse or keyboard 
+     selection), standard dual-mode Del key behaviour.
+<li> Auto-indentation of new lines (cloning white space of current line).
+     <br>
+     Auto-indentation is automatically suppressed to support unmodified 
+     terminal/mouse copy and paste (by heuristic detection of input speed).
+<li> Automatic Back Tab function to revert to the previous matching 
+     indentation level (“undent” function).
+<li> Tab expansion option (expands Tab input to space characters).
+<li> Structure input support for indented pairs of parentheses. 
+     Also for Javadoc frames.
+<li> Word/line wrap with left/right margins and first line indentation.
+     (Uses either empty lines or blank/non-blank line ends as paragraph 
+     indications.)
+     Optional memory of word-wrap margins between mined invocations.
+<li> <img align=absmiddle src=handr.gif>
+     Word/line wrap justification applies auto-indentation with 
+     heuristic detection of numbered items and program source comments.
+<li> <img align=absmiddle src=handr.gif>
+     <img align=absmiddle src=new-rot.gif title=2015.25>
+     Advanced list support for bullet lists and numbered lists.
+     Item bullets are repeated, numbering is auto-incremented after 
+     item paragraphs (also considering Unicode line separators).
+     Undent (smart Backspace) considers list items.
+<li> Header line underlining.
+<p>
+<li> Cross-session paste buffer that enables Copy/Paste between different 
+     invocations of mined (also subsequently or remotely, and with some 
+     configuration also in a heterogenous network).
+<li> Copy/Paste/File write functions with optional append mode.
+<li> <img align=absmiddle src=handr.gif>
+     Optional Unicode paste buffer mode with implicit conversion.
+<li> Multiple text position markers.
+<li> Marker stack for quick return to previous text positions.
+<p>
+<li> Input support for HTML tags and attributes (two options).
+<li> Case conversion function handles full Unicode range, including 
+     special cases (like multiple character mappings, conditional mappings).
+     Shift-F3 cycles casing of a word between all small, title case 
+     (beginning capital), and all capitals, 
+     using Unicode title case characters for the first character when appropriate.
+     For Japanese script, it toggles the word between Hiragana and Katakana.
+     Unicode-based case mapping is applicable in all text encodings.
+<li> Line end type conversion for current line or all lines (Options menu).
+<li> <img align=absmiddle src=handr.gif>
+     Binary transparency including simultaneous handling of different 
+     line end types, null characters, transparent splitting of 
+     overlong lines, and transparent handling of illegal UTF-8 sequences.
+<li> Optional password hiding, automatically selected with “hidden” files.
+<li> Optional emacs command mode.
+<li> Optional WordStar command mode.
+<li> Optional pico command mode (alpha).
+</ul>
+
+<a name=searching>
+<br>
+<ul>
+<h4>Search functions</h4>
+<li> Search/replace with optional interactive confirmation.
+<li> <img align=absmiddle src=handr.gif>
+     Search and replacement patterns can contain embedded newlines.
+<li> Search function for identifier at current cursor position and 
+     for identifier definition (using tags file), also across 
+     different files, with the option to return to the previous 
+     position, even across files.
+<li> Search function for matching parenthesis.
+<li> <img align=absmiddle src=handr.gif>
+     Search function for matching HTML tags and matching source 
+     program structures.
+<li> Repeat function for the two previous search operations.
+<li> Startup search expression option on command line.
+<li> Startup option for line number positioning.
+</ul>
+
+<a name=textfile>
+<br>
+<ul>
+<h4>Secure text and file handling</h4>
+<li> <img align=absmiddle src=handr.gif><img align=absmiddle src=new-rot.gif title=2015.25>
+     Transparent editing of encrypted files, 
+     using filters configurable by file type.
+<li> Consequent prevention of loss of data by mistake or error:
+     <ul>
+     <li> In any case of file writing or other text saving problem 
+          mined will continue the editing session instead of exiting.
+     <li> No external file other than the original source of the text 
+          being edited will be overwritten without confirmation by any 
+          text or buffer save operation.
+     <li> No accidental quit without prompting for any unsaved changes.
+     <li> In the case of an external interrupt, panic handling saves 
+          the text to a panic file if possible.
+     </ul>
+<li> All file handling errors are reported quoting clear error indications 
+     (in contrast to the cryptic messages of many classic Unix tools).
+<li> Backup features, supporting simple or versioned backup files.
+<li> Hard link preservation of edited files.
+</ul>
+
+<a name=other>
+<br>
+<ul>
+<h4>Other useful features</h4>
+<li> <img align=absmiddle src=handr.gif>
+     Optional memory of last cursor position when a file save command 
+     is issued, automatic re-positioning in next editing session.
+<li> <img align=absmiddle src=handr.gif>
+     Integration of version control systems: 
+     checkout and checkin commands available from File menu.
+<li> Print function that works in all text encodings.
+     Uses paps (a Pango printing script) or uniprint (from yudit).
+<li> Unicode printing support in Windows (cygwin or djgpp version) 
+     using <code>notepad /p</code>.
+<li> Change of file name / current directory association while editing.
+<li> Editing within pipe option (Unix version).
+<li> Suspend function (like ^Z) with autosave.
+     Checking whether it is safe to suspend (i.e. whether running in a shell).
+<li> Restoring proper screen mode after STOP/CONT signals.
+<li> Unix/DOS/Mac line-end handling and conversion options.
+</ul>
+
+<a name=system>
+<br>
+<ul>
+<h4>Operating environment and portability</h4>
+<li> Runs on many platforms (including legacy systems):
+     Linux, Android, Raspberry Pi,
+     Unix (SunOS, BSD, Mac OS X, QNX, GNU Hurd, HP-UX, IBM AIX, Irix, SCO UnixWare, Ultrix, Tru64),
+     DOS (djgpp), Windows (cygwin, Interix, MSYS), 
+     OpenVMS, Haiku
+<li> Detecting and supporting features of a wider range of terminals, 
+     also for some legacy terminals.
+<li> Runtime support library contains patterns for suitable X resource 
+     configuration.
+<li> Runtime support library contains scripts for starting terminal window 
+     or mined in window with appropriate settings for Unicode support.
+<li> Makefiles for various operating environments are included;
+     makefiles also support legacy systems.
+</ul>
+
+<br>
+
+<hr>
+<dt>Mined <a target=_top href=./>homepage</a> and download.
+<dt><a href=mailto:mined@towo.net>Thomas Wolff</a>
+</body>

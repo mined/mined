@@ -1,0 +1,38 @@
+#! /bin/sh
+
+LC_ALL=C
+export LC_ALL
+sed -e '/^#/ d' -e '/^$/ d' \
+    -e 's,$,				,' \
+    -e 's%^\([^	 ]*\)[	 ][	 ]*\([A-Za-z,\. ]*\)	*\([^	]*\)	\([^	]*\)		\([^	]*\)	\([^	]*\).*$%{"\1", "\3 \4", "\5 \6"}	/* \2 */,%' \
+    -e 't ok' -e d \
+    -e ': ok' -e 's,	, ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's, … , ,g' \
+    -e 's,…,,g' \
+    -e 's,^,	,' -e 's, /\*,	/*,' \
+    -e 's% ",%",%' -e 's% "}%"}%' -e 's%""%NIL_PTR%' $*
+
+exit
+
+# test data:
+mk	Macedonian	„…“	’…‘
+vi	Vietnamese	«…»	‹…›		“…”
+tr	Turkish		“…”	‘…’		«…»	‹…›
+lt	Lithuanian	„…“
+ka	Georgian	„…“			“…”
+it	Italian		«…»			“…”	‘…’
+en	English, US	“…”	‘…’
+chinese Chinese, GBsimp	“…”	‘…’
+fr	French		« … »	“ … ”		« … »	‹ … ›
+

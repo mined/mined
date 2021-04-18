@@ -1,0 +1,54 @@
+#! /bin/sh
+
+# try to set up Unicode printing environment based on uniprint,
+# the printing tool of the yudit editor
+# (including download and compilation if necessary)
+
+uver=`uniprint -h 2>&1 | sed -e "1 s,[^0-9]*\([0-9.]*\)\(.*\),\1," -e t -e d`
+
+case "$uver" in
+2.[7-9].*|2.[0-9][0-9]*|[3-9].*|[0-9][0-9].*)
+	echo found uniprint version $uver in your PATH
+	ok=true;;
+[0-2].*)
+	echo found insufficient uniprint version $uver in your PATH
+	ok=false;;
+*)	echo did not find uniprint in your PATH
+	ok=false;;
+esac
+
+if $ok
+then	exit
+fi
+
+
+echo trying to find and download the most recent yudit package
+wget -O y.index http://yudit.org/download/
+yarch=`sed -e "s,.*>\([^<>]*.gz\).*,\1," -e t -e d y.index | tail -1`
+rm -f y.index
+wget -N http://yudit.org/download/$yarch
+
+echo extracting yudit package
+gzcat $yarch | tar xf -
+yname=`basename $yarch .tar.gz`
+cd $yname
+echo making the yudit tool uniprint - this takes a while
+PATH=/bin:$PATH
+./configure
+(cd stoolkit; make)
+(cd swidget; make)
+(cd swindow; make)
+cd uniprint
+make
+
+PWD=`pwd`
+
+echo generated $PWD/uniprint
+
+cd ../..
+cp $yname/uniprint/uniprint .
+strip uniprint
+echo copied to $PWD/uniprint
+
+echo move it into a binary directory in your PATH
+

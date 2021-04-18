@@ -1,0 +1,15 @@
+#! /bin/sh
+
+# generate mapping table
+#	from locales without explicit charmap suffix 
+#	to charmap names
+# !!! the result depends on the current system locale configuration 
+# and may not be "complete" or typical; unifying this list from 
+# a number of systems is recommendable; 
+# the final consolidated result can be merged into locales.t or 
+# rather locales.cfg (for generation of locales.t)
+
+for l in `locale -a | grep -v -e '\.'`
+do	echo "$l	`LC_ALL=$l locale charmap`"
+done |
+sed -e 's/\(.*\)	\(.*\)/	{"\1", "\2"},/'

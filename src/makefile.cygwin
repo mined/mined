@@ -1,0 +1,229 @@
+#############################################################################
+# mined text editor makefile	- cygwin
+
+
+#############################################################################
+# Where and how to install
+# installation root, usually empty
+root	= $(INSTALLROOT)
+
+# configuration of installation directories:
+# * [l]rundir refers to the "Mined runtime support library" -
+#   it contains the online help file, auxiliary scripts (some of which 
+#   might actually be installed in .../bin, too), configuration samples etc.
+# * [l]docdir is optional and refers to the mined web documentation 
+#   (a copy of the mined home page).
+
+# directories for target "make install"
+prefix	= $(root)/usr
+bindir	= $(prefix)/bin
+mandir	= $(prefix)/share/man
+rundir	= $(prefix)/share/mined
+docdir	= $(prefix)/share/doc/mined
+
+# directories for target "make localinstall" (for cygwin, same as install)
+lprefix	= $(root)/usr
+lbindir	= $(lprefix)/bin
+lmandir	= $(lprefix)/share/man
+lrundir	= $(lprefix)/share/mined
+ldocdir	= $(lprefix)/share/doc/mined
+
+#INSTALL = install --mode=+r,u+w
+INSTALL = install -m 644
+INSTALLBIN = install
+#INSTALL = /bin/cp -p
+#INSTALLBIN = /bin/cp -p
+
+
+#############################################################################
+# system environment adaption
+
+# select library directory
+LIBDIR	= /usr/lib
+
+# find library with termcap API
+# * prefer libtermcap over libncurses so on older systems 
+#   (cygwin 1.5 before final terminfo update) the stand-alone binary 
+#   will work with only cygwin1.dll (cygncurses*.dll not needed)
+# * consider latest version of cygncurses dll as last resort so on 
+#   newer systems (~ cygwin 1.7) compilation does not need ncurses-devel
+# * static linking of ncurses would be another option; it's used for the 
+#   stand-alone package version via a special target
+liblist	= \
+	ls $(LIBDIR)/libtermcap.a; \
+	ls $(LIBDIR)/libncursesw.a; \
+	ls $(LIBDIR)/libncurses.a; \
+	ls $(LIBDIR)/libncursesw.dll.a; \
+	ls $(LIBDIR)/libncurses.dll.a; \
+	ls /bin/cygncurses-*.dll /bin/cygncursesw-*.dll | sed -e "s,/\(cygncursesw*-\),/\1 ," | sort -nr -k 2 | sed -e "s,/\(cygncursesw*-\) ,/\1,"
+
+
+# select first library found from list, replace with -l... if static
+firstlib = sed -e "s,\($(LIBDIR).*\)/lib\([^/]*\)\.a,-L\1 -l\2," -e "1 p" -e d
+termcap = $(shell ( $(liblist) ) 2> /dev/null | $(firstlib) )
+
+# libtest: target at bottom (must not be first target)
+
+
+#############################################################################
+# compilation target options
+
+# terminal handling mode 1: termio
+SCREEN	= -DTERMIO
+# link termcap functions:
+#SLIB	= -ltermcap	# usual termcap library
+#SLIB	= -L/usr/lib/termcap -ltermcap	# if deprecated (Linux)
+#SLIB	= -lcurses	# may work on System V Unix too (Solaris)
+SLIB	= $(termcap)
+
+# terminal handling mode 2: sgtty (old, BSD)
+#SCREEN	= -DSGTTY
+#SLIB	= -ltermcap
+
+# terminal handling mode 3: curses
+# Choose curses only if other options don't work 
+# (see COMPILE.DOC for discussion).
+# Use target "make minced" to use UTF-8 enabled ncurses (>= 5.4), 
+# or see separate makefile.curses for options with legacy curses.
+
+
+# select operating system flavour (define sysV if on System V flavour)
+SYSTEM	= -Dunix -DsysV
+#SYSTEM	= -Dunix -DsysV -DFDSET
+#SYSTEM	= -Dunix
+
+# select operating system environment
+DEFS	= -Dunix -Dpc
+#DEFS	= -Dunix -Dpc -mno-cygwin -D__CYGWIN__	# this mode doesn't work
+
+
+# collection of system parameters for compilation
+SYSFLAGS	= $(SCREEN) $(SYSTEM) $(DEFS)
+
+
+# curses include directory in case make minced is run
+ICURSES=-I/usr/include/ncursesw
+
+
+#############################################################################
+# link options
+
+# link dynamically
+LDOPTS=-d y	# -dn or -Bstatic links statically
+GLDOPTS=	# -[B]static links statically
+
+
+#############################################################################
+# compiler selection and compiler-specific options
+# (source warnings, optimisation and debug)
+
+CC=gcc
+include mkinclud.gcc	# facilitate make CC=clang
+#LDL:=
+
+
+#############################################################################
+# make actions
+
+KEYMAPSDEP=keymaps.t
+
+# static linking to avoid dependency to specific ncurses version:
+LINKOPTS=-static-libgcc -static
+
+include mkinclud.mak
+
+
+#############################################################################
+# stand-alone binary with static linking
+# plus binary files needed for stand-alone package
+#	mined.exe
+#	mintty.exe
+#	cygwin1.dll
+#	cygwin-console-helper.exe
+# setup further needs these (32 bit only):
+#	dash.exe
+#	regtool.exe
+#	cygpath.exe
+#	cygstart.exe
+#	cygpopt-0.dll	needed by mkshortcut.exe
+#	mkshortcut.exe
+
+win:	wined mintty
+	cp /bin/cygwin1.dll $(WINBIN)cygwin1.dll
+	cp /bin/cygwin-console-helper.exe $(WINBIN)cygwin-console-helper.exe
+
+#gcclibs=$(shell LC_ALL=C gcc -v 2>&1 | \
+#	sed -e "s,^Target: *\(.*\),\1/," -e "t target" -e "s,^gcc version \([^ ]*\).*,/\1," -e "t version" -e d \
+#	    -e ": target" -e h -e d -e ": version" -e H -e g -e "s,/.*/,/," )
+
+#attempt to find static libs explicitly, not using -static-libgcc
+#staticgcc=$(shell ls "/usr/lib/gcc/$(gcclibs)/libgcc_eh.a" )
+#staticlibs=/usr/lib/libncurses.a $(staticgcc)
+#	$(CC) $(OBJS) $(SCREENOBJ) $(LINKOPTS) ${LDFLAGS} $(staticlibs) -o $(WINBIN)mined.exe
+#	cd /usr/src/mintty-read-only; rm -f mintty.exe; make cc="gcc $(staticgcc)"
+
+STATICLIB=$(shell echo $(SLIB) | sed -e "s,dll,---[41mstatic-lib-not-found---install-libncurses-devel[0m---,g")
+
+wined:	$(WINBIN)mined.exe
+
+$(WINBIN)mined.exe:	$(PROGOBJS) $(SCREENOBJ)
+	mkdir -p ../bin/win
+	$(CC) -static-libgcc -static $(ALLPROGOBJS) $(CHAROBJS) $(SCREENOBJ) $(LINKOPTS) ${LDFLAGS} $(STATICLIB) -o $(WINBIN)mined.exe
+
+mintty:	$(WINBIN)mintty.exe
+
+/usr/src/mintty-read-only:
+	cd /usr/src; svn checkout http://mintty.googlecode.com/svn/trunk/ mintty-read-only
+
+/usr/src/mintty-read-only/mintty.exe:	/usr/src/mintty-read-only
+	#cd /usr/src/mintty-read-only; rm -f mintty.exe; make cc=gcc-3
+	cd /usr/src/mintty-read-only; rm -f mintty.exe; make cc="gcc -static-libgcc -static"
+
+$(WINBIN)mintty.exe:	/usr/src/mintty-read-only/mintty.exe
+	cp /usr/src/mintty-read-only/mintty.exe $(WINBIN)mintty.exe
+	#strip $(WINBIN)mintty.exe	# "is not a valid Win32 application"
+
+
+#############################################################################
+# cygwin installation
+
+EXE=.exe
+extrainstall=$(MAKE) -f makefile.cygwin installcygwin
+
+installcygwin:	# postinstallcygwin disabled
+	mkdir -p $(DESTDIR)$(prefix)/share/doc/Cygwin $(DESTDIR)$(prefix)/share/doc/mined
+	cp -fp ../README.cygwin $(DESTDIR)$(prefix)/share/doc/Cygwin/mined.README
+	cp -fp ../README* ../VERSION ../LICENCE.GPL ../*.DOC ../CHANGES $(DESTDIR)$(prefix)/share/doc/mined/
+	$(installscript) ../usrshare/bin/wined* $(DESTDIR)$(bindir)
+
+postinstallcygwin:
+	mkdir -p $(DESTDIR)$(prefix)/../etc/postinstall
+	$(installscript) $(rundir)/setup_install/bin/postinstall $(DESTDIR)$(prefix)/../etc/postinstall/mined.sh
+	mkdir -p $(DESTDIR)$(prefix)/../etc/preremove
+	$(installscript) $(rundir)/setup_install/bin/preremove $(DESTDIR)$(prefix)/../etc/preremove/mined.sh
+	# don't invoke postinstall here
+	##$(rundir)/setup_install/bin/postinstall
+
+
+#############################################################################
+# test targets
+
+libtest:
+	echo LIBDIRS checked: $(ROOTLIBDIR) $(USRLIBDIR)
+	echo ---------- liblist:
+	( $(liblist) ) || true
+	echo ---------- firstlib:
+	echo $(termcap)
+
+winarch=$(shell echo $(ARCH) | sed -e 's,.*86_*,,' )
+WINBIN=../bin/win/$(winarch)
+
+bintest:
+	echo STATICLIB $(STATICLIB)
+	echo OBJDIR $(OBJDIR)
+	echo ARCH $(ARCH)
+	echo WINBIN $(WINBIN)
+
+
+#############################################################################
+# end

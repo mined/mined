@@ -1,0 +1,117 @@
+#############################################################################
+# mined text editor compilation options (make include file for gcc options)
+# also gmake options (assuming gmake is used with gcc which isn't always true)
+
+
+#############################################################################
+# binary target directory
+
+SYS:=` uname | sed -e 's,_.*,,' `
+#ARCH=` uname -p 2> /dev/null | sed -e "s,unknown,," | grep . || uname -m | sed -e "s,/,_,g" `
+ARCH:=` uname -m | sed -e "s,/,_,g" `
+
+OBJDIR:=$(shell echo ../bin/$(SYS).$(ARCH) )
+
+
+#############################################################################
+# compilation source options
+
+# Define if pedantic analysis wanted:
+#GFLAGS= -ansi -pedantic -Wall -Wtraditional -Wpointer-arith -Wconversion -Waggregate-return -Winline
+# For regular compilation:
+# Leave in extra flags that produce no warnings (covered by -Wall):
+#	-Wimplicit[-int] -Wreturn-type -Wunused -Wswitch -Wchar-subscripts -Wparentheses
+# Leave out extra flags that produce some warnings:
+#	-Wtraditional
+#	-W (covered by -Wall)
+# Including again:
+#	-Wuninitialized (covered by -Wall)
+# Perhaps also leave out flag that produces extra warnings (Linux, ...?):
+#	-Wconversion
+# (rotten C crap: value does match prototype, so why this silly 
+#  warning "passing arg ... with different width due to prototype" ???
+# Perhaps also leave out flag that produces extra warnings (Linux, ...?):
+#	-pedantic
+# (rotten C crap: prototype matches exactly, so why this silly 
+#  warning "promoted argument `c' doesn't match prototype" ???
+GFLAGS= -ansi -Waggregate-return -Winline \
+	-Wimplicit -Wunused -Wswitch -Wchar-subscripts \
+	-Wformat -Wparentheses -Wmissing-braces \
+	-Wuninitialized \
+	${WFLAGS} $(W) $(WC)
+# The following warnings are left out deliberately:
+#	-Wreturn-type	# causes obscure "error 1" on my Linux
+#	-pedantic	# causes junk messages about "braced groups"
+#	-Wpointer-arith	# causes junk messages from library include files
+#	-Wconversion	# causes junk messages from library include files
+#	-Wall -W / -Wextra
+
+GCC3FLAGS=-Wdeclaration-after-statement -Wno-pragmas
+# -Wunreachable-code deprecated
+GCC4FLAGS=$(GCC3FLAGS) -Wno-pointer-sign -Wtype-limits
+
+# Warning options for newer gcc versions:
+# (additional grep for the sake of MSys sed failing on CRLF from MinGW gcc)
+W= $(shell $(CC) -v 2>&1 | grep "gcc version" | sed -e "s,gcc version [4-9].*,$(GCC4FLAGS)," -e t -e d )
+# Tune further -W options with the environment variable $WFLAGS
+
+# Suppress overzealous warnings for clang:
+#? WDEF=-Wno-everything	# before -W options
+CLANGFLAGS=-Wno-pointer-sign -Wno-invalid-source-encoding -Wno-knr-promoted-parameter
+# -Wimplicit-fallthrough has no effect...
+#? -Wno-incompatible-pointer-types	# disabled by pragma in textfile.c
+WC= $(shell $(CC) -v 2>&1 | sed -e "s,.*clang.*,$(CLANGFLAGS)," -e t -e d )
+
+# code checking
+# checking for function signatures:
+PROTOFLAGS=	-Wmissing-prototypes -Wreturn-type
+
+
+#############################################################################
+# compilation mode options (optimisation and debug)
+
+# Optimization flag/level:
+OPT= -O2
+
+# Debugging option
+DEBUG= # -ggdb -gstabs
+
+
+#############################################################################
+# compilation setup
+
+# Collection of compilation parameters:
+CFLAGS= $(SYSFLAGS) $(GFLAGS) $(OPT) $(DEBUG) ${CCFLAGS}
+
+
+#############################################################################
+# link options
+
+LINKOPTS=$(GLDOPTS) # --warn-common?
+# for newer ncursesw?
+#LDL=-ldl	# if libdl library exists:
+ldl_libs=$(shell echo "/usr/lib ${LDFLAGS} " | sed -e "s, -L, ,g" -e "s, ,/libdl.* ,g" )
+LDL=$(shell ls $(ldl_libs) | sed -e "s,.*/libdl\..*,-ldl," -e 1q )
+
+
+#############################################################################
+# dynamic make targets
+# this version for GNU make
+# (if gcc is used, GNU make is also assumed)
+
+# derive list of character set mappings from source files:
+CHARTABS=$(shell echo charmaps/*.map | sed -e "s,\.map,.c,g" )
+CJKfilter=$(shell if echo "$(OPT)" | egrep "(-DNOCJK|-DnoCJKcharmaps)" > /dev/null; then echo '-e s,charmaps/cjk-[a-z]*.map,,g'; fi )
+CHAROBJS=$(shell echo charmaps/*.map | sed $(CJKfilter) -e 's,\([^ ]*\)\.map,$(OBJDIR)/\1.o,g' )
+CHARDEPS=$(CHAROBJS)
+
+# extract list of configured keyboard mappings from keymaps.cfg:
+KEYMAPS=$(shell sh ./mkkmlist )
+
+# disable the explicit make targets for dynamically 
+# generating and invoking makefiles
+MAKEMAPS=
+
+
+#############################################################################
+# end

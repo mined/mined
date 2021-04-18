@@ -1,0 +1,33 @@
+#! /bin/sh -f
+
+if make PropList.txt >&2
+then	true
+else	echo Could not acquire Unicode data file PropList.txt >&2
+	exit 1
+fi
+
+#0069..006A    ; Soft_Dotted # L&   [2] LATIN SMALL LETTER I..LATIN SMALL LETTER J
+#012F          ; Soft_Dotted # L&       LATIN SMALL LETTER I WITH OGONEK
+#2010..2015    ; Dash # Pd   [6] HYPHEN..HORIZONTAL BAR
+#201D          ; Quotation_Mark # Pf       RIGHT DOUBLE QUOTATION MARK
+
+name="$1"
+case "$1" in
+??)	tag="[A-Za-z_]* *# $1"
+	#tag=".* # $1"
+	;;
+*)	tag=$1
+	;;
+esac
+
+echo "static struct interval list_$name [] = {"
+sed -e "s/ *; *$tag .*//" -e t -e d PropList.txt |
+sed	-e "s/\([0-9A-F]*\)\.\.*\([0-9A-F]*\)/	{0x\1, 0x\2},/" \
+	-e "t ok" \
+	-e "s/^\([0-9A-F]*\)/	{0x\1, 0x\1},/" \
+	-e ": ok" \
+	-e "s/{0x\(....\),/{0x0\1,/" |
+sort | uniq |
+sed	-e "s/0x0/0x/" |
+./mkcompact
+echo "};"

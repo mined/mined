@@ -1,0 +1,120 @@
+#! /bin/sh
+
+# make mnemos.rof from groff_char manual page
+
+gzip -dc `man -w groff_char` | tbl | nroff -man 2> /dev/null |
+sed -e '/ligature/ b lig' -e b -e ': lig' \
+	-e 's, ff , ﬀ ,' -e 's, fi , ﬁ ,' -e 's, fl , ﬂ ,' \
+	-e 's, ffi , ﬃ ,' -e 's, ffl , ﬄ ,' |
+sed -e 's,^ *\([^ ]\)  *\\\[\([^]]*\)\].*,\1 \2,' -e t -e d > mnemos.rof.raw
+
+if [ -s mnemos.rof.raw ]
+then
+(
+cat <<\/eoc
+#include <stdio.h>
+
+static
+char *
+plainchar (char * uchar)
+{
+  if (* uchar == '\\' && uchar [1] != '\0') {
+	uchar ++;
+  }
+  return uchar;
+}
+
+static
+void
+utf8_info (uchar, length, ucs)
+  char * uchar;
+  int * length;
+  unsigned long * ucs;
+{
+  char * textpoi = plainchar (uchar);
+  unsigned char c = * textpoi;
+  int utfcount;
+  unsigned long unichar;
+
+  if ((c & 0x80) == 0x00) {
+	utfcount = 1;
+	unichar = c;
+  } else if ((c & 0xE0) == 0xC0) {
+	utfcount = 2;
+	unichar = c & 0x1F;
+  } else if ((c & 0xF0) == 0xE0) {
+	utfcount = 3;
+	unichar = c & 0x0F;
+  } else if ((c & 0xF8) == 0xF0) {
+	utfcount = 4;
+	unichar = c & 0x07;
+  } else if ((c & 0xFC) == 0xF8) {
+	utfcount = 5;
+	unichar = c & 0x03;
+  } else if ((c & 0xFE) == 0xFC) {
+	utfcount = 6;
+	unichar = c & 0x01;
+  } else if (c == 0xFE) {
+	/* illegal UTF-8 code */
+	utfcount = 1;
+	unichar = '4';
+  } else if (c == 0xFF) {
+	/* illegal UTF-8 code */
+	utfcount = 1;
+	unichar = '5';
+  } else {
+	/* illegal UTF-8 sequence character */
+	utfcount = 1;
+	unichar = '8';
+  }
+
+  * length = utfcount;
+
+  utfcount --;
+  textpoi ++;
+  while (utfcount > 0 && (* textpoi & 0xC0) == 0x80) {
+	unichar = (unichar << 6) | (* textpoi & 0x3F);
+	utfcount --;
+	textpoi ++;
+  }
+  if (utfcount > 0) {
+	/* too short UTF-8 sequence */
+	unichar = (unsigned char) '�';
+	* length -= utfcount;
+  }
+
+  * ucs = unichar;
+}
+
+static
+unsigned long
+unival (char * c)
+{
+  int len;
+  unsigned long unichar;
+  utf8_info (c, & len, & unichar);
+  return unichar;
+}
+
+int
+main () {
+/eoc
+
+cat mnemos.rof.raw |
+sed -e 's,",\\",g' -e 's,\(["\\]\),\\\1,g' -e 's:\(.*\) \(.*\):	printf ("	{\\"(%s\\", 0x%04lX /* %s */},\\n", "\2", unival ("\1"), plainchar ("\1"));:'
+
+echo '}'
+) > mnemoroff.c
+
+	if ${CC-cc} -o mnemoroff.exe mnemoroff.c
+	then
+		./mnemoroff.exe > mnemos.rof.new
+		rm -f mnemoroff.exe mnemoroff.c
+		if cmp mnemos.rof.new mnemos.rof
+		then	rm -f mnemos.rof.new
+		else	mv -f mnemos.rof.new mnemos.rof
+		fi
+	fi
+fi
+
+rm -f mnemos.rof.raw

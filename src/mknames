@@ -1,0 +1,18 @@
+#! /bin/sh
+
+if make UnicodeData.txt
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt
+	exit 1
+fi
+
+
+#0008;<control>;Cc;0;BN;;;;;N;BACKSPACE;;;;
+#005C;REVERSE SOLIDUS;Po;0;ON;;;;;N;BACKSLASH;;;;
+
+sed -e 's,^\([^;]*\);<control>;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\([^;]*\);.*,\1	\2,' \
+    -e t \
+    -e 's,^\([^;]*\);\([^;]*\);.*,\1	\2,' \
+    -e t \
+    -e d UnicodeData.txt |
+sed -e 's/\(.*\)	\(.*\)/	{0x\1, "\2"},/'

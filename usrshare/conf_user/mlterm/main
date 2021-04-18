@@ -1,0 +1,10 @@
+
+#############################################################################
+# mlterm main configuration by mined
+# this should be copied or merged/appended to the file $HOME/.mlterm/main
+
+# enable Alt-key detection
+mod_meta_mode=esc
+
+#############################################################################
+# end

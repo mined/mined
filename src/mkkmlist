@@ -1,0 +1,15 @@
+#! /bin/sh
+
+# list files containing tables for all configured keyboard mappings
+
+# extract configured keyboard mappings from keymaps.cfg
+confkeymaps=`LC_ALL=C sed -e '/^[-#]/ d' -e 's/^[ 	"]*\([^	]*\)		*\([A-Za-z0-9_][^ 	]*\).*\([^ 	][^ 	]\).*/\2.h/' -e t -e d keymaps.cfg`
+
+kmlist=
+for map in ${*-$confkeymaps}
+do	if [ -f keymaps1/$map ]
+	then	kmlist="$kmlist keymaps1/$map"
+	else	kmlist="$kmlist keymaps0/$map"
+	fi
+done
+echo $kmlist

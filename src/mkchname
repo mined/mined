@@ -1,0 +1,63 @@
+#! /bin/sh -f
+
+if make UnicodeData.txt
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt
+	exit 1
+fi
+if make NameAliases.txt
+then	true
+else	echo Could not acquire Unicode data file NameAliases.txt
+	exit 1
+fi
+
+
+LC_ALL=C
+export LC_ALL
+
+# modify UnicodeData.txt according to NameAliases.txt
+sed	-e "/;abbreviation/ d" \
+	-e "s,^\([0-9A-F]*\);\([^;]*\).*,/^\1;/ s/.*/\1;\2;;;;;;;;;;;;;/," \
+	-e t -e d NameAliases.txt > mkchname.sed
+
+(
+cat <<\/eoc
+#include <stdio.h>
+
+static void charname (unsigned long u, char * name) {
+	printf ("	{\"\\%03o\\%03o\\%03o%s\"},\n", 
+		(u >> 16) & 0xFF,
+		(u >> 8) & 0xFF,
+		u & 0xFF,
+		name);
+}
+
+int main () {
+/eoc
+
+# scan UnicodeData.txt:
+#	0153;LATIN SMALL LIGATURE OE;...
+#	0000;<control>;Cc;0;BN;;;;;N;NULL;...
+# generate lines:
+#	{0x0153, "LATIN SMALL LIGATURE OE"},
+#	{0x0000, "NULL"},
+# and give precedence to NameAliases.txt:
+sed	-f mkchname.sed UnicodeData.txt |
+sed	-e 's/^\([^;]*\);<control>;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\([^;]*\);.*/\1;\2;/' \
+	-e t \
+	-e '/^[^;]*;</ d' |
+sed	-e 's/^\([^;]*\);\([^;]*\);.*/	charname (0x\1, "\2");/'
+
+cat <</eoc
+	return 0;
+}
+/eoc
+) > mkchname.c
+
+if ${CC-cc} -o mkchname.exe mkchname.c
+then	./mkchname.exe > charname.t
+	rm -f mkchname.c mkchname.exe
+else	exit 1
+fi
+
+rm -f mkchname.sed

@@ -1,0 +1,317 @@
+<head>
+<meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
+<meta name="keywords" content="editor, text mode editor, programmers editor, programming editor, Unicode editor, UTF-8 editor, Unicode text editor, UTF-8 text editor, Unicode text mode editor, UTF-8 text mode editor, text mode Unicode editor, text mode UTF-8 editor, text mode HTML editor, CJK editor">
+<meta name="robots" content="index">
+
+<link rel="prefetch" href="mined.html">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Unicode text editor MinEd</title>
+
+<style type="text/css">
+<!--
+	a {text-decoration: none;}
+	.linkcell {cursor: pointer;}
+	#level2 {font-size: smaller;}
+
+	.hidden {display: none;}
+
+	x.oldlink {background-color: #4080F0;}
+	x.darklink {background-color: #4D6DC9;}
+	x.bluelink {background-color: #7080DD;}
+
+	.link td.linkcell {
+		xbackground-color: #FFF500;
+		background-color: #FDEB97;
+		border-style: solid; border-color: #B045A3; border-width: 1px;
+	}
+	.active td.linkcell {
+		xbackground-color: #FFCC00;
+		background-color: #FDEB97;
+		xborder-style: solid; border-color: #B045A3; border-width: 1px;
+		border-style: inset; border-color: #B045A3; border-width: 1px;
+	}
+	.selected td.linkcell {
+		xbackground-color: #FFBB00;
+		background-color: #FDB297;
+		border-style: solid; border-color: #B045A3; border-width: 1px;
+	}
+	.selecting td.linkcell {
+		xbackground-color: #E09000;
+		background-color: #FDB297;
+		border-style: inset; border-color: #B045A3; border-width: 1px;
+	}
+-->
+</style>
+
+<script language="JavaScript">
+var selected_node;
+var selected_subnode;
+
+function select (name, subitem) {
+	select2 (name, subitem);
+}
+
+function obsolete_select1 (name) {
+	if (selected_node) {
+		selected_node.className = 'link';
+	}
+	selected_node = document.getElementById (name);
+	if (selected_node) {
+		selected_node.className = 'selected';
+	}
+}
+
+function select2 (name, subitem) {
+	if (document.forms.debug && document.forms.debug.debug) {
+		document.forms.debug.debug.value = name + " " + subitem;
+	}
+	var tds = document.getElementsByTagName ("tr");
+	selected_subnode = null;
+	for (var i = 0; i < tds.length; i ++) {
+		if (tds [i].id) {
+			/* has a name, navigation entry */
+			var tdid = tds [i].id;
+			var sep = tdid.indexOf ("_");
+			if (sep < 0) {
+				/* no "_", level 1 entry */
+				if (tdid == name) {
+					tds [i].className = "selected";
+					selected_node = tds [i];
+				} else {
+					tds [i].className = "link";
+				}
+			} else {
+				/* "_", level 2 entry */
+				var mainname = tdid.substring (0, sep);
+				var subname = tdid.substring (sep + 1);
+				if (subname.charAt (0) == "#") {
+					subname = subname.substring (1);
+				}
+				if (mainname == name) {
+					if (subname == subitem) {
+						tds [i].className = "selected";
+						selected_subnode = tds [i];
+					} else {
+						tds [i].className = "link";
+					}
+				} else {
+					tds [i].className = "hidden";
+				}
+			}
+		}
+	}
+}
+
+function setrelease (r) {
+	var rnode = document.getElementById ("releases");
+	rnode.firstChild.nodeValue = r;
+}
+
+function activate (node) {
+	node.className = 'active';
+}
+
+function deactivate (node) {
+	if (node == selected_node || node == selected_subnode) {
+		node.className = 'selected';
+	} else {
+		node.className = 'link';
+	}
+}
+
+function press (node) {
+	node.className = 'selecting';
+}
+
+function release (node) {
+	deactivate (node);
+}
+
+function loadpage (node) {
+	/* node.className = 'selected'; would reduce flickering */
+	var sep = node.id.indexOf ("_");
+	var newloc;
+	if (sep < 0) {
+		newloc = node.id + ".html";
+	} else {
+		var main = node.id.substring (0, sep);
+		var sub = node.id.substring (sep + 1);
+		if (sub.charAt (0) == "#") {
+			newloc = main + ".html" + sub;
+		//} else if (main == "mined" || main == "changes") {
+		//	newloc = main + ".html#" + sub;
+		} else {
+			newloc = sub + ".html";
+		}
+	}
+	top.frames.mined.location = newloc;
+	top.frames.mined.focus ();
+}
+</script>
+
+</head>
+
+<body onLoad="select (top.selected_item);"
+ xbackground=bricks_white.gif
+ xbgcolor=#B070D0
+ xbgcolor=#B045A3
+ xbgcolor=#63509A
+ xbgcolor=#33CCCC
+>
+
+<!form name=debug>
+<!input type=text name=debug>
+<!/form>
+
+<table xwidth=100% width=160 cellpadding=4 cellspacing=4>
+
+<tr>
+<td colspan=3 height=10>
+</td></tr>
+
+<tr class=link id=overview onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=overview.html><font color=black><b>
+Overview</b></font></a></td></tr>
+
+<tr class=link id=overview_screenshots onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=screenshots.html><font color=black>
+Screenshots</font></a></td></tr>
+
+<tr class=link id=overview_keyboard onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=keyboard.html><font color=black>
+Keyboard</font></a></td></tr>
+
+
+<tr class=link id=features onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=features.html><font color=black><b>
+Features</b></font></a></td></tr>
+
+
+<tr class=link id=design onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=design.html><font color=black><b>
+Design Principles</b></font></a></td></tr>
+
+<tr>
+<td colspan=3 height=10>
+</td></tr>
+
+<tr class=link id=unicode onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=unicode.html><font color=black><b>
+Unicode Howto</b></font></a></td></tr>
+
+<tr class=link id=unicode_#handling onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=unicode.html#handling><font color=black>
+Editing</font></a></td></tr>
+
+<tr class=link id=unicode_uterm onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=uterm.html><font color=black>
+<code>uterm</code></font></a></td></tr>
+
+<tr class=link id=unicode_#setup onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=unicode.html#setup><font color=black>
+Terminal setup</font></a></td></tr>
+
+<tr class=link id=mined onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=mined.html><font color=black><b>
+Mined Manual</b></font></a></td></tr>
+
+
+<tr class=link id=mined_#options onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#options><font color=black>
+Options</font></a></td></tr>
+
+<tr class=link id=mined_#editing onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#editing><font color=black>
+Editing</font></a></td></tr>
+
+<tr class=link id=mined_#inputsupport onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#inputsupport><font color=black>
+Input overview</font></a></td></tr>
+
+<tr class=link id=mined_#handlingfiles onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#handlingfiles><font color=black>
+Handling files</font></a></td></tr>
+
+<tr class=link id=mined_#working onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#working><font color=black>
+Working with mined</font></a></td></tr>
+
+<tr class=link id=mined_#languagesupport onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#languagesupport><font color=black>
+Language support</font></a></td></tr>
+
+<tr class=link id=mined_#characterhandlingsupport onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#characterhandlingsupport><font color=black>
+Character handling</font></a></td></tr>
+
+<tr class=link id=mined_#characterinputsupport onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#characterinputsupport><font color=black>
+Character input</font></a></td></tr>
+
+<tr class=link id=mined_#charencoding onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#charencoding><font color=black>
+Character encoding</font></a></td></tr>
+
+<tr class=link id=mined_#unicode onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#unicode><font color=black>
+Unicode support</font></a></td></tr>
+
+<tr class=link id=mined_#cjk onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#cjk><font color=black>
+CJK support</font></a></td></tr>
+
+<tr class=link id=mined_#terminalencoding onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#terminalencoding><font color=black>
+Terminal support</font></a></td></tr>
+
+<tr class=link id=mined_#commands onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#commands><font color=black>
+<b>Command reference</b></font></a></td></tr>
+
+<tr class=link id=mined_#configuration onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=mined.html#configuration><font color=black>
+Configuration</font></a></td></tr>
+
+<tr id=mined_ idcomment="make hidden if folded"><td colspan=3 height=10>
+</td></tr>
+
+
+<tr class=link id=mnemodoc onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=mnemodoc.html><font color=black><b>
+Character Mnemos</b></font></a></td></tr>
+
+<tr class=link id=quotesdoc onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=quotesdoc.html><font color=black><b>
+Quotation Styles</b></font></a></td></tr>
+
+<tr class=link id=configuration onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=configuration.html><font color=black><b>
+Configuration File</b></font></a></td></tr>
+
+<tr>
+<td colspan=3 height=10>
+</td></tr>
+
+<tr class=link id=download onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=download.html><font color=black><b>
+Download</b></font></a></td></tr>
+
+<tr class=link id=changes onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=changes.html><font color=black><b>
+Change Log</b></font></a></td></tr>
+
+<tr class=link id=changes_#index onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=changes.html><font color=black>
+Index</font></a></td></tr>
+
+<tr class=link id=changes_#releases onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td><td colspan=2 class=linkcell id=level2><a target=mined href=changes.html#releases><font color=black>
+<span id=releases>Releases</span></font></a></td></tr>
+
+<tr class=link id=contact onClick="loadpage (this);" onMouseOver="activate (this);" onMouseOut="deactivate (this);" onMouseDown="press (this);" onMouseUp="release (this);">
+<td colspan=3 class=linkcell><a target=mined href=contact.html><font color=black><b>
+Contact</b></font></a></td></tr>
+</table>
+
+</body>

@@ -1,0 +1,140 @@
+Control keys
+------------
+  Control key layout for basic movement functions is topographic on 
+  the left-hand side of the keyboard (an idea originating from early 
+  editors and also known as "WordStar mode").
+  With control keys, the important movement and editing functions are 
+  always available even in unconfigured terminal environments.
+
+HOP key
+-------
+  As a "key concept", the HOP key, used as a prefix key, amplifies the 
+  effect of screen movement commands "just as you would expect". It 
+  also works on many other commands to provide an important variation 
+  of the command. This way, a richer set of commands is available 
+  without having to remember too many keys. The HOP prefix function is 
+  triggered by any of a number of keys, some sharing this function 
+  with their own function; e.g. ^Q, ^L, ^G, ESC, the middle keypad key 
+  ("5"). (The function is similar to the ^Q prefix of ancient WordStar.)
+
+Keypad assignment
+-----------------
+The two cursor block keypads of typical keyboards are assigned the most 
+important movement and copy/paste functions as follows:
+    +-------+-------+-------+    +-------+-------+-------+
+    | Insert| Home  | PgUp  |    | (7)   |  (8)  | (9)   |
+    | Paste |LineBeg|       |    | Mark  |   ^   | PgUp  |
+    +-------+-------+-------+    +-------+-------+-------+
+    | Delete| End   | PgDn  |    | (4)   |  (5)  | (6)   |
+    |Del/Cut|LineEnd|       |    | <-    |  HOP  |  ->   |
+    +-------+-------+-------+    +-------+-------+-------+
+                                 | (1)   |  (2)  | (3)   |
+                                 | Copy  |   v   | PgDn  |
+                                 +-------+-------+-------+
+                                 | (0)           | (.)   |
+                                 | Paste         |Del/Cut|
+                                 +-------+-------+-------+
+
+Home (right keypad) sets a mark for the text region to be selected.
+End (right keypad) performs a Copy to the paste buffer.
+Del: if a visual selection is active, Del performs a Cut to the paste buffer.
+     otherwise, it deletes the next character right.
+Home (small keypad) moves the cursor to the beginning of the current line.
+End (small keypad) moves the cursor to the end of the current line.
+Control-Home (both keypads) moves to the beginning of the current line.
+Control-End (both keypads) moves to the end of the current line.
+Control-Del (both keypads) deletes the next character.
+Shift-Home (small keypad) sets a mark for the text region to be selected.
+Shift-End (small keypad) performs a Copy to the paste buffer.
+Shift-Del (small keypad) performs a Cut to the paste buffer.
+Insert pastes the contents of the buffer to the current cursor position.
+
+Notes:
+* Ctrl-/Shift-modified keypad functions are not affected by the -k option.
+  Shifted keys on the numeric keypad are usually tied to numeric digit input.
+* Recognition of modified key function assignments depends on the 
+  terminal and its configured mode.
+  (Not all terminals support the distinction between the two keypads.)
+  For xterm, this needs extra configuration. See the mined manual for 
+  instructions.
+* The Alt key modifies the Del, Home and End keys to perform the 
+  respective other function than the plain key.
+
+Alternate insert functions:
+HOP-Insert pastes the most recent paste buffer from any instance of mined.
+Alt-Insert (or ESC Insert) exchanges the pasted region just inserted 
+  with the previous paste buffer inserted before.
+Ctrl-Insert inserts and keeps the cursor position before the area.
+
+The centrally placed HOP key is a prefix modifier that can be used for 
+intuitive modification of navigation functions and for useful 
+alternatives of paste buffer functions:
+                                 +-------+-------+-------+
+                                 | (7)   |  (8)  | (9)   |
+                                 |go Mark|Scr top|FileBeg|
+                                 +-------+-------+-------+
+                                 | (4)   |  (5)  | (6)   |
+                                 |LineBeg|       |LineEnd|
+                                 +-------+-------+-------+
+                                 | (1)   |  (2)  | (3)   |
+                                 |Append |Scr bot|FileEnd|
+                                 +-------+-------+-------+
+                                 | (0)           | (.)   |
+                                 |Cross-paste    |+Append|
+                                 +-------+-------+-------+
+
+HOP-Cursor Up/Down moves to top/bottom of screen.
+HOP-Cursor Left/Right moves to beginning/end of line.
+HOP-Page Up/Down moves to beginning/end of edited text.
+HOP-Home moves the cursor to the marked position.
+HOP-End appends to the buffer.
+HOP-Del cuts and appends to the buffer.
+HOP-Insert pastes the inter-session buffer.
+           The inter-session buffer always contains the last copied 
+           buffer by any instance of mined and remains available after 
+           mined exits; so you can quickly copy and paste text between 
+           two different editing sessions running mined.
+           See the mined manual for further configuration hints.
+
+
+Text selection
+--------------
+There are two ways to visually select a text area with the keyboard:
+- Mark a position (using the Mark function, e.g. Home key or Control-space),
+  then simply move with the normal cursor keys.
+- With Windows selection compatibility option +t, initiate or continue 
+  text selection with Shift-cursor keys (if supported by the terminal).
+
+
+Note on the Home and End key assignments
+----------------------------------------
+Sometimes people expect the "Home" and "End" keys to move the cursor 
+to the beginning or end of line, respectively.
+In the keyboard usage approach of mined, these functions can easily 
+and quite intuitively be invoked with "HOP left" and "HOP right", i.e. 
+by pressing the keypad keys "5 4" or "5 6" in sequence.
+So there is enough room left for mapping the most frequent paste-buffer 
+functions to the keypad as described above which is considered much 
+more useful.
+The command line option -k exchanges Home/End function assignments of 
+the two keypads with each other, including the Alt reversals.
+
+
+Input methods (Keyboard mapping)
+--------------------------------
+Keyboard input can be mapped to support various scripts from a generic 
+keyboard, including East Asian input methods. Select a script from the 
+keyboard mapping menu (right-click on the "--" indication in the flags 
+area, or ESC K / Alt-K / Control-F12).
+Input characters or short sequences of input characters will then be 
+transformed according to the selected keyboard mapping table.
+Some mapping tables contain ambiguous prefixes of mapped sequences; 
+in order to support this, a small delay may occur until a mapping is 
+applied.
+In some mapping tables, certain mappings yield multi-character sequences.
+Also, certain ambiguous mappings exist that yield a multiple choice; 
+it is presented in a selection menu (also known as "pick list") from 
+which the desired character can be chosen by mouse click or with 
+cursor keys (up / down or space / in the row, select character by 
+entering its index 1-9 or 0).
+

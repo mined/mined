@@ -1,0 +1,41 @@
+#! /bin/sh
+
+# generate WIDTH-W file, listing Unicode characters with width property
+# Wide or Fullwidth, from EastAsianWidth.txt, 
+# plus characters that are known to be full-width in terminals
+
+table=false
+
+if make EastAsianWidth.txt >&2
+then	true
+else	echo Could not acquire Unicode data file EastAsianWidth.txt >&2
+	exit 1
+fi
+if make UnicodeData.txt >&2
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt >&2
+	exit 1
+fi
+
+sed -e "s,^\([^;]*\);[FW],\1," -e t -e d EastAsianWidth.txt > width-w-new
+rm -f WIDTH-W
+
+# Hangul Jungseong and Jongseong combinings:
+#Unicode 5.2..6.1: extra="+11A3-11A7 +11FA-11FF +D7B0-D7C6 +D7CB-D7FB"
+#effectively:
+#Unicode < 5.2: extra=+1160-11FF
+extra="+1160-11FF +D7B0-D7C6 +D7CB-D7FB"
+
+if $table
+then	echo "# UAX #11: East Asian Wide/Fullwidth" > WIDTH-W
+	uniset $extra +width-w-new compact >> WIDTH-W
+else
+	echo "static struct interval list_wide [] = " | tr -d '\012' > wide.t
+	if uniset $extra +width-w-new c >> wide.t
+	then	true
+	else	rm -f wide.t
+		exit 9
+	fi
+fi
+
+rm -f width-w-new

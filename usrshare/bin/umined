@@ -1,0 +1,44 @@
+#! /bin/sh
+
+# umined [ options ... ] [ files ... ]
+# xmined [ options ... ] [ files ... ]
+
+# Invoke mined in a newly started terminal window;
+# if name of this script starts with "u", the uterm script is used 
+# to enforce a UTF-8 terminal environment;
+# otherwise the current terminal encoding is inherited.
+
+#############################################################################
+# find uterm script
+if type uterm > /dev/null 2>&1
+then	uterm=uterm
+else	uterm="`dirname $0`/uterm"
+fi
+
+#############################################################################
+# check whether UTF-8 shall be enforced
+case "`basename $0`" in
+u*)	term="$uterm"
+	;;
+*)
+	# check if we are in an implicit UTF-8 locale
+	if type locale > /dev/null 2>&1 && [ "`locale charmap 2> /dev/null`" = "UTF-8" ]
+	then	term="$uterm"
+	else	# check if we are in an explicit UTF-8 locale
+		case "${LC_ALL:-${LC_CTYPE:-$LANG}}" in
+		*.UTF-8|*.utf8)
+			term="$uterm";;
+		*)	case "$TERM" in
+			rxvt*)	term=rxvt;;
+			*)	term=xterm;;
+			esac;;
+		esac
+	fi
+esac
+
+#############################################################################
+# invoke terminal with mined
+$term +sb -e mined "$@" &
+
+#############################################################################
+# end

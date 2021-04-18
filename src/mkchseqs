@@ -1,0 +1,19 @@
+#! /bin/sh
+
+if make NamedSequences.txt
+then	true
+else	echo Could not acquire Unicode data file NamedSequences.txt
+	exit 1
+fi
+
+# rearrange
+#	TAMIL SYLLABLE KSSA;  0B95 0BCD 0BB7
+# ->
+#	0B95 0BCD 0BB7;TAMIL SYLLABLE KSSA
+# to sort by length of sequence
+
+sed -e '/^#/ d' -e 's/^\([^;]*\); *\([^;]*\)/\2;\1/' -e t -e d NamedSequences.txt |
+sort |
+sed -e h -e 's/.*;/	{"/' -e 's/$/",/' -e p \
+    -e g -e 's/ *;.*//' -e 's/ /, 0x/g' \
+    -e 's/^/		{0x/' -e 's/$/}},/' > charseqs.t

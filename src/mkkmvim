@@ -1,0 +1,162 @@
+#! /bin/sh -f
+
+
+file=$1
+
+encoding=`sed -e 's,^scriptencoding[ 	][ 	]*,,' -e t -e d $file`
+case "$encoding" in
+utf-8|"")	decode=cat;;
+*)		decode="iconv -f $encoding -t utf-8";;
+esac
+
+name=`sed -e 's,^let[ 	]*b:keymap.*=[ 	]*"\(.*\)",\1,' -e t -e d $file`
+case "$name" in
+"")	name=`basename $file .vim | sed -e 's,_[^_]*$,,' -e 's,-,_,g'`;;
+esac
+
+
+(
+cat <<\/eoc
+#include <stdio.h>
+
+void
+printutf8 (unichar)
+	unsigned long unichar;
+{
+	if (unichar == '\\' || unichar == '"') {
+		printf ("\\");
+	}
+
+	if (unichar < 0x80) {
+		printf ("%c", unichar);
+	} else if (unichar < 0x800) {
+		printf ("%c", 0xC0 | (unichar >> 6));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x10000) {
+		printf ("%c", 0xE0 | (unichar >> 12));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x200000) {
+		printf ("%c", 0xF0 | (unichar >> 18));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x4000000) {
+		printf ("%c", 0xF8 | (unichar >> 24));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x80000000) {
+		printf ("%c", 0xFC | (unichar >> 30));
+		printf ("%c", 0x80 | ((unichar >> 24) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	}
+}
+
+void
+printq (s)
+	char * s;
+{
+	while (* s) {
+		if (* s == '"' || * s == '\\') {
+			printf ("\\");
+		}
+		printf ("%c", * s);
+		s ++;
+	}
+}
+
+void
+maputf (k, s, comment)
+	char * k;
+	char * s;
+	char * comment;
+{
+	printf ("	{\"");
+	printq (k);
+	printf ("\", \"");
+	printq (s);
+	printf ("\"},");
+	if (* comment) {
+		printf ("	/* %s */", comment);
+	}
+	printf ("\n");
+}
+
+void
+mapuni (k, c, comment)
+	char * k;
+	unsigned long c;
+	char * comment;
+{
+	printf ("	{\"");
+	printq (k);
+	printf ("\", \"");
+	printutf8 (c);
+	printf ("\"},");
+	if (* comment) {
+		printf ("	/* %s */", comment);
+	}
+	printf ("\n");
+}
+
+int
+main () {
+/eoc
+
+
+#	transform
+#	´C	Ç
+#	O	<char-207>	" Ï
+#	E$	<char-0x20AC>  " EURO SIGN
+#	A:    <Char-192>  " sheva
+#	]R      <ÌChar-207>	" rafe
+#	X-r <Char-0xfb27>  " Alternative resh
+#	p	Ð·	CYRILLIC SMALL LETTER ZE
+
+LC_ALL=C
+export LC_ALL
+
+$decode $file | tr '	' ' ' |
+sed	-e '1,/^loadkey/ d' -e '/^"/ d' -e '/^ *$/ d' \
+	-e 's:^\([^ ][^ ]*\)  *<[^>]*[Cc][Hh][Aa][Rr]-\([0-9xa-fA-F]*\)> *"* *\(.*\):	mapuni ("\1", \2, "\3");:' \
+	-e t \
+	-e 's:^\([^ ][^ ]*\)  *\([^ ]*\) *"* *\(.*\):	maputf ("\1", "\2", "\3");:' \
+	-e t \
+	-e 's:^  *" *\(.*\):	printf ("			/* \1 */\\n");:' \
+	-e t \
+	-e 's,^,ERROR:	,'
+
+
+cat <</eoc
+	return 0;
+}
+/eoc
+) > keymaps/$name.c
+
+if ${CC-cc} -o keymaps/$name.exe keymaps/$name.c
+then	if [ -f keymaps/$name.h ]
+	then	echo saving previous keyboard mapping file to keymaps/$name.h.sav
+		mv -i keymaps/$name.h keymaps/$name.h.sav
+	fi
+	(
+	echo "/***************************************************"
+	echo "	mined keyboard mapping table"
+	echo "	* generated with mkkbmap (mkkmvim)"
+	echo "	  from $file"
+	echo "*/"
+	echo "struct keymap keymap_$name [] = {"
+	keymaps/$name.exe
+	echo "	{NIL_PTR}"
+	echo "};"
+	) > keymaps/$name.h
+
+	./mkkentry -V $name
+
+	rm -f keymaps/$name.c keymaps/$name.exe
+fi
+

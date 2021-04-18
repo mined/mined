@@ -1,0 +1,81 @@
+-----------------------------------------------------------------------------
+What is MinEd? (Pronounce "min-ed")
+
+Mined is a powerful text editor with a comprehensive and easy-to-use 
+user interface and fast, small-footprint behaviour.
+
+For an overview of major features and highlights, see http://towo.net/mined/
+
+-----------------------------------------------------------------------------
+Setup
+
+The VMS version of mined should be installed and made available as a command 
+with a symbolic name, adding to the login script SYS$LOGIN:LOGIN.COM 
+$ MINED :== $SYS$LOGIN:MINED
+or whereever MINED.EXE is installed.
+To enabled short invocation (e.g. with M or E only), use
+$ M*INED :== $SYS$LOGIN:MINED
+$ E*D :== $SYS$LOGIN:MINED
+The help file MINED.HLP should either be installed in the same directory 
+as the binary, or its location should be configured:
+$ DEFINE MINED$HELP USR$LIBDIR:MINED.HLP
+
+-----------------------------------------------------------------------------
+Running mined
+
+In a command prompt, type
+	MINED options files
+to invoke mined.
+
+Options containing capital letters need to be quoted, e.g.
+	MINED "-Qa" [-]*.com
+Mined options can also be passed in the symbol MINED$OPT.
+
+Filename expansion is applied, accepting both Unix-like 
+and VMS-native subdirectory notations.
+File versions can optionally be specified and are handled properly.
+
+-----------------------------------------------------------------------------
+Mined features
+
+VMS-specific adaptations are also described in the section on VMS in 
+the manual page (http://mined.sf.net/, click Mined Manual).
+
+The file chooser (F3 to select a file name for reading or writing) 
+accepts Unix-like or VMS-style directory notations for navigation.
+Using [] or the top entry in the file navigation popup menu to refresh 
+the file list switches to VMS-style listing of all file versions.
+Note that opening the file chooser may be slow on large directories.
+
+The file info memory files are called .$mined instead of .@mined,
+recovery files are called $name$ instead of #name#.
+
+-----------------------------------------------------------------------------
+Terminals
+
+The capability to accept terminal copy-paste is limited by the VMS 80 
+character input buffer (not limited on emulated VMS, e.g. on "Personal 
+Alpha"). For some remote terminals (mintty, rxvt), full Unicode data 
+version detection is disabled to reduce start-up delay.
+
+DECterm
+
+The DECterm window can be used remotely. It is advisable to install the 
+Bitstream bitmap fonts, especially to have the VT100 line drawing graphics 
+available (X fonts with -DEC-DECtech encoding). If the Cygwin/X server is 
+used, the font-bitstream-dpi* packages should be installed to this aim.
+
+CJK support
+
+In the VAX version, some large tables are disabled in the sources 
+(mainly for the sake of compilation speed): Unicode character names 
+and decompositions, CJK character encodings and Han character information.
+(CJK input methods are not disabled.)
+The Alpha and Itanium versions include full CJK support.
+
+-----------------------------------------------------------------------------
+Compilation
+
+For VMS-specific compilation hints, see COMPILE.DOC in the source package.
+
+-----------------------------------------------------------------------------

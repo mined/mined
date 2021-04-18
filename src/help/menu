@@ -1,0 +1,63 @@
+Menus and mouse functions
+-------------------------
+
+Mined provides pull-down menus listed on the top screen line, flag menus 
+for special selections, and a pop-up ("quick") menu.
+
+Both keyboard operation and mouse operation is possible.
+
+Keyboard operation:
+Pull-down menus are opened with ESC-f (for File menu) etc, or 
+Alt-f etc if enabled by your xterm configuration 
+(see sample file Xdefaults.mined for advice).
+Use the cursor keys to change menu or select items, use Enter/Return 
+to invoke the selected item, use blank or any hop key to toggle the 
+HOP function modifier on the menu items (display changes where applicable).
+
+Mouse operation:
+Right click in text area to open pop-up menu.
+Click on menu title to open/change/close pull-down menu.
+Clicking middle button toggles HOP function.
+Click on menu item to invoke it, or drag to menu item and release.
+Right click on flag indications to open flag menus.
+
+Other mouse functions:
+Click left button on text area to set cursor.
+Click middle button on text area to display text/file status.
+
+Scrollbar mouse functions:
+(The scrollbar indicates position of screen within text.)
+Click left to scroll one page down.
+Click right to scroll one page up.
+Click middle button to position absolutely.
+
+Flags
+-----
+In the right-most part of the menu title line, some flag indications 
+are displayed. Left-click toggles their options or cycles through them. 
+Right-click opens a flag menu with all available options, indicating 
+the selected option(s). Some flags are only shown in Unicode/CJK mode.
+
+?	Info display for file, character code, or Han character information.
+
+--/...	Input Method (keyboard mapping) indicated by language tag.
+
+""/...	Quotes style to use for smart quotes, which means automatic 
+	substitution of entered straight (ASCII) double or single quotes 
+	by typographical quotation marks.
+
+U8/...	Text Encoding interpretation and display.
+	Note: This does not affect the contents of the edited text.
+ç/`	Combined/Separated display of combining characters.
+
+h/H	HOP function active indication.
+E/V	Edit/View only mode of text being edited.
+
+%/[	Normal/Rectangular Copy/Paste mode.
+=/+	Replace/Append paste buffer mode for Copy or Cut functions.
+	- cyan background: Unicode paste buffer mode.
+
+»/|	Auto-indentation enabled/disabled.
+j/j/J	Manual/semi-automatic/automatic paragraph justification.
+ /«	Non-Blank termination/Empty line termination mode of paragraph end.
+

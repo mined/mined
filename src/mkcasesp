@@ -1,0 +1,24 @@
+#! /bin/sh -f
+
+if make SpecialCasing.txt
+then	true
+else	echo Could not acquire Unicode data file SpecialCasing.txt
+	exit 1
+fi
+
+#00DF; 00DF; 0053 0073; 0053 0053; # LATIN SMALL LETTER SHARP S
+#0x00DF; 0x00DF; 0x0053, 0x0073; 0x0053, 0x0053;
+#	{0x00DF, 0x00DF, {0x0053, 0x0073}, {0x0053, 0x0053},
+
+#03A3; 03C2; 03A3; 03A3; FINAL; # GREEK CAPITAL LETTER SIGMA
+#	{0x03A3, 0x03C2, {0x03A3}, {0x03A3}, FINAL;
+
+egrep "^[^#]" SpecialCasing.txt |
+sed	-e "s/ *#.*//" \
+	-e "s/\([0-9A-F][0-9A-F][0-9A-F][0-9A-F]\)/0x\1/g" \
+	-e "s/\([^;]\) /\1, /g" \
+	-e "s/\([^;]*\); \([^;]*\); \([^;]*\); \([^;]*\);/	{\1, {\2}, {\3}, {\4}, 0/" \
+	-e "s/ \([a-zA-Z][a-zA-Z]*\)/ | U_cond_\1/g" \
+	-e "s/;*$/},/" -e "s/, |/ |/g" \
+	-e "s/{}/{0}/g" \
+| sort > casespec.t

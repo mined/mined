@@ -1,0 +1,24 @@
+#! /bin/sh
+
+(cd handescr; make descriptions.uni)
+
+pronunciations=` grep -e "^pronunciations=" handescr/makefile | sed -e "s,.*=,," -e "s,|, ,g" `
+
+LC_ALL=C
+export LC_ALL
+
+# generate lists of character with respective pronunciation description
+for pron in $pronunciations
+do	sed -e "s,^U+\([^ 	]*\)	k$pron	.*,U+\1," -e t -e d handescr/descriptions.uni | ./insutf8 -u > xpron.$pron
+	wc -l xpron.$pron
+done
+
+# combine list of characters with all pronunciation descriptions
+set - $pronunciations
+/bin/cp xpron.$1 xpron.all
+shift
+for pron in $*
+do	setop xpron.all \* xpron.$pron > xpron.0
+	/bin/mv xpron.0 xpron.all
+done
+

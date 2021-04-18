@@ -1,0 +1,528 @@
+! Input assignments for shifted keys and some other configuration 
+! resources for xterm.
+! Include this in your X resource file, probably
+! $HOME/.Xdefaults or $HOME/.Xresources
+! or add the resources dynamically by invoking
+!    xrdb -merge <this directory>/Xdefaults.mined
+! from your X initialisation script, probably $HOME/.xinitrc .
+
+
+! This should always be true in order to support 8 bit handling!
+*VT100*eightBitOutput:	true
+! This enables Alt key handling by mined.
+*VT100*metaSendsEscape:	true
+! This enables Alt key handling with older versions of xterm.
+*VT100*eightBitInput:	false
+! This enables shifted escape sequence modification in more cases.
+*VT100.numLock: true
+
+! This enables recognition of alt/shift/ctrl modified cursor/function keys.
+*VT100*modifyCursorKeys: 2
+! This would commonly enable distinction of alt/shift/ctrl 
+! modified other keys (xterm 214); since xterm 216, however, this is 
+! also switchable by escape sequences and this resource is not needed
+!*VT100*modifyOtherKeys: 1
+
+! This should be used to ensure distinguished DEL keys on the two keypads.
+*VT100*deleteIsDEL:	true
+! This should be used to make Backspace/DEL handling of xterm and the 
+! tty consistent.
+XTerm*backarrowKeyIsErase: false
+UXTerm*backarrowKeyIsErase: false
+
+! The following helps to recognise the cursor on a character displayed 
+! with reverse background (control character) or coloured background 
+! (invalid character code).
+*VT100*cursorColor: blue
+Rxvt.cursorColor: blue
+Rxvt.cursorColor2: orchid
+
+! Force older rxvt not to fake TERM=xterm as this confuses some settings;
+! also rxvt should be recognisable as such for some work-arounds 
+! to be activated in mined.
+Rxvt.termName: rxvt
+
+! Enable Alt key handling with rxvt.
+Rxvt.meta8: false
+
+! This facilitates Unicode file names in the xterm window title.
+*utf8Title: true
+
+
+! Select a font to be used with Unicode xterm;
+! 9x18 is the font with the largest range of characters, 
+! together with the double-width 18x18 font that will automatically 
+! be co-selected by xterm.
+! Its appearance is a bit spindly, however; that's why I prefer 10x20.
+! Unfortunately, 10x20 comes without a 20x20 double-width mate with X, 
+! for remedy, see my script bdf18to20, 
+! also in the mined runtime support library
+
+UXTerm*font:	9x18U
+! Note: Depending on your X font configuration, it could be "9x18" without U.
+
+! Enable this to specify that xterm shall use built-in tables for 
+! Unicode width data, affecting handling of wide characters and 
+! combining characters (effective since xterm 201).
+! Advantage: With mined, you can use the most recent Unicode data 
+!	version built-in to xterm regardless of system-provide locale 
+!	data which are often an older version.
+! Disadvantage: Other software (including other editors) may refer 
+!	to the system locale data which leads to inconsistent handling 
+!	and display problems (not with mined).
+!*VT100*mkWidth:	true
+
+! To rather use the 10x20 font and fix the missing 20x20 fonts, see 
+! my instructions in the Unicode Howto of the mined web documentation 
+! (http://towo.net/mined); then enable the following settings:
+!UXTerm*font:	10x20U
+! Note: Depending on your X font configuration, it could be "10x20" without U.
+
+! If you have a style preference for one of the CJK fonts, use one of:
+!UXTerm*wideFont:	20x20ja
+!UXTerm*wideFont:	20x20ko
+! Or, if the short name aliases are not configured:
+!UXTerm*font:	-misc-fixed-medium-r-normal--20-200-75-75-c-100-iso10646-1
+! and one of:
+!UXTerm*wideFont: -misc-fixed-medium-r-normal-ja-20-200-75-75-c-200-iso10646-1
+!UXTerm*wideFont: -misc-fixed-medium-r-normal-ko-20-200-75-75-c-200-iso10646-1
+
+
+! Keyboard assignments
+
+! The KP_Space definition may be needed to enable the HOP key on the keypad.
+! The Home and End definitions are useful to distinguish keys from 
+! the two keypads; the right keypad should define keys named KP_Home etc.
+!
+! The Ctrl/Shift Return/KP_Enter definitions enable special line-end 
+! insertions. Other Ctrl/Shift definitions enable the corresponding 
+! modified functions on those keys.
+!
+! The optional Menu, Pause, or Scroll_Lock assignments simulate a middle 
+! keypad key ("5") to make the HOP available easily on Laptops/Notebooks 
+! which do not have a numeric keypad, or to provide for a redefined 
+! middle keypad key for the KDE konsole terminal which cannot use it 
+! otherwise due to a deficiency in the QT framework.
+!
+! The Ctrl BackSpace definition enables the control-backspace function 
+! that removes combining accents from combined characters and also 
+! does not unindent on leading blanks.
+!
+! To enable further function keys, e.g. Control-Fn (n = 1..12), 
+! it may be necessary to redefine mappings to them by a window 
+! manager. E.g. KDE defines Control-Fn to move to virtual screen 
+! number n which I find less useful than editing functions, so 
+! I recommend to remap it to Control-Shift-Fn; this can be done in 
+! the KDE control center under keyboard shortcuts, shortcut series.
+!
+! The shifted digit mappings enable their use as prefix keys 
+! for accented characters, esp. for Vietnamese input.
+!
+! The definitions begin with two macros that can optionally be 
+! added to the keyboard translations to add mappings for 
+! Vietnamese composed vowels for different keyboard layouts.
+! (These macros must be defined first to be available for later inclusion.)
+
+! Vietnamese vowel mapping 1, to simplify input of Vietnamese characters 
+! on German, Scandinavian, Italian keyboards which have sufficient 
+! special keys to be redefined suitably for the Vietnamese vowels 
+! a with breve, o with horn, u with horn, 
+! while the three vowels with circumflex 
+! â, ê, ô should be input with some other appropriate means, 
+! e.g. the dead_circumflex prefix key.
+! To enable these mappings, add an uncommented line 
+!	Vietnamese1 \
+! to the *VT100.Translations section below.
+#define Vietnamese1 \
+	Meta Shift <Key> adiaeresis:	string("Ă") \n\
+	Meta <Key> adiaeresis:	string("ă") \n\
+	Meta Shift <Key> odiaeresis:	string("Ơ") \n\
+	Meta <Key> odiaeresis:	string("ơ") \n\
+	Meta Shift <Key> udiaeresis:	string("Ư") \n\
+	Meta <Key> udiaeresis:	string("ư") \n\
+	Meta Shift <Key> ae:	string("Ă") \n\
+	Meta <Key> ae:	string("ă") \n\
+	Meta Shift <Key> oslash:	string("Ơ") \n\
+	Meta <Key> oslash:	string("ơ") \n\
+	Meta Shift <Key> aring:	string("Ư") \n\
+	Meta <Key> aring:	string("ư") \n\
+	Meta Shift <Key> agrave:	string("Ă") \n\
+	Meta <Key> agrave:	string("ă") \n\
+	Meta Shift <Key> ograve:	string("Ơ") \n\
+	Meta <Key> ograve:	string("ơ") \n\
+	Meta Shift <Key> ugrave:	string("Ư") \n\
+	Meta <Key> ugrave:	string("ư") \n\
+
+! Vietnamese vowel mapping 0, to assign all 6 Vietnamese accented vowels 
+! to a keyboard that does not provide enough special character keys.
+! To enable these mappings, add an uncommented line 
+!	Vietnamese0 \
+! to the *VT100.Translations section below.
+#define Vietnamese0 \
+	Meta Ctrl Shift <Key> a:	string("Ă") \n\
+	Meta Ctrl <Key> a:	string("ă") \n\
+	Meta Ctrl Shift <Key> o:	string("Ơ") \n\
+	Meta Ctrl <Key> o:	string("ơ") \n\
+	Meta Shift <Key> u:	string("Ư") \n\
+	Meta <Key> u:	string("ư") \n\
+	Meta Shift <Key> a:	string("Â") \n\
+	Meta <Key> a:	string("â") \n\
+	Meta Shift <Key> e:	string("Ê") \n\
+	Meta <Key> e:	string("ê") \n\
+	Meta Shift <Key> o:	string("Ô") \n\
+	Meta <Key> o:	string("ô") \n\
+
+! Mappings for:
+! * Control-punctuation keys, e.g. Control-; etc,
+! * Control-digit keys, e.g. Control-1, Alt-1, Alt-Control-1,
+! used as accent prefix keys. These are not needed since xterm 216 
+! but can be configured for older versions to achieve the same 
+! functionality; unfortunately, however, the Shift state of the 
+! keys being mapped has to be given here precisely and depends 
+! on the respective national keyboard layout, so you will have 
+! to adapt this section if you use it; add Shift as follows to 
+! all key bindings to characters that are shifted on your local 
+! keyboard:
+!	Ctrl <Key> colon:	string("[27;5;58~") \n\
+! -> (changing ";5;" to ";6;" is optional)
+!	Ctrl Shift <Key> colon:	string("[27;6;58~") \n\
+! To enable these mappings, add an uncommented line 
+!	modifiedKeys \
+! to the *VT100.Translations section below.
+
+#define modifiedKeys \
+	Ctrl <Key> colon:	string("[27;5;58~") \n\
+	Ctrl <Key> period:	string("[27;5;46~") \n\
+	Ctrl <Key> apostrophe:	string("[27;5;39~") \n\
+	Ctrl <Key> minus:	string("[27;5;45~") \n\
+	Ctrl <Key> asciitilde:	string("[27;5;126~") \n\
+	Ctrl <Key> asciicircum:	string("[27;5;94~") \n\
+	Ctrl <Key> quotedbl:	string("[27;5;34~") \n\
+	Ctrl <Key> comma:	string("[27;5;44~") \n\
+	Ctrl <Key> slash:	string("[27;5;47~") \n\
+	Ctrl <Key> less:	string("[27;5;60~") \n\
+	Ctrl <Key> parenleft:	string("[27;5;40~") \n\
+	Ctrl <Key> semicolon:	string("[27;5;59~") \n\
+	Ctrl <Key> parenright:	string("[27;5;41~") \n\
+	Ctrl <Key> ampersand:	string("[27;5;38~") \n\
+	Ctrl <Key> at:	string("[27;5;64~") \n\
+	Ctrl <Key> exclam:	string("[27;5;33~") \n\
+	Ctrl <Key> question:	string("[27;5;63~") \n\
+	Ctrl <Key> grave:	string("[27;5;96~") \n\
+	Ctrl <Key> acute:	string("[27;5;180~") \n\
+	Ctrl <Key> diaeresis:	string("[27;5;168") \n\
+	Ctrl <Key> macron:	string("[27;5;175~") \n\
+	Ctrl <Key> degree:	string("[27;5;176~") \n\
+	Ctrl <Key> cedilla:	string("[27;5;184~") \n\
+	Ctrl <Key> doubleacute:	string("[27;5;733~") \n\
+	Ctrl <Key> breve:	string("[27;5;728~") \n\
+	Ctrl <Key> abovedot:	string("[27;5;729~") \n\
+	Ctrl <Key> ogonek:	string("[27;5;731~") \n\
+	Ctrl <Key> dead_belowdot:	string("[27;5;53~") \n\
+	Ctrl <Key> dead_horn:	string("[27;5;56~") \n\
+	Ctrl <Key> dead_caron:	string("[27;5;60~") \n\
+	Ctrl <Key> dead_grave:	string("[27;5;96~") \n\
+	Ctrl <Key> dead_acute:	string("[27;5;180~") \n\
+	Ctrl <Key> dead_tilde:	string("[27;5;126~") \n\
+	Ctrl <Key> dead_circumflex:	string("[27;5;94~") \n\
+	Ctrl <Key> dead_macron:	string("[27;5;175~") \n\
+	Ctrl <Key> dead_breve:	string("[27;5;728~") \n\
+	Ctrl <Key> dead_abovedot:	string("[27;5;729~") \n\
+	Ctrl <Key> dead_diaeresis:	string("[27;5;168") \n\
+	Ctrl <Key> dead_abovering:	string("[27;5;730") \n\
+	Ctrl <Key> dead_doubleacute:	string("[27;5;733~") \n\
+	Ctrl <Key> dead_cedilla:	string("[27;5;184~") \n\
+	Ctrl <Key> dead_ogonek:	string("[27;5;731~") \n\
+	Ctrl <Key> dead_iota:	string("[27;5;890~") \n\
+	Ctrl <Key> dead_hook:	string("[27;5;38~") \n\
+	Ctrl <Key> dead_psili:	string("[27;5;787~") \n\
+	Ctrl <Key> dead_dasia:	string("[27;5;788~") \n\
+	Ctrl Meta <Key> 0:	string("[27;7;48~") \n\
+	Ctrl Meta <Key> 1:	string("[27;7;49~") \n\
+	Ctrl Meta <Key> 2:	string("[27;7;50~") \n\
+	Ctrl Meta <Key> 3:	string("[27;7;51~") \n\
+	Ctrl Meta <Key> 4:	string("[27;7;52~") \n\
+	Ctrl Meta <Key> 5:	string("[27;7;53~") \n\
+	Ctrl Meta <Key> 6:	string("[27;7;54~") \n\
+	Ctrl Meta <Key> 7:	string("[27;7;55~") \n\
+	Ctrl Meta <Key> 8:	string("[27;7;56~") \n\
+	Ctrl Meta <Key> 9:	string("[27;7;57~") \n\
+	Ctrl <Key> 0:	string("[27;5;48~") \n\
+	Ctrl <Key> 1:	string("[27;5;49~") \n\
+	Ctrl <Key> 2:	string("[27;5;50~") \n\
+	Ctrl <Key> 3:	string("[27;5;51~") \n\
+	Ctrl <Key> 4:	string("[27;5;52~") \n\
+	Ctrl <Key> 5:	string("[27;5;53~") \n\
+	Ctrl <Key> 6:	string("[27;5;54~") \n\
+	Ctrl <Key> 7:	string("[27;5;55~") \n\
+	Ctrl <Key> 8:	string("[27;5;56~") \n\
+	Ctrl <Key> 9:	string("[27;5;57~") \n\
+	Meta <Key> 0:	string("[27;3;48~") \n\
+	Meta <Key> 1:	string("[27;3;49~") \n\
+	Meta <Key> 2:	string("[27;3;50~") \n\
+	Meta <Key> 3:	string("[27;3;51~") \n\
+	Meta <Key> 4:	string("[27;3;52~") \n\
+	Meta <Key> 5:	string("[27;3;53~") \n\
+	Meta <Key> 6:	string("[27;3;54~") \n\
+	Meta <Key> 7:	string("[27;3;55~") \n\
+	Meta <Key> 8:	string("[27;3;56~") \n\
+	Meta <Key> 9:	string("[27;3;57~") \n\
+
+! Now the actual mapping section begins.
+*VT100.Translations:	#override \n\
+	Ctrl Shift <Key>	Delete: string("[3;6~") \n\
+	Ctrl <Key>		Delete: string("[3;5~") \n\
+	Meta Shift <Key>	Delete: string("[3;4~") \n\
+	Meta <Key>		Delete: string("[3;3~") \n\
+	Shift <Key>		Delete: string("[3;2~") \n\
+	Ctrl Meta Shift <Key>	Home:	string("[1;8H") \n\
+	Ctrl Meta <Key>		Home:	string("[1;7H") \n\
+	Ctrl Shift <Key>	Home:	string("[1;6H") \n\
+	Ctrl <Key>		Home:	string("[1;5H") \n\
+	Meta Shift <Key>	Home:	string("[1;4H") \n\
+	Meta <Key>		Home:	string("[1;3H") \n\
+	Shift <Key>		Home:	string("[1;2H") \n\
+	<Key>			Home:	string("[H") \n\
+	Ctrl Meta Shift <Key>	End:	string("[1;8F") \n\
+	Ctrl Meta <Key>		End:	string("[1;7F") \n\
+	Ctrl Shift <Key>	End:	string("[1;6F") \n\
+	Ctrl <Key>		End:	string("[1;5F") \n\
+	Meta Shift <Key>	End:	string("[1;4F") \n\
+	Meta <Key>		End:	string("[1;3F") \n\
+	Shift <Key>		End:	string("[1;2F") \n\
+	<Key>			End:	string("[F") \n\
+	Ctrl Meta Shift <Key>	KP_Begin:	string("[1;8E") \n\
+	Ctrl Meta <Key>		KP_Begin:	string("[1;7E") \n\
+	Ctrl Shift <Key>	KP_Begin:	string("[1;6E") \n\
+	Ctrl <Key>		KP_Begin:	string("[1;5E") \n\
+	Meta Shift <Key>	KP_Begin:	string("[1;4E") \n\
+	Meta <Key>		KP_Begin:	string("[1;3E") \n\
+	Shift <Key>		KP_Begin:	string("[1;2E") \n\
+	<Key>			KP_Begin:	string("[E") \n\
+	Ctrl Meta Shift <Key>	KP_Space:	string("[1;8E") \n\
+	Ctrl Meta <Key>		KP_Space:	string("[1;7E") \n\
+	Ctrl Shift <Key>	KP_Space:	string("[1;6E") \n\
+	Ctrl <Key>		KP_Space:	string("[1;5E") \n\
+	Meta Shift <Key>	KP_Space:	string("[1;4E") \n\
+	Meta <Key>		KP_Space:	string("[1;3E") \n\
+	Shift <Key>		KP_Space:	string("[1;2E") \n\
+	<Key>			KP_Space:	string("[E") \n\
+	Meta <Key>		Insert:	string("[2;3~") \n\
+	Meta <Key>		KP_Insert:	string("[2;3~") \n\
+	Ctrl Shift <Key> space:	string("[27;6;32~") \n\
+	Ctrl <Key> BackSpace:	string("[27;5;8~") \n\
+	Meta <Key> BackSpace:	string("[27;3;8~") \n\
+	Ctrl Shift Meta <Key>	KP_Enter:	string("[27;8;13~") \n\
+	Ctrl Meta <Key>		KP_Enter:	string("[27;7;13~") \n\
+	Ctrl Shift <Key>	KP_Enter:	string("[27;6;13~") \n\
+	Ctrl <Key>		KP_Enter:	string("[27;5;13~") \n\
+	Shift Meta <Key>	KP_Enter:	string("[27;4;13~") \n\
+	Meta <Key>		KP_Enter:	string("[27;3;13~") \n\
+	Shift <Key>		KP_Enter:	string("[27;2;13~") \n\
+!	<Key> Menu:	string("[E") \n\
+!	<Key> Pause:	string("[E") \n\
+!	<Key> Scroll_Lock:	string("[E") \n\
+
+
+! Keyboard assignments for rxvt
+! * Enabling to distinguish Shift-F1 from F11, Shift-F2 from F12, 
+!   and respectively with Control. Note that this may cause other 
+!   applications to not recognize (Control-)Shift-F1/F2 anymore.
+! * Enabling Control on the right keypad, using escape sequences already 
+!   used by rxvt on the small keypad and cursor keys (so not irritating 
+!   other applications with sequences not expected from rxvt).
+! * Enabling modified digits: Alt-0, Control-0, Alt-Control-0, ... -9
+!   (using escape sequences introduced with xterm 214).
+! * Enabling modified keys for accent prefix functions: Control-comma etc.
+!   (using escape sequences introduced with xterm 214);
+!   for those keys that are already shifted, this interferes with the 
+!   rxvt mechanism to intercept Control-Shift as a hook to ISO 14755 input.
+!   This can however be ignored, with the drawback that the following 
+!   key has to be entered twice. Unfortunately, ISO 14755 input cannot 
+!   be disabled with rxvt.
+! * Enabling modified keys for Space, BackSpace, Return, keypad Enter, 
+!   to enable special keyboard functions of mined.
+!   Control-Backspace: delete last combining character from combined character.
+!   Control-Shift-space: enter no-break space (U+A0).
+!   Control/Shift-Return/KP_Enter: enter Unicode line/paragraph separators.
+! ! Note: The Meta-Control- entries and the Control-BackSpace entry 
+!   do not work with some older rxvt-unicode versions (e.g. 4.8).
+Rxvt.keysym.Shift-F1:	[11$
+Rxvt.keysym.Shift-F2:	[12$
+Rxvt.keysym.Control-Shift-F1:	[11@
+Rxvt.keysym.Control-Shift-F2:	[12@
+
+Rxvt.keysym.Shift-Return:	[27;2;13~
+Rxvt.keysym.Control-Return:	[27;5;13~
+Rxvt.keysym.Shift-KP_Enter:	[27;2;13~
+Rxvt.keysym.Control-KP_Enter:	[27;5;13~
+Rxvt.keysym.Control-Shift-space:	[27;6;32~
+Rxvt.keysym.Control-BackSpace:	[27;5;8~
+
+Rxvt.keysym.Control-colon:	[27;5;58~
+Rxvt.keysym.Control-period:	[27;5;46~
+Rxvt.keysym.Control-apostrophe:	[27;5;39~
+Rxvt.keysym.Control-minus:	[27;5;45~
+Rxvt.keysym.Control-asciitilde:	[27;5;126~
+Rxvt.keysym.Control-asciicircum:	[27;5;94~
+Rxvt.keysym.Control-quotedbl:	[27;5;34~
+Rxvt.keysym.Control-comma:	[27;5;44~
+Rxvt.keysym.Control-slash:	[27;5;47~
+Rxvt.keysym.Control-less:	[27;5;60~
+Rxvt.keysym.Control-parenleft:	[27;5;40~
+Rxvt.keysym.Control-semicolon:	[27;5;59~
+Rxvt.keysym.Control-parenright:	[27;5;41~
+Rxvt.keysym.Control-ampersand:	[27;5;38~
+Rxvt.keysym.Control-at:	[27;5;64~
+Rxvt.keysym.Control-exclam:	[27;5;33~
+Rxvt.keysym.Control-question:	[27;5;63~
+Rxvt.keysym.Control-grave:	[27;5;96~
+Rxvt.keysym.Control-acute:	[27;5;180~
+Rxvt.keysym.Control-diaeresis:	[27;5;168~
+Rxvt.keysym.Control-macron:	[27;5;175~
+Rxvt.keysym.Control-degree:	[27;5;176~
+Rxvt.keysym.Control-cedilla:	[27;5;184~
+Rxvt.keysym.Control-doubleacute:	[27;5;733~
+Rxvt.keysym.Control-breve:	[27;5;728~
+Rxvt.keysym.Control-abovedot:	[27;5;729~
+Rxvt.keysym.Control-ogonek:	[27;5;731~
+Rxvt.keysym.Control-dead_belowdot:	[27;5;53~
+Rxvt.keysym.Control-dead_horn:	[27;5;56~
+Rxvt.keysym.Control-dead_caron:	[27;5;60~
+Rxvt.keysym.Control-dead_grave:	[27;5;96~
+Rxvt.keysym.Control-dead_acute:	[27;5;180~
+Rxvt.keysym.Control-dead_tilde:	[27;5;126~
+Rxvt.keysym.Control-dead_circumflex:	[27;5;94~
+Rxvt.keysym.Control-dead_macron:	[27;5;175~
+Rxvt.keysym.Control-dead_breve:	[27;5;728~
+Rxvt.keysym.Control-dead_abovedot:	[27;5;729~
+Rxvt.keysym.Control-dead_diaeresis:	[27;5;168~
+Rxvt.keysym.Control-dead_abovering:	[27;5;730~
+Rxvt.keysym.Control-dead_doubleacute:	[27;5;733~
+Rxvt.keysym.Control-dead_cedilla:	[27;5;184~
+Rxvt.keysym.Control-dead_ogonek:	[27;5;731~
+Rxvt.keysym.Control-dead_iota:	[27;5;890~
+Rxvt.keysym.Control-dead_hook:	[27;5;38~
+Rxvt.keysym.Control-dead_psili:	[27;5;787~
+Rxvt.keysym.Control-dead_dasia:	[27;5;788~
+
+Rxvt.keysym.Meta-0:	[27;3;48~
+Rxvt.keysym.Control-0:	[27;5;48~
+Rxvt.keysym.Meta-Control-0:	[27;7;48~
+Rxvt.keysym.Meta-1:	[27;3;49~
+Rxvt.keysym.Control-1:	[27;5;49~
+Rxvt.keysym.Meta-Control-1:	[27;7;49~
+Rxvt.keysym.Meta-2:	[27;3;50~
+Rxvt.keysym.Control-2:	[27;5;50~
+Rxvt.keysym.Meta-Control-2:	[27;7;50~
+Rxvt.keysym.Meta-3:	[27;3;51~
+Rxvt.keysym.Control-3:	[27;5;51~
+Rxvt.keysym.Meta-Control-3:	[27;7;51~
+Rxvt.keysym.Meta-4:	[27;3;52~
+Rxvt.keysym.Control-4:	[27;5;52~
+Rxvt.keysym.Meta-Control-4:	[27;7;52~
+Rxvt.keysym.Meta-5:	[27;3;53~
+Rxvt.keysym.Control-5:	[27;5;53~
+Rxvt.keysym.Meta-Control-5:	[27;7;53~
+Rxvt.keysym.Meta-6:	[27;3;54~
+Rxvt.keysym.Control-6:	[27;5;54~
+Rxvt.keysym.Meta-Control-6:	[27;7;54~
+Rxvt.keysym.Meta-7:	[27;3;55~
+Rxvt.keysym.Control-7:	[27;5;55~
+Rxvt.keysym.Meta-Control-7:	[27;7;55~
+Rxvt.keysym.Meta-8:	[27;3;56~
+Rxvt.keysym.Control-8:	[27;5;56~
+Rxvt.keysym.Meta-Control-8:	[27;7;56~
+Rxvt.keysym.Meta-9:	[27;3;57~
+Rxvt.keysym.Control-9:	[27;5;57~
+Rxvt.keysym.Meta-Control-9:	[27;7;57~
+
+! Keyboard fixes for cxterm which oppressed some keypad keys by default;
+! the first three entries for each "VT100.Translations" section are relevant,
+! the subsequent ones are taken from cxterm default configuration
+cxterm*VT100.Translations: #override\
+	<Key> KP_Home:	string("[H") \n\
+	<Key> KP_End:	string("[F") \n\
+	<Key> KP_Begin:	string("[E") \n\
+ ~Shift <KeyPress> F1:	set-HZ-parameter(input-conv=toggle)	\n\
+  Shift <KeyPress> F1:	switch-HZ-mode(ASCII)		\n\
+ ~Shift <KeyPress> F2:	switch-HZ-mode(IC)		\n\
+  Shift <KeyPress> F2:	switch-HZ-mode(QW)		\n\
+	<KeyPress> F3:	popup-panel(config)		\n\
+	<KeyPress> F4:	switch-HZ-mode(TONEPY)		\n\
+ ~Shift <KeyPress> F5:	switch-HZ-mode(QJ)		\n\
+  Shift <KeyPress> F5:	switch-HZ-mode(Punct)		\n\
+ ~Shift <KeyPress> F6:	switch-HZ-mode(PY)		\n\
+  Shift <KeyPress> F6:	switch-HZ-mode(CCDOSPY)		\n\
+ ~Shift <KeyPress> F7:	switch-HZ-mode(WuBi)		\n\
+  Shift <KeyPress> F7:	switch-HZ-mode(CangJie)		\n\
+ ~Shift <KeyPress> F8:	switch-HZ-mode(English)		\n\
+  Shift <KeyPress> F8:	switch-HZ-mode(CTLau)		\n\
+ ~Shift <KeyPress> F9:	switch-HZ-mode(SW)		\n\
+  Shift <KeyPress> F9:	switch-HZ-mode(QianMa)		\n\
+	<KeyPress> F10:	switch-HZ-mode(TeleCode)	\n\
+ ~Shift <KeyPress> F11:	switch-HZ-mode(HIRAGANA)	\n\
+  Shift <KeyPress> F11:	switch-HZ-mode(KATAKANA)	\n\
+  ~Meta ~Ctrl <Btn1Down>:	select-start() click-HZ-area()	\n\
+  ~Meta <KeyPress> Escape:	insert() set-HZ-parameter(input-conv=off)
+
+cxtermb5*VT100.Translations: #override\
+	<Key> KP_Home:	string("[H") \n\
+	<Key> KP_End:	string("[F") \n\
+	<Key> KP_Begin:	string("[E") \n\
+ ~Shift <KeyPress> F1:	set-HZ-parameter(input-conv=toggle)	\n\
+  Shift <KeyPress> F1:	switch-HZ-mode(ASCII)	\n\
+	<KeyPress> F2:	switch-HZ-mode(IC)	\n\
+	<KeyPress> F3:	popup-panel(config)	\n\
+	<KeyPress> F4:	switch-HZ-mode(PY)	\n\
+ ~Shift <KeyPress> F5:	switch-HZ-mode(QJ)	\n\
+  Shift <KeyPress> F5:	switch-HZ-mode(Punct)	\n\
+ ~Shift <KeyPress> F6:	switch-HZ-mode(ETZY)	\n\
+  Shift <KeyPress> F6:	switch-HZ-mode(ZOZY)	\n\
+ ~Shift <KeyPress> F7:	switch-HZ-mode(Simplex)	\n\
+  Shift <KeyPress> F7:	switch-HZ-mode(CangJie)	\n\
+	<KeyPress> F8:	switch-HZ-mode(English)	\n\
+ ~Shift <KeyPress> F9:	switch-HZ-mode(4Corner)	\n\
+  Shift <KeyPress> F9:	switch-HZ-mode(HSU)	\n\
+ ~Shift <KeyPress> F10:	switch-HZ-mode(ARRAY30)	\n\
+  Shift <KeyPress> F10:	switch-HZ-mode(Boshiamy)\n\
+  ~Meta <Btn1Down>:	select-start() click-HZ-area()	\n\
+  ~Meta <KeyPress> Escape:	insert() switch-HZ-mode(ASCII)
+
+cxtermjis*VT100.Translations: #override\
+	<Key> KP_Home:	string("[H") \n\
+	<Key> KP_End:	string("[F") \n\
+	<Key> KP_Begin:	string("[E") \n\
+	<KeyPress> F1:	switch-HZ-mode(ASCII)	\n\
+	<KeyPress> F2:	switch-HZ-mode(IC)	\n\
+	<KeyPress> F3:	popup-panel(config)	\n\
+	<KeyPress> F4:	switch-HZ-mode(ROMKANA)	\n\
+	<KeyPress> F5:	switch-HZ-mode(TCODE)	\n\
+	<KeyPress> F6:	switch-HZ-mode(QJ)	\n\
+	<KeyPress> F7:	switch-HZ-mode(Punct)	\n\
+  ~Meta <Btn1Down>:	select-start() click-HZ-area()	\n\
+  ~Meta <KeyPress> Escape:	insert() switch-HZ-mode(ASCII)
+
+cxtermks*VT100.Translations: #override\
+	<Key> KP_Home:	string("[H") \n\
+	<Key> KP_End:	string("[F") \n\
+	<Key> KP_Begin:	string("[E") \n\
+	<KeyPress> F1:	switch-HZ-mode(ASCII)	\n\
+	<KeyPress> F2:	switch-HZ-mode(IC)	\n\
+	<KeyPress> F3:	popup-panel(config)	\n\
+	<KeyPress> F4:	switch-HZ-mode(HANGUL)	\n\
+	<KeyPress> F5:	switch-HZ-mode(HANJA)	\n\
+	<KeyPress> F6:	switch-HZ-mode(QJ)	\n\
+	<KeyPress> F7:	switch-HZ-mode(Punct)	\n\
+  ~Meta <Btn1Down>:	select-start() click-HZ-area()	\n\
+  ~Meta <KeyPress> Escape:	insert() switch-HZ-mode(ASCII)
+
+! Keyboard fixes for kterm which oppressed some keypad keys by default
+KTerm*VT100.Translations: #override\
+	<Key> KP_Home:	string("[H") \n\
+	<Key> KP_End:	string("[F") \n\
+	<Key> KP_Begin:	string("[E") \n\
+	<Key> Home:	string("[H") \n\
+	<Key> End:	string("[F") \n\
+
+! End mined X resources.

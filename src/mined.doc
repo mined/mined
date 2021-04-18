@@ -1,0 +1,430 @@
++=====================================================================+
+|		Documentation file of the Mined editor.               |
++=====================================================================+
+
+ Author: Michiel Huisjes.
+
+ Modified by Achim Müller to run on a Unix machine with VT100-like
+ terminals attached and to recognize function key character sequences.
+
+ Modifications and corrections made by Thomas Wolff:
+    Basic capabilities:
+	Runs with arbitrary terminals on UNIX (using termcap).
+	Responds correctly to changes of window size, including
+		redisplay of status line; keeps position in text.
+	Accepts and displays an 8 bit character set.
+    User interface:
+	Two letter ESCAPE commands are used for less frequent functions.
+	The concept of a HOP key prefix was introduced which fortifies
+		any positioning function that follows. This provides more
+		command flexibility without too much need of key remembering.
+	Command key layout changed to resemble WordMaster/WordStar.
+    Improved behaviour:
+	Stripping off lines too long for the screen implemented
+		also on status line output. If status line input overflows
+		the screen and wraps/scrolls, the screen is redisplayed.
+	Search displays a "wrap around end of file" message for
+		better orientation.
+	In case of system errors, the appropriate error message
+		is fetched and displayed instead of printing
+		numerical hieroglyphs or indistinguished
+		commonplace messages (as many UNIX commands do).
+    Additional features and commands:
+	A HELP command.
+	A SUSPEND command with automatic file saving.
+	A repeat search command.
+	A replace command with confirmation dialogue.
+	A change working directory command.
+	A change file name reference command.
+	Reading from standard input and writing to standard output.
+	Starting up at a given line number.
+	Appending versions of the buffer cut/copy/write commands.
+	Process-independent version of the paste command, thus enabling
+		inter-window paste operations.
+	A view only version of the edit command (not yet very well developed).
+	Commands to print buffer / to perform command with buffer as input.
+	Positioning to a percentage within the text.
+	Accepts control char sequence for absolute positioning (by mouse)
+	Multi-file edit
+	External interrupt handling with attempts to save the text
+	Configurable indicators for line shift left/right, line end, tab.
+    Improved text security:
+	Doesn't quit if a file save fails or even if the question for
+		a filename isn't answered. So you have a chance
+		to try another filename or something.
+	Asks whether to overwrite file whenever a file is to be
+		written to which was not previously read in.
+	Removed abort_mined since no one wants to kill an editor
+		unconditionally without attempt to save the text.
+    Corrections:
+	Some screen positioning errors and inconsistencies
+		have been eliminated, for example:
+	The EF function now really positions to the end of the text, not
+		to the beginning of the last line,
+	The HIGH and LOW functions now stay in the current screen column,
+		as UP and DN do now more consistently.
+	Input routine detects overflow of input buffer.
+	Doesn't crash if a file loaded or inserted contains NULL chars.
+	Scratch file counting and deleting was corrected.
+	The Readonly flag and status message is now based on the really
+		effective circumstances (could show wrong state before if
+		real and effective user id were different).
+    Several minor modifications, e.g.: XBREAK (the screen column limit)
+		was increased by 1, since two columns were left blank on
+		the right screen border.
+    Missing modification:
+		The rightmost screen column is currently unused because
+		linefeed is used as a line positioner. If absolute
+		positioning would be added for each text line output,
+		the screen column limit XBREAK could again be increased by 1.
+
+    Many further improvements, including special MSDOS adaptations, not 
+    further described here. See the help file for information about 
+    mined's features.
+
+ 1. General remarks.
+
+    Mined is a screen editor designed for the minix operating system.
+    It is meant to be used on files not larger than 50K and to be fast.
+    When mined starts up, it reads the file into its memory to minimize
+    disk access. The only time that disk access is needed is when certain
+    save, write or copy commands are given.
+
+    Mined has the style of Emacs or Jove, that means that there are no modes.
+    Each character has its own entry in an 256 pointer to function array,
+    which is called when that character is typed. Only ASCII characters are
+    connected with a function that inserts that character at the current
+    location in the file. Two exceptions are <linefeed> and <tab> which are
+    inserted as well. Note that the mapping between commands and functions
+    called is implicit in the table. Changing the mapping just implies
+    changing the pointers in this table.
+
+    The display consists of SCREENMAX + 1 lines and XMAX + 1 characters. When
+    a line is larger (or gets larger during editing) than XBREAK characters,
+    the line is either shifted SHIFT_SIZE characters to the left (which means
+    that the first SHIFT_SIZE characters are not printed) or the end of the
+    line is marked with the SHIFT_MARK character and the rest of the line is
+    not printed.  A line can never exceed MAX_CHARS characters. Mined will
+    always try to keep the cursor on the same line and same (relative)
+    x-coordinate if nothing changed. So if you scroll one line up, the cursor
+    stays on the same line, or when you move one line down, the cursor will
+    move to the same place on the line as it was on the previous.
+    Every character on the line is available for editing including the
+    linefeed at the the of the line. When the linefeed is deleted, the current
+    line and the next line are joined. The last character of the file (which
+    is always a linefeed) can never be deleted.
+    The bottomline (as indicated by YMAX + 1) is used as a status line during
+    editing. This line is usually blank or contains information mined needs
+    during editing. This information (or rather questions) is displayed in
+    reverse video.
+
+    The terminal modes are changed completely. All signals like start/stop,
+    interrupt etc. are unset. The only signal that remains is the quit signal.
+    The quit signal (^\) is the general abort signal for mined. Typing a ^\
+    during searching or when mined is asking for filenames, etc. will abort
+    the function and mined will return to the main loop.
+    Sending a quit signal during the main loop will abort the session
+    (after confirmation) and the file is not (!) saved. *removed*
+    The session will also be aborted when an unrecoverable error occurs, e.g.
+    when there is no more memory available. If the file has been modified,
+    mined will ask if the file has to be saved or not.
+    If there is no more space left on the disk, mined will just give an error
+    message and continue.
+
+    The number of system calls are minimized. This is done to keep the editor
+    as fast as possible. I/O is done in SCREEN_SIZE reads/writes. Accumulated
+    output is also flushed at the end of each character typed.
+
+ 2. Regular expressions
+
+    Mined has a built in regular expression matcher, which is used for
+    searching and replace routines. A regular expression consists of a
+    sequence of:
+
+	1. A normal character matching that character.
+	2. A . matching any character.
+	3. A ^ matching the begin of a line.
+	4. A $ (as last character of the pattern) mathing the end of a line.
+	5. A \<character> matching <character>.
+	6. A number of characters enclosed in [] pairs matching any of these
+	   characters. A list of characters can be indicated by a '-'. So
+	   [a-z] matches any letter of the alphabet. If the first character
+	   after the '[' is a '^' then the set is negated (matching none of
+	   the characters).
+	   A ']', '^' or '-' can be escaped by putting a '\' in front of it.
+	   Of course this means that a \ must be represented by \\.
+	7. If one of the expressions as described in 1-6 is followed by a
+	   '*' than that expressions matches a sequence of 0 or more of
+	   that expression.
+
+    Parsing of regular expression is done in two phases. In the first phase
+    the expression is compiled into a more comprehensible form. In the second
+    phase the actual matching is done. For more details see 3.6.
+
+
+ 3. Implementation of mined.
+
+    3.1 Data structures.
+
+	The main data structures are as follows. The whole file is kept in a
+	double linked list of lines. The LINE structure looks like this:
+
+		typedef struct Line {
+			struct Line * next;
+			struct Line * prev;
+			char * text;
+			unsigned char shift_count;
+		} LINE;
+
+	Each line entry contains a pointer to the next line, a pointer to the
+	previous line and a pointer to the text of that line. A special field
+	shift_count contains the number of shifts (in units of SHIFT_SIZE)
+	that is performed on that line. The total size of the structure is 7
+	bytes so a file consisting of 1000 empty lines will waste a lot of
+	memory. A LINE structure is allocated for each line in the file. After
+	that the number of characters of the line is counted and sufficient
+	space is allocated to store them (including a linefeed and a '\0').
+	The resulting address is assigned to the text field in the structure.
+
+	A special structure is allocated and its address is assigned to the
+	variable header as well as the variable tail. The text field of this
+	structure is set to NIL_PTR. The tail->prev of this structure points
+	to the last LINE of the file and the header->next to the first LINE.
+	Other LINE * variables are top_line and bot_line which point to the
+	first line resp. the last line on the screen.
+	Two other variables are important as well. First the LINE * cur_line,
+	which points to the LINE currently in use and the char * cur_text,
+	which points to the character at which the cursor stands.
+	Whenever an ASCII character is typed, a new line is build with this
+	character inserted. Then the old data space (pointed to by
+	cur_line->text) is freed, data space for the new line is allocated and
+	assigned to cur_line->text.
+
+	Two global variables called x and y represent the x and y coordinates
+	from the cursor. The global variable nlines contains the number of
+	lines in the file. Last_y indicates the maximum y coordinate of the
+	screen (which is usually SCREENMAX).
+
+	A few strings must be initialized by hand before compiling mined.
+	These string are enter_string, which is printed upon entering mined,
+	rev_video (turn on reverse video), normal_video, rev_scroll (perform a
+	reverse scroll) and pos_string. The last string should hold the
+	absolute position string to be printed for cursor motion. The #define
+	X_PLUS and Y_PLUS should contain the characters to be added to the
+	coordinates x and y (both starting at 0) to finish cursor positioning.
+
+    3.2 Starting up.
+
+	Mined can be called with or without argument and the function
+	load_file() is called with these arguments. load_file() checks
+	if the file exists if it can be read and if it is writable and
+	sets the writable flag accordingly. If the file can be read,
+	load_file() reads a line from the file and stores this line into
+	a structure by calling install_line() and line_insert() which
+	installs the line into the double linked list, until the end of the
+	file is reached.
+	Lines are read by the function get_line(), which buffers the
+	reading in blocks of SCREEN_SIZE. Load_file() also initializes the
+	LINE * variables described above.
+
+    3.3 Moving around.
+
+	Several commands are implemented for moving through the file.
+	Moving up (UP), down (DN) left (LF) and right (RT) are done by the
+	arrow keys. Moving one line below the screen scrolls the screen one
+	line up. Moving one line above the screen scrolls the screen one line
+	down. The functions forward_scroll() and reverse_scroll() take care
+	of that.
+	Several other move functions exist: move to begin of line (BL), end of
+	line (EL) top of screen (HIGH), bottom of screen (LOW), top of file
+	(HO), end of file (EF), scroll one page down (PD), scroll one page up
+	(PU), scroll one line down (SD), scroll one line up (SU) and move to a
+	certain line number (GOTO).
+	Two functions called MN() and MP() each move one word further or
+	backwards. A word is a number of non-blanks seperated by a space, a
+	tab or a linefeed.
+
+    3.4 Modifying text.
+
+	The modifying commands can be separated into two modes. The first
+	being inserting text, and the other deleting text. Two functions are
+	created for these purposes: insert() and delete(). Both are capable
+	of deleting or inserting large amounts of text as well as one
+	character. Insert() must be given the line and location at which
+	the text must be inserted. Is doesn't make any difference whether this
+	text contains linefeeds or not. Delete() must be given a pointer to
+	the start line, a pointer from where deleting should start on that
+	line and the same information about the end position. The last
+	character of the file will never be deleted. Delete() will make the
+	necessary changes to the screen after deleting, but insert() won't.
+	The functions for modifying text are: insert one char (S), insert a
+	file (file_insert(fd)), insert a linefeed and put cursor back to
+	end of line (LIB), delete character under the cursor (DCC), delete
+	before cursor (even linefeed) (DPC), delete next word (DNW), delete
+	previous word (DPW) and delete to end of line (if the cursor is at
+	a linefeed delete line) (DLN).
+
+    3.5 Yanking.
+
+	A few utilities are provided for yanking pieces of text. The function
+	MA() marks the current position in the file. This is done by setting
+	LINE * mark_line and char * mark_text to the current position. Yanking
+	of text can be done in two modes. The first mode just copies the text
+	from the mark to the current position (or visa versa) into a buffer
+	(YA) and the second also deletes the text (DT). Both functions call
+	the function set_up() with the delete flag on or off. Set_up()
+	checks if the marked position is still a valid one (by using
+	check_mark() and legal()), and then calls the function yank() with
+	a start and end position in the file. This function copies the text
+	into a scratch_file as indicated by the variable yank_file. This
+	scratch_file is made unique by the function scratch_file(). At the end
+	of copying yank will (if necessary) delete the text. A global flag
+	called yank_status keeps track of the buffer (or file) status. It is
+	initialized on NOT_VALID and set to EMPTY (by set_up()) or VALID (by
+	yank()). Several things can be done with the buffer. It can be
+	inserted somewhere else in the file (PT) or it can be copied into
+	another file (WB), which will be prompted for.
+
+    3.6 Search and replace routines.
+
+	Searching for strings and replacing strings are done by regular
+	expressions. For any expression the function compile() is called
+	with as argument the expression to compile. Compile() returns a
+	pointer to a structure which looks like this:
+
+		typedef struct regex {
+			union {
+				char * err_mess;
+				int * expression;
+			} result;
+			char status;
+			char * start_ptr;
+			char * end_ptr;
+		} REGEX;
+
+	If something went wrong during compiling (e.g. an illegal expression
+	was given), the function reg_error() is called, which sets the status
+	field to REG_ERROR and the err_mess field to the error message. If the
+	match must be anchored at the beginning of the line (end of line), the
+	status field is set to BEGIN_LINE (END_LINE). If none of these special
+	cases are true, the field is set to 0 and the function finished() is
+	called. Finished() allocates space to hold the compiled expression
+	and copies this expression into the expression field of the union
+	(bcopy()). Matching is done by the routines match() and line_check().
+	Match() takes as argument the REGEX * program, a pointer to the
+	startposition on the current line, and a flag indicating FORWARD or
+	REVERSE search. Match() checks out the whole file until a match is
+	found. If match is found it returns a pointer to the line in which the
+	match was found else it returns a NIL_LINE. Line_check() takes the
+	same arguments, but return either MATCH or NO_MATCH.
+	During checking, the start_ptr and end_ptr fields of the REGEX
+	structure are assigned to the start and end of the match.
+	Both functions try to find a match by walking through the line
+	character by character. For each possibility, the function
+	check_string() is called with as arguments the REGEX * program and the
+	string to search in. It starts walking through the expression until
+	the end of the expression or the end of the string is reached.
+	Whenever a * is encountered, this position of the string is marked,
+	the maximum number of matches are performed and the function star()
+	is called in order to try to find the longest match possible. Star()
+	takes as arguments the REGEX program, the current position of the
+	string, the marked position and the current position of the expression
+	Star() walks from the current position of the string back to the
+	marked position, and calls string_check() in order to find a match.
+	It returns MATCH or NO_MATCH, just as string_check() does.
+	Searching is now easy. Both search routines (forward (SF) and
+	backwards search (SR)) call search() with an apropiate message and a
+	flag indicating FORWARD or REVERSE search. Search() will get an
+	expression from the user by calling get_expression(). Get_expression()
+	returns a pointer to a REGEX structure or NIL_REG upon errors and
+	prompts for the expression. If no expression if given, the previous is
+	used instead. After that search will call match(), and if a match is
+	found, we can move to that place in the file by the functions find_x()
+	and find_y() which will find display the match on the screen.
+	Replacing can be done in two ways. A global replace (GR) or a line
+	replace (LR). Both functions call change() with a message and a flag
+	indicating global or line replacement. Change() will prompt for the
+	expression and for the replacement. Every & in the replacement pattern
+	means substitute the match instead. An & can be escaped by a \. When
+	a match is found, the function substitute() will perform the
+	substitution.
+
+    3.6 Miscellaneous commands.
+
+	A few commands haven't be discussed yet. These are redraw the screen
+	(RD) fork a shell (SH), print file status (FS), write file to disc
+	(WT), insert a file at current position (IF), leave editor (XT) and
+	visit another file (VI). The last two functions will check if the file
+	has been modified. If it has, they will ask if you want to save the
+	file by calling ask_save().
+	The function REPT() will repeat a command n times. It will prompt for
+	the number. Aborting the loop can be done by sending the ^\ signal.
+
+    3.7 Utility functions.
+
+	Several functions exists for internal use. First allocation routines:
+	alloc(bytes) and newline() will return a pointer to free data space
+	if the given size. If there is no more memory available, the function
+	panic() is called.
+	Signal handling: The only signal that can be sent to mined is the
+	SIGQUIT signal. This signal, functions as a general abort command.
+	Mined will abort if the signal is given during the main loop. The
+	function abort_mined() takes care of that.
+	Panic() is a function with as argument a error message. It will print
+	the message and the error number set by the kernel (errno) and will
+	ask if the file must be saved or not. It resets the terminal
+	(raw_mode()) and exits.
+	String handling routines like copy_string(to, from), length_of(string)
+	and build_string(buffer, format, arg1, arg2, ...). The latter takes
+	a description of the string out out the format field and puts the
+	result in the buffer. (It works like printf (3), but then into a
+	string). The functions status_line(string1, string2), error(string1,
+	string2), clear_status() and bottom_line() all print information on
+	the status line.
+	Get_string(message, buffer) reads a string and getchar() reads one
+	character from the terminal.
+	Num_out((long) number) prints the number into a 11 digit field
+	without leading zero's. It returns a pointer to the resulting string.
+	File_status() prints all file information on the status line.
+	Set_cursor(x, y) prints the string to put the cursor at coordinates
+	x and y.
+	Output is done by four functions: writeline(fd,string), clear_buffer()
+	write_char(fd, c) and flush_buffer(fd). Three defines are provided
+	to write on filedescriptor STD_OUT (terminal) which is used normally:
+	string_print(string), putchar(c) and flush(). All these functions
+	use the global I/O buffer screen and the global index for this array
+	called out_count. In this way I/O can be buffered, so that reads or
+	writes can be done in blocks of SCREEN_SIZE size.
+	The following functions all handle internal line maintenance. The
+	function proceed(start_line, count) returns the count'th line after
+	start_line.  If count is negative, the count'th line before the
+	start_line is returned. If header or tail is encountered then that
+	will be returned. Display(x, y, start_line, count) displays count
+	lines starting at coordinates [x, y] and beginning at start_line. If
+	the header or tail is encountered, empty lines are displayed instead.
+	The function reset(head_line, ny) reset top_line, last_y, bot_line,
+	cur_line and y-coordinate. This is not a neat way to do the
+	maintenance, but it sure saves a lot of code. It is usually used in
+	combination with display().
+	Put_line(line, offset, clear_line), prints a line (skipping characters
+	according to the line->shift_size field) until XBREAK - offset
+	characters are printed or a '\n' is encountered. If clear_line is
+	TRUE, spaces are printed until XBREAK - offset characters.
+	Line_print(line) is a #define from put_line(line, 0, TRUE).
+	Moving is done by the functions move_to(x, y), move_addres(address)
+	and move(x, adress, y). This function is the most important one in
+	mined. New_y must be between 0 and last_y, new_x can be about
+	anything, address must be a pointer to an character on the current
+	line (or y). Move_to() first adjust the y coordinate together with
+	cur_line. If an address is given, it finds the corresponding
+	x-coordinate. If an new x-coordinate was given, it will try to locate
+	the corresponding character. After that it sets the shift_count field
+	of cur_line to an apropiate number according to new_x. The only thing
+	left to do now is to assign the new values to cur_line, cur_text, x
+	and y.
+
+ 4. Summary of commands.
+
+	See seperate file mined.help .
+
++===========================================================================+

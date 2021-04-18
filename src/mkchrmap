@@ -1,0 +1,237 @@
+#! /bin/sh
+
+# generate CJK / Unicode mapping table from various source formats
+#	{0xA140, 0x3000},
+#	{0x8940, 0x2A3A9},
+
+ucm () {
+	echo extracting mappings from ucm file >&2
+	echo "	/* generated from $1 */"
+	# <U0111>  \xA9\xA2 |0
+	egrep "^[ 	]*<U" $1 |
+	sed -e 's/\\x//g' -e "s/<U\([^>]*\)>[	 ]*\([^ |]*\).*/	{0x\2, 0x\1},/"
+	}
+
+libc () {
+	echo extracting mappings from glibc file >&2
+	echo "	/* generated from $1 */"
+	# <U00A4>     /xa1/xe8         CURRENCY SIGN
+	# %<U30AB><U309A> /x83/x97
+	case "$1" in
+	*.gz)	gzip -dc "$1";;
+	*)	cat "$1";;
+	esac | sed -e '1,/^CHARMAP/ d' -e '/^END CHARMAP/,$ d' -e '/^[ 	]*<U/ b' -e d |
+	sed -e 's,/x,,g' -e "s/<U\([^>]*\)>[	 ]*\([^ |]*\).*/	{0x\2, 0x\1},/" |
+	sed -e 'y/abcdef/ABCDEF/' -e 's,0x000\([0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]\),0x\1,'
+	}
+
+libiconv () {
+	echo extracting mappings from libiconv TXT file >&2
+	echo "	/* generated from $1 */"
+	# 0xA140	0x3000
+	# ->	{0xA140, 0x3000},
+	# 0x8663	0x00E6 0x0300
+	# ->	{0x8663, 0x00E6 | jis2_0x0300},
+	case "$1" in
+	*hkscs*|*HKSCS*)	multi=hkscs2;;
+	*)			multi=jis2;;
+	esac
+	sed -e "s/0x\([^ 	]*\)[ 	]*0x\([^ 	]*\)[ 	]*0x\([^ 	]*\).*/	{0x\1, 0x\2 | multi_0x\3},/" \
+	    -e t \
+	    -e "s/0x\([^ 	]*\)[ 	]*0x\([^ 	]*\).*/	{0x\1, 0x\2},/" \
+	    -e t \
+	    -e d $1 |
+	tr '[a-f]' '[A-F]' |
+	sed -e "s,multi_,${multi}_,"
+	}
+
+enctrans () {	# $1 original name, ${2-stdin} input
+	echo "	/* generated from $1 */"
+	# 0x02····0x1EB2[ 	]*# LATIN ...
+	# ->	{0x02, 0x1EB2},
+	sed -e "s/0x\([^ 	]*\)[ 	]*[0U][x+]\([0-9A-Fa-f]*\).*/	{0x\1, 0x\2},/" \
+	    -e t -e d $2 | tr 'abcdef' 'ABCDEF' | sed -e '/^#/ d'
+	}
+
+hkscs () {
+	echo extracting mappings from hkscs code list >&2
+	echo "	/* generated from $1 */"
+	# HKSCS...<00CA,0304>...HKSCS
+	# ->	{0xHKSCS, 0x00CA | hkscs_0x0304},
+	cat $1 | tr '\015\011' '  ' | sed -e "s,  *$,," |
+	case "$1" in
+	*big5-iso*.txt)	sed -e "s,^\([0-9A-Fa-f][0-9A-Fa-f]*\) .* \([0-9A-Fa-f<][0-9A-Fa-f<>,]*\)$,\1	\2," \
+			-e t -e d;;
+	*)	sed -e "s,^\([0-9A-Fa-f<][0-9A-Fa-f<>,]*\) *\([0-9A-Fa-f][0-9A-Fa-f]*\) *\([0-9][0-9]*\)$,\2	\1," \
+		-e t -e d;;
+	esac |
+	sed -e "s/^\(.*\)	\(.*\)$/	{0x\1, 0x\2},/" \
+	    -e "s/0x<\([0-9A-Fa-f]*\),\([0-9A-Fa-f]*\)>/0x\1 | hkscs2_0x\2/"
+}
+
+enc () {
+	echo extracting mappings from X11 encoding file >&2
+	enctrans $*
+}
+
+trans () {
+	echo extracting mappings from consoletrans mapping file >&2
+	enctrans $*
+}
+
+txt () {
+	echo extracting mappings from txt mapping file >&2
+	enctrans $*
+}
+
+unihan () {
+	if [ ! -f Unihan_OtherMappings.txt ]
+	then
+		if make Unihan.zip >&2
+		then	unzip Unihan.zip Unihan_OtherMappings.txt
+		else	echo Could not acquire Unicode database Unihan.zip >&2
+			exit 1
+		fi
+	fi
+
+	echo extracting mappings from Unihan database >&2
+	tag=$1
+	echo "	/* generated from Unihan_OtherMappings.txt, filtering $tag */"
+	sed	-e "s/^U+\([^	]*\)	$tag	\([^	]*\)$/	{0x\2, 0x\1},/" \
+		-e t -e d Unihan_OtherMappings.txt
+	}
+
+# filter (out) surrogate and private use code points 
+# from Unicode mapping table
+# D800;<Non Private Use High Surrogate, First>;Cs;0;L;;;;;N;;;;;
+# DB7F;<Non Private Use High Surrogate, Last>;Cs;0;L;;;;;N;;;;;
+# DB80;<Private Use High Surrogate, First>;Cs;0;L;;;;;N;;;;;
+# DBFF;<Private Use High Surrogate, Last>;Cs;0;L;;;;;N;;;;;
+# DC00;<Low Surrogate, First>;Cs;0;L;;;;;N;;;;;
+# DFFF;<Low Surrogate, Last>;Cs;0;L;;;;;N;;;;;
+# E000;<Private Use, First>;Co;0;L;;;;;N;;;;;
+# F8FF;<Private Use, Last>;Co;0;L;;;;;N;;;;;
+# F0000;<Plane 15 Private Use, First>;Co;0;L;;;;;N;;;;;
+# FFFFD;<Plane 15 Private Use, Last>;Co;0;L;;;;;N;;;;;
+# 100000;<Plane 16 Private Use, First>;Co;0;L;;;;;N;;;;;
+# 10FFFD;<Plane 16 Private Use, Last>;Co;0;L;;;;;N;;;;;
+private () {
+	case "$1" in
+	-)	out=-v
+		shift;;
+	*)	out=
+		;;
+	esac
+
+	egrep $out -e ", 0xD[89A-F]..}" \
+		-e ", 0xE...}" -e ", 0xF[0-8]..}" \
+		-e ", 0xF....}" -e ", 0x10....}"
+}
+
+# convert different mapping formats into C mapping table, 
+# then filter out ASCII-to-ASCII mappings and Unicode Private Use mappings
+
+#case "$1" in
+#*JIS*)	filterbytes=0-7;;
+#*)	filterbytes=0-9A-F;;
+#esac
+#echo filtering single bytes "[$filterbytes]" >&2
+asciifilter () {
+	#egrep -v "{0x[$filterbytes].,"
+	egrep -v "{0x[0-7]., 0x00[0-7].[^0-9A-F]"
+}
+
+asciifilter=asciifilter
+#asciifilter=cat
+
+LC_ALL=C
+export LC_ALL
+
+case "$1" in
+*.ucm)	ucm $1;;
+*.TXT)	libiconv $1;;
+*.enc)	enc $1 $1;;
+*.enc.gz)	gzip -dc $1 | enc $1;;
+*_to_uni.trans)	trans $1 $1;;
+*hkscs*.txt)	hkscs $1;;
+*.txt)	txt $1 $1;;
+*libc/*|*/i18n/*)	libc $1;;
+*.*|*/*)	echo unknown character mapping format >&2
+	exit;;
+k*)	unihan $1;;
+"")	echo tag missing >&2
+	exit;;
+*)	unihan k$1;;
+esac | 
+$asciifilter | private - |
+sed -e 's/{0x\(..\),/{0x00\1,/' -e 's/{0x\(....\),/{0x00\1,/' -e 's/{0x\(......\),/{0x00\1,/' |
+sort -k 1,1 |
+sed -e 's,{0x00,{0x,' -e 's,{0x00,{0x,' -e 's,{0x00,{0x,'
+
+exit
+
+#############################################################################
+# Below, character set mapping information found in the Unihan database 
+# is listed. It seems to be of much less use than other table sources 
+# (esp. libiconv) for the most widely-used character encodings and 
+# their current extensions.
+
+#############################################################################
+#	kBigFive
+#		The Big Five mapping for this character in hex; note that this does *not* cover
+#			any of the Big Five extensions in common use, including the ETEN extensions.
+#	kHKSCS
+#		Mappings to the Big Five extended code points used for the Hong Kong
+#			Supplementary Character Set
+
+#	kGB0
+#		The GB 2312-80 mapping for this character in ku/ten form
+
+#	kJis0
+#		The JIS X 0208-1990 mapping for this character in ku/ten form
+
+#	kKSC0
+#		The KS X 1001:1992 (KS C 5601-1989) mapping for this character in ku/ten form
+
+#############################################################################
+#	kGB1
+#		The GB 12345-90 mapping for this character in ku/ten form
+#	kPseudoGB1
+#		A "GB 12345-90" code point assigned this character for the purposes
+#			of including it within Unihan. Pseudo-GB1 codes were used to provide
+#			official code points for characters not already in national standards, 
+#	kGB3
+#		The GB 7589-87 mapping for this character in ku/ten form
+#	kGB5
+#		The GB 7590-87 mapping for this character in ku/ten form
+#	kGB8
+#		The GB 8565-89 mapping for this character in ku/ten form
+#	kGB7
+#		The "General Use Characters for Modern Chinese" mapping for this character
+#	kIBMJapan
+#		The IBM Japanese mapping for this character in hex
+#	kJis1
+#		The JIS X 0212-1990 mapping for this character in ku/ten form
+#	kKPS0
+#		The KP 9566-97 mapping for this character in hexadecimal form.
+#	kKPS1
+#		The KPS 10721-2000 mapping for this character in hexadecimal form.  
+#	kKSC1
+#		The KS X 1002:1991 (KS C 5657-1991) mapping for this character in ku/ten form
+#			such as characters used to write Cantonese, and so on.
+
+#	KPS0, KPS1: disjoint
+
+#############################################################################
+#	kJIS0213
+#		The JIS X 0213-2000 mapping for this character in min,ku,ten form
+#	kCCCII
+#		The CCCII mapping for this character in hex
+#	kCNS1986
+#		The CNS 11643-1986 mapping for this character in hex
+#	kCNS1992
+#		The CNS 11643-1992 mapping for this character in hex
+#	kEACC
+#		The EACC mapping for this character in hex
+
+#############################################################################

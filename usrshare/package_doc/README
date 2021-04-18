@@ -1,0 +1,125 @@
+-----------------------------------------------------------------------------
+What is MinEd? (Pronounce "min-ed")
+
+Mined is a powerful text editor with a comprehensive and easy-to-use 
+user interface and fast, small-footprint behaviour.
+
+For an overview of major features and highlights, see the file DESCR 
+or the overview in the HTML documentation (doc/overview.html or 
+http://towo.net/mined/).
+
+
+-----------------------------------------------------------------------------
+Quick start
+
+See the file INSTALL.DOC on how to build and install mined from its 
+source distribution.
+
+This installs the binary program, the manual page, the online help 
+file, and the runtime support library, to appropriate locations as 
+used by various systems.
+
+
+Runtime support library
+The Mined runtime support library is located in the subdirectory 
+usrshare of the mined distribution archive, or, depending on 
+system-specific installation, in a typical location like
+/usr/share[/lib]/mined, /usr/local/share/mined, or /opt/mined/share.
+Its contents is described in detail in the mined manual page.
+Remarkable files are:
+* Support for optimising a runtime environment:
+  - profile.mined
+	shell commands to set environment variables for mined, 
+	template for inclusion in $HOME/.profile
+  - Xdefaults.mined
+	xterm configuration entries suitable for mined, template 
+	for inclusion in $HOME/.Xdefaults or $HOME/.Xresources;
+	the script xinitrc.mined may be used to add this configuration 
+	to your environment when logged in to an X server
+* Support for invoking mined in a suitable terminal:
+  - uterm
+	script to invoke xterm in UTF-8 mode
+  - umined
+	script to start mined in a separate xterm window, using UTF-8 mode
+	with most recent version of Unicode width data (specifying 
+	wide and combining characters) as built-in to xterm
+  - wined[.bat] (for Windows)
+	script to start mined in a separate mintty window, 
+	using Windows look-and-feel
+
+
+For Unicode (UTF-8) terminal operation on Unix / X:
+* Use a fairly new version of xterm (>= version 145).
+  If you need to build an xterm binary program yourself, configure 
+  the package with the script configure-xterm from the mined runtime 
+  support library.
+* Install Unicode fonts for your X server from 
+  http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts.tar.gz 
+  and http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts-asian.tar.gz for 
+  Chinese/Japanese/Korean characters.
+  Automatic installation: the Mined runtime support library contains 
+  a script "installfonts" that downloads these fonts and installs them 
+  with your X server. It finally gives some hints how to add them to 
+  your permanent font configuration.
+  Manual installation: unpack these archives in a directory, e.g. 
+  $HOME/xfonts/ucs-fonts, 
+  and make sure the X server is set up to include that directory in its 
+  font search path:
+	xset +fp $HOME/opt/fonts
+* Start xterm with the script uterm from the mined runtime support 
+  library or with the uxterm command.
+
+See http://towo.net/mined/, click "Unicode Howto", for more details.
+
+
+-----------------------------------------------------------------------------
+Platforms
+
+Mined runs on Linux (including Android and Raspberry Pi), Cygwin, 
+Unix systems, and OpenVMS.
+Mined also runs on Windows (Cygwin, Interix, MSYS, djgpp, EMX (deprecated)), 
+DOS (djgpp, EMX (deprecated), Turbo-C (deprecated)), and Haiku.
+Mined is intended to compile and run on as many Unix environments as 
+possible, including legacy systems. This has recently been tested for SunOS, 
+BSD, Mac OS X, QNX, GNU Hurd, HP-UX, IBM AIX, Irix, SCO UnixWare, Ultrix, Tru64.
+
+For platform-specific installation and setup hints, 
+see also README.cygwin, README.dos, README.vms, README.windows.
+
+See also COMPILE.DOC for an overview of makefiles and for 
+some platform-specific compilation hints.
+
+See PACKAGE.DOC if you want to make a system-specific mined 
+installation package.
+
+
+-----------------------------------------------------------------------------
+Copyright/licence
+
+For legal purposes, the GNU GENERAL PUBLIC LICENSE Version 3 applies 
+(see the file LICENCE.GPL).
+
+The intention is that the editor mined may be freely used, compiled, 
+ported to other systems or adapted to specific preferences.
+It is however appreciated that you please report any changes to 
+mined@towo.net for feedback and optional inclusion in further versions.
+
+Redistributions within software collections are welcome.
+Please notify them to mined@towo.net and if the distribution is on 
+a fixed media (CD/DVD), a free copy will be appreciated.
+
+Although high effort was taken to prevent mined from loosing users' 
+edited data, no liability is accepted for any loss or damage whatsoever.
+
+
+-----------------------------------------------------------------------------
+Mailing list
+
+Mined is also hosted as a sourceforge project <sf.net/projects/mined> 
+where a mailing list is available. To subscribe for information about 
+updates, or discussion, error reports, and feature requests, 
+or to send a mail, please go to the Mined mailing list page:
+<lists.sf.net/lists/listinfo/mined-editor>
+
+
+-----------------------------------------------------------------------------

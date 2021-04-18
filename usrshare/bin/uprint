@@ -1,0 +1,328 @@
+#! /bin/sh
+
+#############################################################################
+# print preprocessor for invocation of uniprint
+# usage: uprint [-r(emove)] [-t(itle) <title>] [-f(ont) <font>] [-s(ize) <size>] filename ...
+# print layout configuration:
+#   FONT=<font>
+#       the name of a font file, e.g. LucidaBrightRegular or bodoni.ttf
+#       the file must reside in the configured font path
+#   FONTSIZE=<size>
+#   FONTPATH=<font directory search path>
+#       for use with uniprint only; separate directory names with ":"
+#   $HOME/.fonts.conf (file)
+#       Pango font configuration file, for use with paps;
+#       here you can specify:
+#       * directories with font files
+#       * preferred fonts for styles "serif", "sans-serif", "monospace"
+#       see http://fontconfig.org/fontconfig-user.html for patterns
+#
+# spooling configuration:
+#   LPR=<optional print spooling command instead of lpr or lp>
+#       if you need to spool files not using the operating system's spooler
+#   PRINTER=<printer>
+
+
+#############################################################################
+# process options
+remove=false
+title=
+font=
+size=
+params=
+
+while	case "$1" in
+	-r|-remove)
+		remove=true
+		true;;
+	-t|-title)
+		title="$2"
+		shift
+		true;;
+	-f|-font)
+		font="$2"
+		shift
+		true;;
+	-s|-size)
+		size="$2"
+		shift
+		true;;
+	-*)	params="$params $1"
+		true;;
+	*)	false;;
+	esac
+do	shift
+done
+
+# try to extract font and size specificatios from command line parameters
+while
+    case "$1" in
+    *)		false;;
+    esac
+do	true
+done
+
+
+#############################################################################
+# Unix/CUPS printer selection
+chooseprinter=false
+lpstat=lpstat
+
+choose_printer () {
+	printers=/tmp/printers.$$
+	(
+	#$lpstat -p | sed -e "s,^printer \([^ ]*\) .*,\1," -e t -e d
+	$lpstat -a | sed -e "s,^\(.*\) accepting .*,\1," -e t -e d
+	) > $printers
+	if [ -n "$PRINTER" ]
+	then	defprinter=`grep -x -e "$PRINTER" $printers`
+	else	defprinter=
+	fi
+	if [ -z "$defprinter" ]
+	then	defprinter=`$lpstat -d | sed -e "s,.*: ,," -e t -e d | sed -e 1q`
+	fi
+
+	echo "Available printers (default highlighted):"
+	pr -n -t $printers |
+		sed -e "s,	\($defprinter\)$,	[42;30m\1[0m,"
+	echo "Select printer (ENTER/RET for default): " | tr -d '\012'
+	read n
+	case "$n" in
+	"")	printer=$defprinter;;
+	[1-9]|[1-9][0-9]|[1-9][0-9][0-9])
+		printer=`sed -e "$n p" -e d $printers`
+		;;
+	esac
+	/bin/rm $printers
+
+	case "$printer" in
+	"")	unset PRINTER;;
+	*)	PRINTER="$printer"
+		export PRINTER;;
+	esac
+}
+
+debug_choose_printer=false
+if $debug_choose_printer
+then	chooseprinter=true
+	echo ---- PRINTER=$PRINTER
+	$chooseprinter && choose_printer
+	echo ---- PRINTER=$PRINTER
+	exit
+fi
+
+
+#############################################################################
+# determine print layout and spool programs
+
+if type paps 2> /dev/null
+then	paps=true
+	# determine print spooling program
+	case "$LPR" in
+	"")	if type lpr 2> /dev/null
+		then LPR=lpr
+		elif type lp 2> /dev/null
+		then LPR=lp
+		else LPR=print
+		fi
+		chooseprinter=true
+		;;
+	esac
+else	paps=false
+	if type uniprint 2> /dev/null 1>& 2
+	then
+		chooseprinter=true
+	fi
+fi
+
+
+#############################################################################
+# set font and size preference
+#font=code2000
+font=cyberbit
+
+if $paps
+then	font=monospace
+	size=10
+fi
+
+font=${FONT-$font}
+
+size=${FONTSIZE-$size}
+
+# additional font directories to search for desired font (with uniprint)
+morefonts="$HOME/fonts:$HOME/ttfonts:$HOME/opt/fonts:$HOME/opt/ttfonts:/usr/ttfonts:/usr/X11/lib/X11/fonts/truetype"
+
+
+#############################################################################
+# setup up parameters
+
+# font directories to search for desired font
+FONTPATH=${FONTPATH-$YUDITDATA}
+case "$FONTPATH" in
+"")	FONTPATH="$morefonts";;
+*)	FONTPATH="$FONTPATH:$morefonts";;
+esac
+
+
+if $paps
+then	true
+elif type uniprint 2> /dev/null 1>& 2
+then	# try to find font file
+	font=`basename $font .ttf`
+	fontfiles=`echo ${FONTPATH}: | sed -e "s,:,/$font.ttf ,g"`
+	fontfile=`ls $fontfiles 2> /dev/null | sed -e 1q`
+	if type cygpath 2> /dev/null
+	then
+		if [ -n "$fontfile" ]
+		then	fontfile=`cygpath -w "$fontfile"`
+		fi
+	fi
+fi
+
+
+#############################################################################
+# construct parameters for paps / uniprint
+
+if $paps
+then
+	papsopt=
+
+	case "$size" in
+	"")	sizepaps=
+		;;
+	*)	sizepaps="--font_scale $size"
+		;;
+	esac
+
+	# add header if available
+	if paps --help | grep -- --header > /dev/null
+	then	papsopt="$papsopt --header"
+	fi
+
+	# add font spec in proper syntax for paps version
+	if paps --help | grep -- --family > /dev/null
+	then	papsfontpar=--family
+		papsfont="$font"
+		papsopt="$papsopt $sizepaps"
+	elif paps --help | grep -- --font= > /dev/null
+	then	papsfontpar=--font
+		papsfont="$font $size"
+	fi
+
+	# add dpi spec for old paps version
+	if paps --help | grep -- --dpi > /dev/null
+	then	papsopt="$papsopt --dpi 300"
+	fi
+
+elif type uniprint 2> /dev/null 1>&2
+then
+	case "$fontfile" in
+	"")	fontspec=;;
+	*)	fontspec="-font $fontfile";;
+	esac
+
+	case "$size" in
+	"")	sizespec=
+		;;
+	*)	sizespec="-size $size"
+		;;
+	esac
+
+fi
+
+
+#############################################################################
+# print all files
+
+for file in "$@"
+do
+
+printed=true
+
+if $paps
+then	$chooseprinter && choose_printer
+	if [ -n "$papsfontpar" ]
+	then	paps $papsfontpar "$papsfont" $papsopt "$file" | $LPR
+	else	paps $papsopt "$file" | $LPR
+	fi
+elif type uniprint 2> /dev/null 1>&2
+then	$chooseprinter && choose_printer
+	if [ "$LPR" != "" ]
+	then	uniprint $params -wrap $fontspec $sizespec -out - "$file" | $LPR
+		#$LPR "$file.ps"
+		#rm -f "$file.ps"
+	else	uniprint $params -wrap $fontspec $sizespec "$file"
+	fi
+else	case `uname` in
+	CYGWIN*|Windows*)
+	    if type notepad 2> /dev/null
+	    then
+		dir=`dirname "$file"`
+		base=`basename "$file"`
+		cd "$dir"
+
+		key_defprinter="/HKEY_CURRENT_USER/Software/Microsoft/Windows NT/CurrentVersion/Windows/Device"
+		key_printerlist="/HKEY_CURRENT_USER/Software/Microsoft/Windows NT/CurrentVersion/Devices"
+
+		if [ -n "$PRINTER" ]
+		then	defprinter=`regtool list "$key_printerlist" |
+				grep -x -e "$PRINTER"`
+		else	defprinter=
+		fi
+		if [ -z "$defprinter" ]
+		then	defprinter=`regtool get "$key_defprinter" |
+				sed -e "s/,.*//"`
+		fi
+
+		echo "Available printers (default highlighted):"
+		regtool list "$key_printerlist" |
+			pr -n -t |
+			sed -e "s,	\($defprinter\)$,	[42;30m\1[0m,"
+		echo "Select printer (ENTER/RET for default): " | tr -d '\012'
+		read n
+		case "$n" in
+		"")	printer=$defprinter;;
+		[1-9]|[1-9][0-9]|[1-9][0-9][0-9])
+			printer=`regtool list "$key_printerlist" |
+				sed -e "$n p" -e d`
+			;;
+		esac
+
+		case "$printer" in
+		"")	echo No printer selected;;
+		"$defprinter")
+			if type cmd.exe > /dev/null 2> /dev/null
+			then	cmd.exe /c start /min notepad /p "$base"
+			elif type command.com > /dev/null 2> /dev/null
+			then	command.com /c start /min notepad /p "$base"
+			else	notepad /p "$base"
+			fi;;
+		*)	echo notepad /pt \"$base\" \"$printer\" > minprint.bat
+			chmod +x minprint.bat
+			./minprint.bat
+			;;
+		esac
+	    else	printed=false
+	    fi
+		;;
+	*)	printed=false
+		;;
+	esac
+fi
+
+if $printed
+then	if $remove
+	then	case "$file" in
+		/tmp/*|/???/tmp/*|${MINEDTMP--}/*|${TMPDIR--}/*|${TMP--}/*|${TEMP--}/*)
+			rm -f "$file";;
+		esac
+	fi
+else	false
+fi
+
+done
+
+
+#############################################################################
+# end

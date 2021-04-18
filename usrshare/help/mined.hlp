@@ -1,0 +1,415 @@
+<!--HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH-->
+	mined help topic 'introduction'
+<!-------------------------------------------------------------------------->
+
+                Unicode text editor MinEd 2015.25
+
+Introduction
+------------
+
+Mined is a powerful text editor with a comprehensive and easy-to-use 
+user interface and fast, small-footprint behaviour.
+
+It was the first editor that provided Unicode support in a 
+plain-text terminal.
+It now has both extensive Unicode and CJK support offering many 
+specific features and covering special cases that other editors 
+are not aware of (like auto-detection features and automatic handling 
+of terminal variations, or CJK character information).
+And basically, it is an editor tailored to efficient editing 
+of plain text documents and programs, with features and interactive 
+behaviour designed for this purpose.
+
+Mined has an intuitive, simple way of operation. No modes.
+Cursor positioning basic editing is intuitive, character-oriented, 
+and without weird limitations at line-end, no insert/append confusion.
+
+Editing support includes
+* paragraph adjustment (line/word wrap)
+* identifier and function definition search (also across files)
+* HTML support
+* smart quotes (typographic quote mark replacement, with automatic style)
+* versatile character input support features
+* combined character support
+* search and replacement patterns may include new-lines
+* cross-session paste buffer (copy/paste between multiple invocations)
+* multiple paste buffers (emacs-style)
+* handling of different line-end kinds with distinguished indications
+* binary transparency
+
+Mined offers security against file handling mistakes. It will not accidently 
+overwrite a file that has not explicitly been opened for editing before 
+without prompting. It will not exit from a changed text without saving 
+or explicit confirmation.
+All file handling errors are reported clearly.
+
+
+<!--HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH-->
+	mined help topic 'keyboard'
+<!-------------------------------------------------------------------------->
+
+Control keys
+------------
+  Control key layout for basic movement functions is topographic on 
+  the left-hand side of the keyboard (an idea originating from early 
+  editors and also known as "WordStar mode").
+  With control keys, the important movement and editing functions are 
+  always available even in unconfigured terminal environments.
+
+HOP key
+-------
+  As a "key concept", the HOP key, used as a prefix key, amplifies the 
+  effect of screen movement commands "just as you would expect". It 
+  also works on many other commands to provide an important variation 
+  of the command. This way, a richer set of commands is available 
+  without having to remember too many keys. The HOP prefix function is 
+  triggered by any of a number of keys, some sharing this function 
+  with their own function; e.g. ^Q, ^L, ^G, ESC, the middle keypad key 
+  ("5"). (The function is similar to the ^Q prefix of ancient WordStar.)
+
+Keypad assignment
+-----------------
+The two cursor block keypads of typical keyboards are assigned the most 
+important movement and copy/paste functions as follows:
+    +-------+-------+-------+    +-------+-------+-------+
+    | Insert| Home  | PgUp  |    | (7)   |  (8)  | (9)   |
+    | Paste |LineBeg|       |    | Mark  |   ^   | PgUp  |
+    +-------+-------+-------+    +-------+-------+-------+
+    | Delete| End   | PgDn  |    | (4)   |  (5)  | (6)   |
+    |Del/Cut|LineEnd|       |    | <-    |  HOP  |  ->   |
+    +-------+-------+-------+    +-------+-------+-------+
+                                 | (1)   |  (2)  | (3)   |
+                                 | Copy  |   v   | PgDn  |
+                                 +-------+-------+-------+
+                                 | (0)           | (.)   |
+                                 | Paste         |Del/Cut|
+                                 +-------+-------+-------+
+
+Home (right keypad) sets a mark for the text region to be selected.
+End (right keypad) performs a Copy to the paste buffer.
+Del: if a visual selection is active, Del performs a Cut to the paste buffer.
+     otherwise, it deletes the next character right.
+Home (small keypad) moves the cursor to the beginning of the current line.
+End (small keypad) moves the cursor to the end of the current line.
+Control-Home (both keypads) moves to the beginning of the current line.
+Control-End (both keypads) moves to the end of the current line.
+Control-Del (both keypads) deletes the next character.
+Shift-Home (small keypad) sets a mark for the text region to be selected.
+Shift-End (small keypad) performs a Copy to the paste buffer.
+Shift-Del (small keypad) performs a Cut to the paste buffer.
+Insert pastes the contents of the buffer to the current cursor position.
+
+Notes:
+* Ctrl-/Shift-modified keypad functions are not affected by the -k option.
+  Shifted keys on the numeric keypad are usually tied to numeric digit input.
+* Recognition of modified key function assignments depends on the 
+  terminal and its configured mode.
+  (Not all terminals support the distinction between the two keypads.)
+  For xterm, this needs extra configuration. See the mined manual for 
+  instructions.
+* The Alt key modifies the Del, Home and End keys to perform the 
+  respective other function than the plain key.
+
+Alternate insert functions:
+HOP-Insert pastes the most recent paste buffer from any instance of mined.
+Alt-Insert (or ESC Insert) exchanges the pasted region just inserted 
+  with the previous paste buffer inserted before.
+Ctrl-Insert inserts and keeps the cursor position before the area.
+
+The centrally placed HOP key is a prefix modifier that can be used for 
+intuitive modification of navigation functions and for useful 
+alternatives of paste buffer functions:
+                                 +-------+-------+-------+
+                                 | (7)   |  (8)  | (9)   |
+                                 |go Mark|Scr top|FileBeg|
+                                 +-------+-------+-------+
+                                 | (4)   |  (5)  | (6)   |
+                                 |LineBeg|       |LineEnd|
+                                 +-------+-------+-------+
+                                 | (1)   |  (2)  | (3)   |
+                                 |Append |Scr bot|FileEnd|
+                                 +-------+-------+-------+
+                                 | (0)           | (.)   |
+                                 |Cross-paste    |+Append|
+                                 +-------+-------+-------+
+
+HOP-Cursor Up/Down moves to top/bottom of screen.
+HOP-Cursor Left/Right moves to beginning/end of line.
+HOP-Page Up/Down moves to beginning/end of edited text.
+HOP-Home moves the cursor to the marked position.
+HOP-End appends to the buffer.
+HOP-Del cuts and appends to the buffer.
+HOP-Insert pastes the inter-session buffer.
+           The inter-session buffer always contains the last copied 
+           buffer by any instance of mined and remains available after 
+           mined exits; so you can quickly copy and paste text between 
+           two different editing sessions running mined.
+           See the mined manual for further configuration hints.
+
+
+Text selection
+--------------
+There are two ways to visually select a text area with the keyboard:
+- Mark a position (using the Mark function, e.g. Home key or Control-space),
+  then simply move with the normal cursor keys.
+- With Windows selection compatibility option +t, initiate or continue 
+  text selection with Shift-cursor keys (if supported by the terminal).
+
+
+Note on the Home and End key assignments
+----------------------------------------
+Sometimes people expect the "Home" and "End" keys to move the cursor 
+to the beginning or end of line, respectively.
+In the keyboard usage approach of mined, these functions can easily 
+and quite intuitively be invoked with "HOP left" and "HOP right", i.e. 
+by pressing the keypad keys "5 4" or "5 6" in sequence.
+So there is enough room left for mapping the most frequent paste-buffer 
+functions to the keypad as described above which is considered much 
+more useful.
+The command line option -k exchanges Home/End function assignments of 
+the two keypads with each other, including the Alt reversals.
+
+
+Input methods (Keyboard mapping)
+--------------------------------
+Keyboard input can be mapped to support various scripts from a generic 
+keyboard, including East Asian input methods. Select a script from the 
+keyboard mapping menu (right-click on the "--" indication in the flags 
+area, or ESC K / Alt-K / Control-F12).
+Input characters or short sequences of input characters will then be 
+transformed according to the selected keyboard mapping table.
+Some mapping tables contain ambiguous prefixes of mapped sequences; 
+in order to support this, a small delay may occur until a mapping is 
+applied.
+In some mapping tables, certain mappings yield multi-character sequences.
+Also, certain ambiguous mappings exist that yield a multiple choice; 
+it is presented in a selection menu (also known as "pick list") from 
+which the desired character can be chosen by mouse click or with 
+cursor keys (up / down or space / in the row, select character by 
+entering its index 1-9 or 0).
+
+
+<!--HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH-->
+	mined help topic 'function-keys'
+<!-------------------------------------------------------------------------->
+
+Function key assignments
+------------------------
+(only the most important assignments listed here)
+
+F1	help
+Control/Shift/Alt-F1 or F1 F1 displays a quick Fn help reference
+HOP Control/Shift/Alt/F1-F1 toggles a permament Fn help reference
+F2	save (write current file, 
+		confirm if file exists and file name or directory was changed)
+Alt-F2	save as ... (write to a different file, prompt for name)
+F3	load and edit (edit other file, ask if current file should be saved)
+Control-F3	load and view (edit other file read-only)
+Alt-F3	cycle word casing (small/titling/all caps)
+F4	insert (paste other file)
+F5		diaeresis accent prefix key
+ Ctrl-F5:	ring/cedilla
+ Shift-F5:	tilde
+ Alt-F5:	stroke
+ Ctrl-Shift-F5:	ogonek
+ Alt-Shift-F5:	breve
+F6		acute accent prefix
+ Ctrl-F6:	circumflex
+ Shift-F6:	grave
+ Alt-F6:	caron
+ Ctrl-Shift-F6:	macron
+ Alt-Shift-F6:	dot above
+F7		search
+F8		search
+Alt-F8		search backwards
+Shift-F8	search and replace
+Control-F8	search and replace interactively (with confirmation)
+F9		search again (repeat last search pattern)
+Alt-F9		search last pattern in other direction
+Shift-F9	search for current identifier
+F10		open pull-down menu
+F11		toggle character case (upper <-> lower)
+Shift-F11	toggle word case
+   Alt-F3	cycle word casing (small/titling/all caps)
+Control-F11	transform character mnemonic from text
+Alt-F11		convert to current encoding and search for next wrong code
+F12		set up directory for automatic remembering of file positions
+
+Paste buffer functions are assigned to the keypad; see help on "keyboard".
+
+Alternate key functions and menu open key functions
+---------------------------------------------------
+(invoked with ESC <key> or Alt-<key> if configured; see Xdefaults.mined)
+
+Alt-blank	open pop-up menu
+Alt-f		open File menu
+Alt-e		open Edit menu
+Alt-s		open Search menu
+Alt-p		open Paragraph menu
+Alt-o		open Options menu
+Alt-I / Alt-K	open Input Method menu
+Alt-Q		open Smart Quotes style menu
+Alt-E		open Encoding menu
+F10		open File menu
+Shift-F10	open pop-up menu
+Alt-F10		open Info menu
+Alt-h		help
+Alt-shift-h	open/close HTML tag
+   with HOP:	embed copy area in HTML tag
+
+
+<!--HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH-->
+	mined help topic 'menu'
+<!-------------------------------------------------------------------------->
+
+Menus and mouse functions
+-------------------------
+
+Mined provides pull-down menus listed on the top screen line, flag menus 
+for special selections, and a pop-up ("quick") menu.
+
+Both keyboard operation and mouse operation is possible.
+
+Keyboard operation:
+Pull-down menus are opened with ESC-f (for File menu) etc, or 
+Alt-f etc if enabled by your xterm configuration 
+(see sample file Xdefaults.mined for advice).
+Use the cursor keys to change menu or select items, use Enter/Return 
+to invoke the selected item, use blank or any hop key to toggle the 
+HOP function modifier on the menu items (display changes where applicable).
+
+Mouse operation:
+Right click in text area to open pop-up menu.
+Click on menu title to open/change/close pull-down menu.
+Clicking middle button toggles HOP function.
+Click on menu item to invoke it, or drag to menu item and release.
+Right click on flag indications to open flag menus.
+
+Other mouse functions:
+Click left button on text area to set cursor.
+Click middle button on text area to display text/file status.
+
+Scrollbar mouse functions:
+(The scrollbar indicates position of screen within text.)
+Click left to scroll one page down.
+Click right to scroll one page up.
+Click middle button to position absolutely.
+
+Flags
+-----
+In the right-most part of the menu title line, some flag indications 
+are displayed. Left-click toggles their options or cycles through them. 
+Right-click opens a flag menu with all available options, indicating 
+the selected option(s). Some flags are only shown in Unicode/CJK mode.
+
+?	Info display for file, character code, or Han character information.
+
+--/...	Input Method (keyboard mapping) indicated by language tag.
+
+""/...	Quotes style to use for smart quotes, which means automatic 
+	substitution of entered straight (ASCII) double or single quotes 
+	by typographical quotation marks.
+
+U8/...	Text Encoding interpretation and display.
+	Note: This does not affect the contents of the edited text.
+ç/`	Combined/Separated display of combining characters.
+
+h/H	HOP function active indication.
+E/V	Edit/View only mode of text being edited.
+
+%/[	Normal/Rectangular Copy/Paste mode.
+=/+	Replace/Append paste buffer mode for Copy or Cut functions.
+	- cyan background: Unicode paste buffer mode.
+
+»/|	Auto-indentation enabled/disabled.
+j/j/J	Manual/semi-automatic/automatic paragraph justification.
+ /«	Non-Blank termination/Empty line termination mode of paragraph end.
+
+
+<!--HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH-->
+	mined help topic 'commands'
+<!-------------------------------------------------------------------------->
+
+For a full description of mined commands see the manual page.
+Mined commands are either mapped to control keys, function keys, 
+or sequences starting with the ESCape key.
+Apart from cursor movement (see help on "keyboard"), the most important 
+commands are:
+
+^] or ^@ or ESC @	Set mark (to remember the current location).
+			(With HOP it moves to the remembered location.)
+^Y		Copy text between mark and cursor into paste buffer.
+^U		Cut (move) text between mark and cursor into paste buffer.
+^P		Paste contents of paste buffer to current position.
+		(With HOP it pastes inter-window buffer, from other mined).
+ESC b		Copy contents of buffer into a file. (Appends with HOP.)
+ESC i or F4	Insert file at current cursor position.
+
+^G or ESC g	Goto (various options, also used as HOP key).
+ESC / or F8	Search. (ESC \ searches backwards.)
+ESC ,		Search and replace.
+ESC r		Search and replace with confirmation.
+ESC R		Search and replace on current line.
+ESC ESC		Save file (if needed) and exit.
+ESC q		Quit, don't save (confirm if text modified).
+ESC h or F1	Help.
+
+Paragraph justification (word-wrap)
+-----------------------------------
+ESC <		Set left margin for justification.
+ESC ;		Set left margin of first line of paragraph only.
+ESC :		Set left margin of next lines of paragraph only.
+ESC >		Set right margin for justification.
+ESC j		Justify (word-wrap) paragraph.
+
+Character input support
+-----------------------
+^V for various kinds of special character input:
+^V control-char      enter the control character.
+^V [, \, ], ^^, __   enter the corresponding control character.
+^V <accent> <char>   enter an accented character composed accordingly.
+^V # xxxx            enter character with hexadecimal value
+^V # # xxxxxx        enter character with octal value
+^V # = xxxxx         enter character with decimal value
+^V # U ... xxxx      enter character with hex (oct/dec) Unicode value
+^V <space> <name> <space> , or:
+^V <char> <char>     enter character by mnemonic character name;
+                     recognised mnemonics are those of RFC 1345, HTML, 
+                     TeX, and supplementary mnemonics
+Examples:
+	"^Vae" enters the "ae" ligature
+	"^V'e" enters e with accent d'aigu
+	"^V ae' " enters the Latin ligature ae with acute accent
+	"^V-," or "^V neg " enters the negation symbol
+	"^Va*" or "^V a* " enters the Greek small letter alpha
+	"^V euro " enters the Euro character
+	"^V#20ac" enters the hex character value 20AC (in current encoding)
+	"^V#U20ac" enters the character with Unicode value 20AC (the Euro)
+If numeric input is followed by a Space, numeric input continues for 
+further characters; terminate with Return/Enter.
+
+Accented character input support
+--------------------------------
+Accent prefix keys can precede a character to be compose into an 
+accented letter; multiple accent prefix keys can be combined.
+F5		diaeresis (umlaut) / dialytika
+ Ctrl-F5	ring / cedilla / iota (ypogegrammeni)
+ Shift-F5	tilde / perispomeni
+ Alt-F5		stroke
+ Ctrl-Shift-F5	ogonek / prosgegrammeni
+ Alt-Shift-F5	breve / vrachy
+F6		acute / tonos
+ Ctrl-F6	circumflex / oxia
+ Shift-F6	grave / varia
+ Alt-F6		caron / psili
+ Ctrl-Shift-F6	macron / descender
+ Alt-Shift-F6	dot above / dasia
+Alt-/Control-1	for full listing of modified digit key accent functions, 
+		see manual
+Control-,	for full listing of modified punctuation key accent 
+		functions, see manual
+
+
+<!-------------------------------------------------------------------------->
+	end mined help file
+<!-------------------------------------------------------------------------->

@@ -1,0 +1,262 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
+<meta name="keywords" content="editor, text mode editor, programmers editor, programming editor, Unicode editor, UTF-8 editor, Unicode text editor, UTF-8 text editor, Unicode text mode editor, UTF-8 text mode editor, text mode Unicode editor, text mode UTF-8 editor, text mode HTML editor, CJK editor">
+<meta name="robots" content="index">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Unicode text editor MinEd</title>
+
+<style>
+code {background-color: #CCC0C0;}
+.hidden {display: none;}
+a.download {text-decoration: none;}
+button {text-decoration: none; background-color: #B070D0; font: inherit;}
+a span {text-decoration: underline;}
+</style>
+
+<script language="JavaScript">
+<!--
+
+if (top.frames.length == 0) {
+  window.name = "index";
+  location.href = "index-dl.html";
+}
+
+top.select ("download");
+
+function unhidethem () {
+  var unhide = document.getElementsByName ("hidden");
+  for (var i = 0; i < unhide.length; i ++) {
+    unhide [i].className = "none";
+  }
+  var hide = document.getElementsByName ("hide");
+  for (var i = 0; i < hide.length; i ++) {
+    hide [i].className = "hidden";
+  }
+}
+
+//-->
+</script>
+
+</head>
+
+
+<div xalign=right style="float: right;">
+<p>Mined is free software provided under the 
+<a target=_blank href=http://www.gnu.org/copyleft/gpl.html>GNU Public License</a>.
+<p>
+If you appreciate mined you are welcome to a small 
+<a href=contact.html#donation><img border=no align=absmiddle src=handr.gif>
+donation</a>.
+</div>
+
+
+<h4>Download free source archive</h4>
+
+<li><a class=download
+	title="Download MinEd source archive"
+	target=sourceforge
+	href="http://sourceforge.net/projects/mined/files/mined/mined 2015.25/mined-2015.25.tar.gz/download"
+	><button>
+	Download</button> <span>mined-2015.25.tar.gz</span></a>
+<p>
+<br>
+<table border=0>
+<tr valign=top><td>Build:
+<td>
+	<li>Unpack the archive; in its main directory, use <code>make</code> to produce mined.
+	<li>Consult COMPILE.DOC for further options and details.
+<tr valign=top><td>Install:
+&nbsp;
+<td>
+	<li>Run <code>make install</code> for a root installation (for all users).
+	<li name=hide><a href=# onclick='javascript: unhidethem ();'
+		>Other options...</a>
+	<li name=hidden class=hidden>Run <code>make localinstall</code> to install into /usr/local (or /sw on Mac OS)
+	<li name=hidden class=hidden>Run <code>make optinstall</code> to install into /opt/mined
+	<li name=hidden class=hidden>Run <code>make install root=$HOME</code> for a personal installation into $HOME/usr/bin and $HOME/usr/share
+	<li name=hidden class=hidden>Run <code>make install prefix=$HOME</code> for a personal installation into $HOME/bin and $HOME/share
+	<li name=hidden class=hidden>Consult INSTALL.DOC for further options and details.
+</table>
+
+<p>
+<hr>
+<h4>Download binary packages</h4>
+<a target=softpedia href="http://www.softpedia.com/progClean/Mined-Clean-94571.html">
+<img align=right src="softpedia_free_award_f.gif" xwidth="130" xheight="130" border="0"
+ style="position: relative; bottom: 10; right: 20;"
+ alt="Free download software">
+</a>
+<p>
+<dl>
+<dt><b><i>Windows version</i></b>
+<dd>Runs from Windows explorer context menu for text files (with bundled mintty), or from Start menu or Desktop.
+<dd>Also runs in Windows console or Windows terminal emulator (e.g. mintty, xterm, urxvt).
+<dd><i>With cygwin 1.7 console codepages support.</i>
+<p>
+	<ul>
+	<li><a class=download
+		title="Download Windows Installer"
+		target=sourceforge
+		href="http://sourceforge.net/projects/mined/files/mined/mined 2015.25/MinEd-2015.25-install.exe/download"
+		><button>Download</button> <span>
+		Windows 7/XP/2000/NT self-installing binary package</span></a>
+		(built with cygwin 1.7)
+	<small>
+	<dl>
+	<dt>The stand-alone package includes the 
+	<a target=cygwin href=http://cygwin.com/>cygwin</a> library, 
+	the 
+	<a target=mintty href=http://code.google.com/p/mintty/>mintty</a> 
+	terminal, the dash command shell, and the regtool and cygpath tools 
+	(for the installer).
+	<dt>(Source links for reference: 
+	<a target=cygwin href=http://mirrors.dotsrc.org/cygwin/x86/release/cygwin/>
+	cygwin 1.7.35</a>, 
+	<a target=mintty href=http://mirrors.dotsrc.org/cygwin/x86/release/mintty/>
+	mintty 1.1.3</a>, 
+	<a target=dash href=http://mirrors.dotsrc.org/cygwin/x86/release/dash/>
+	dash 0.5.8</a>.)
+	</dl>
+	</small>
+	</ul>
+</dl>
+
+<dl>
+<dt><b><i>DOS/Windows version</i></b>
+<dd>Runs in Windows console (command line prompt), in DOS emulator (e.g. DOSBox), or on plain DOS (MSDOS/FreeDOS/...).
+<dd><i>Enhanced codepage support, also for FreeDOS/DR-DOS.</i>
+<p>
+	<ul>
+	<li><a class=download
+		title="Download DOS archive"
+		target=sourceforge
+		href="http://sourceforge.net/projects/mined/files/mined/mined 2015.25/mined-2015.25-dos.zip/download"
+		><button>Download</button> <span>
+		DOS binary package</span></a>
+		(built with djgpp)
+	</ul>
+</dl>
+
+<dl>
+<dt><b><i>VMS version</i></b>
+<dd>Runs on OpenVMS on VAX or ALPHA architecture (or emulator) or Integrity server (Itanium IA64).
+<dd><i>Built on FAFNER, <s>HP OpenVMS Program servers</s>, and Polarhome (package includes binaries for VAX and ALPHA).</i>
+<p>
+	<ul>
+	<li><a class=download
+		title="Download VMS archive"
+		target=sourceforge
+		href="http://sourceforge.net/projects/mined/files/mined/mined 2015.25/MINED-2015_25-VMS.ZIP/download"
+		><button>Download</button> <span>
+		VMS binary package</span></a>
+		(built with DECC)
+	</ul>
+</dl>
+
+
+<p>
+<hr>
+<i>Other installation packages:</i>
+
+
+<hr>
+<h4>Install Cygwin package</h4>
+<dt>
+Run the setup program from the <a href=http://cygwin.com/>Cygwin home page</a> 
+(<a href=http://cygwin.com/setup-x86.exe>32-bit installation</a> 
+or <a href=http://cygwin.com/setup-x86_64.exe>64-bit installation</a>).
+In the “Select Packages” menu, open the “Editors” category and select 
+the mined package.
+
+
+<p>
+<hr>
+<h4>Install or download openSUSE Linux RPM package</h4>
+From the openSUSE software archive M17N project,
+<a target=susesoftware href=http://software.opensuse.org/download.html?project=M17N&package=mined>
+select a mined package</a>.
+
+
+<p>
+<hr>
+<h4>Install or download Linux package</h4>
+For CentOS, Debian, Ubuntu, Fedora, RedHat, SUSE, Univention,
+<a target=susesoftware href=http://software.opensuse.org/download.html?project=home%3Atowo2%3Amined&package=mined>
+select a mined package</a> from the openSUSE software archive,
+or select a package for your Linux distribution from the
+<a target=susesoftware href=http://software.opensuse.org/package/mined>
+openSUSE software archive &ndash; mined package page</a>.
+
+
+<p>
+<hr>
+<h4>Download Solaris package</h4>
+For Solaris on SPARC or Intel, packages are available on 
+<a target=solaris href=http://www.sunfreeware.com/>Sunfreeware</a>.
+
+
+<p>
+<hr>
+<h4>Install FreeBSD package</h4>
+<dt>
+On a FreeBSD system, type <code>pkg_add -r mined</code> 
+to fetch and install the 
+<a href=http://www.freshports.org/editors/mined/>binary package</a>.
+<br>
+For the newest version, build and install mined from the source archive.
+
+
+<p>
+<hr>
+<h4>Download NetBSD package</h4>
+<dt>
+Find a recent NetBSD package on the <a href=http://pkgsrc.se/editors/mined>
+NetBSD mined page
+</a>.
+<br>
+For the newest version, build and install mined from the source archive.
+
+
+<p>
+<hr>
+<h4>Install or download Debian package</h4>
+<dt>
+On a Debian system, type <code>apt-get install mined</code> to 
+install the Debian distribution package from the 
+<a href=http://packages.debian.org/unstable/editors/mined>
+new release area</a> (or eventually the 
+<a href=http://packages.debian.org/testing/editors/mined>
+testing area</a> 
+or the 
+<a href=http://packages.debian.org/stable/editors/mined>
+stable area</a>).
+<br>
+Or find a more recent Debian package in the 
+openSUSE software archive (see above).
+
+
+<p>
+<hr>
+<h4>Download FreeDOS package</h4>
+<dt>
+The source and DOS binary archives are also stored 
+<a href=http://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/edit/mined/>
+here</a>.
+
+
+<p>
+<hr>
+<h4>Install Fink package for Mac OS X</h4>
+<dt>
+Use the <a target=fink href=http://www.finkproject.org/download/>
+Fink installer</a>.
+<br>
+Note that on Mac OS X, it is advisable to use either xterm or 
+<a target=_blank href=http://www.iterm2.com/>iTerm 2</a> 
+as the native Mac terminal application does not support the mouse.
+
+
+<p>
+<hr>

@@ -1,0 +1,4 @@
+# transform pronunciations to lower case
+/^[^d]=/ y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/
+/^[^d]=/ s,Ü,ü,g
+

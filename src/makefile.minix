@@ -1,0 +1,2 @@
+EXTRALIBS=-lcompat_minix
+include makefile.gcc

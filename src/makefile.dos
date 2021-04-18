@@ -1,0 +1,58 @@
+#############################################################################
+# mined text editor makefile	- djgpp in DOSBox
+# (makefile.dj has problems in DOSBox)
+
+
+#############################################################################
+#
+
+OBJDIR=../bin/dos
+
+SRCS:=$(patsubst v%.c,,$(wildcard *.c))
+SRCS:=$(patsubst dosmouse.c,,$(SRCS))
+
+OBJS:=$(subst .c,.o,$(SRCS))
+CHARMAPS:=$(subst .c,.o,$(wildcard charmaps/*.c))
+CHAROBJS:=$(patsubst charmaps/cjk-%.o,,$(CHARMAPS))
+
+#BINOBJS:=$(patsubst %.o,$(OBJDIR)/%.o,$(OBJS) $(CHAROBJS))
+BINOBJS:=$(patsubst %.o,$(OBJDIR)/%.o,$(OBJS))
+CHAROBJS:=$(patsubst %.o,$(OBJDIR)/%.o,$(CHAROBJS))
+
+
+#############################################################################
+#
+
+all:	mkdirs timestamp mined
+
+mkdirs:
+	if not exist ..\bin\dos mkdir ..\bin\dos
+	if not exist ..\bin\dos\charmaps mkdir ..\bin\dos\charmaps
+
+timestamp:
+	gcc -c timestmp.c -o $(OBJDIR)/timestmp.o
+
+#CHARDEPEND=$(CHAROBJS)
+#CHARLIB=$(CHAROBJS)
+CHARDEPEND=$(OBJDIR)/charmaps.a
+CHARLIB=$(OBJDIR)/charmaps.a
+
+mined:	$(BINOBJS) $(CHARDEPEND)
+	gcc -o $(OBJDIR)/mined $(BINOBJS) $(CHARLIB)
+	echo cp or copy/b PMODSTUB.EXE (from djgpp) + MINED to MINED.EXE !
+
+$(OBJDIR)/charmaps/%.o:	charmaps/%.c
+	gcc -I. -c charmaps/$*.c -o $(OBJDIR)/charmaps/$*.o
+
+$(OBJDIR)/charmaps.a:	$(CHAROBJS)
+	ar ruv $(OBJDIR)/charmaps.a $(CHAROBJS)
+
+$(OBJDIR)/io.o:	io.c dosmouse.c
+	gcc -c io.c -o $@
+
+$(OBJDIR)/%.o:	%.c
+	gcc -c $*.c -o $@
+
+
+#############################################################################
+# end

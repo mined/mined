@@ -1,0 +1,15 @@
+# transform () grouping into space grouping (of multi-character mappings)
+: paren
+s,\(	.*\))(,\1 ,
+/)(/ b paren
+s,	(,	,
+s,)$,,
+
+: grouped
+
+# convert escaped notations and escape special characters
+s,",\\",g
+s,\\040, ,g
+s,\\043,#,g
+s,\\134,\\\\,g
+

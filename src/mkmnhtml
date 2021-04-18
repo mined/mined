@@ -1,0 +1,26 @@
+#! /bin/sh
+
+# transform HTML character mnemonic reference web page into mnemonic entries
+#	<td class="code"><code>&amp;szlig;</code></td>
+#	<td class="code"><code>&amp;#223;</code></td>
+# ->
+#		{"szlig", 0x00DF /* ß */},
+#	<td class="code"><code>&amp;sbquo;</code> (ist korrekt, nicht &amp;bsquo;)</td>
+
+refpage=${1-zeichen.htm}
+
+htmlver=`sed -e '1 s,.*HTML \([0-9.]*\).*,\1,' -e t -e d $refpage`
+
+echo "	/* HTML $htmlver mnemos (named entities) */"
+
+cat $refpage | tr -d '\015' |
+sed -e '/class="code"/ b entry' -e d -e ': entry' -e N \
+    -e "s@[^&]*&amp;\([^;]*\);.*&amp;#\([^;]*\);.*@echo -n '	{\"\1\", 0x'; printf %04X \2; echo -n ' /* U+'; printf %04X \2; echo ' */},'@" |
+sh | ./insutf8 | sed -e 's,U+[^ ]* ,,' |
+sed	-e 's,"not","\&not",' \
+	-e 's,"oslash","\&oslash",' \
+	-e 's,"circ","\&circ",' \
+	-e 's,"phi","\&phi",' \
+	-e 's,"asymp","\&asymp",'
+
+echo "check uniqueness with ./mnemos.check" >&2

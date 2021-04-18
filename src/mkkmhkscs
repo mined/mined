@@ -1,0 +1,111 @@
+#! /bin/sh
+
+listonly=true
+case "$1" in
++)	listonly=false
+	shift;;
+esac
+
+cjbig5=${1-etc/charmaps/hkscs/hkscs-2004-cj.txt}
+cjuni=keymaps/hkscs.uni
+
+
+if [ -f "$cjbig5" ]
+then	true
+else	echo HKSCS Changjie table not found in file $cjbig5
+	exit 1
+fi
+
+
+#############################################################################
+# binary target directory
+SYS=` uname | sed -e 's,_.*,,' `
+ARCH=` uname -m | sed -e "s,/,_,g" `
+OBJDIR=../bin/$SYS.$ARCH
+
+
+#############################################################################
+CC=${CC-cc}
+
+(
+cat <</eoc
+#include <stdio.h>
+
+#include "charcode.c"
+
+int width_data_version;
+int nonbmp_width_data = 0;
+int combining_data_version = 3;
+
+FLAG utf8_text = 0;
+FLAG utf16_file = 0;
+FLAG utf16_little_endian = 0;
+FLAG cjk_text = 0;
+FLAG mapped_text = 0;
+FLAG unassigned_single_width = False;	/* unassigned chars displayed single width? */
+
+FLAG ascii_screen;
+FLAG utf8_screen;
+FLAG utf8_input;
+FLAG cjk_term;
+FLAG mapped_term;
+int rxvt_version = -1;
+
+int
+term_iscombining (ucs)
+  unsigned long ucs;
+{
+}
+
+FLAG
+iscombining_unichar (u)
+  unsigned long u;
+{
+  return term_iscombining (u);
+}
+
+int
+main () {
+	(void) set_text_encoding (NIL_PTR, 'B', "mkkmhkscs");
+
+/eoc
+
+tr -d '\015' < $cjbig5 |
+sed -e 's/^\([0-9A-Fa-f][0-9A-Fa-f]*\)  *\([A-Za-z][A-Za-z]*\) *$/	printf ("%s	%04X\\n", "\2", lookup_encodedchar (0x\1));/' \
+    -e t -e d
+
+cat <</eoc
+
+	exit (0);
+}
+/eoc
+) > keymaps/mkkmhkscs.c
+
+#W=-Wno-pointer-sign
+if $CC $W -I. -o keymaps/mkkmhkscs.exe keymaps/mkkmhkscs.c $OBJDIR/charmaps/*.o
+then	if keymaps/mkkmhkscs.exe > $cjuni
+	then	rm -f keymaps/mkkmhkscs.c keymaps/mkkmhkscs.exe
+	else	exit 1
+	fi
+	(echo "	* supplemented with additional mappings"
+	 echo "	* generated with mkkmhkscs"
+	 echo "	  from HKSCS Changjie table $cjbig5"
+	) > $cjuni.gen
+else	exit 1
+fi
+
+
+if $listonly
+then	exit
+fi
+
+
+#############################################################################
+for cj in `cat $cjuni |
+    sed -e "s,^\([A-Za-z][A-Za-z]*\)	*[0-9A-Fa-f][0-9A-Fa-f]*$,\1," -e t -e d |
+    sort | uniq`
+do	codes=`cat $cjuni | sed -e "s,^$cj	\([0-9A-Fa-f][0-9A-Fa-f]*\)$,\1," -e t -e d`
+	echo -n "	cj (\"$cj\"" | tr '[A-Z]' '[a-z]'
+	echo " `echo $codes`" | sed -e 's, ,); hkscs (0x,g' -e 's,$,);,'
+done
+

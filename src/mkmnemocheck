@@ -1,0 +1,36 @@
+#! /bin/sh
+
+# check uniqueness of character mnemonics
+
+mnemodupats () {
+	sed -e 's:\({".*"\), .*:\1:' -e t -e d $* |
+	sort | uniq -d
+}
+
+files=${*-mnemos.??[!~]}
+
+tmp=/tmp/mnemodupats
+
+LC_ALL=C
+export LC_ALL
+
+mnemodupats $files > $tmp
+
+cat $tmp |
+while read pat
+do	echo "$pat"; sleep 1
+	if fgrep -e "$pat" $files |
+		sed -e 's:[ 	]*/\*.*::' -e 's:.*{".*",[ 	]*:printf %X\\\\n :' |
+		sh | sort | uniq -u | grep . > /dev/null
+	then
+		fgrep -e "$pat" $files
+	fi
+done
+
+set - `wc -l $tmp`
+err=$1
+rm -f $tmp
+
+echo $err inconsistent duplicate mnemonics
+exit $err
+

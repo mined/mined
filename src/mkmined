@@ -1,0 +1,147 @@
+#! /bin/sh
+
+#############################################################################
+# binary target directory
+#SYS=` uname | sed -e 's,_.*,,' `
+#ARCH=` uname -m | sed -e "s,/,_,g" `
+#OBJDIR=../bin/$SYS.$ARCH
+OBJDIR=../bin/sh
+
+
+#############################################################################
+# special targets
+
+case "$1" in
+install)
+	for targetdir in $HOME/../bin /system/bin
+	do	cp $OBJDIR/mined ../usrshare/help/mined.hlp "$targetdir"/
+	done
+	exit;;
+makefile)
+	exit;;
+esac
+
+
+#############################################################################
+# setup compiler
+
+W="${W--Waggregate-return -Winline -Wimplicit-int -Wunused -Wswitch -Wchar-subscripts -Wformat -Wparentheses -Wmissing-braces -Wreturn-type}"
+# excluding -Wmissing-prototypes for legacy.c
+# (could exclude all anyway as this is not the development system)
+#COPT="${COPT--DTERMIO -Dunix -DsysV $W -O2}"
+COPT="${COPT--DTERMIO $W}"
+
+CC=${CC-gcc}
+if type $CC > /dev/null 2> /dev/null
+then	true
+elif	type cc > /dev/null 2> /dev/null
+then	CC=cc
+fi
+
+if [ -n "$ANDROID_ROOT" ]
+then	COPT="$COPT -DANSI"
+	if type $CC > /dev/null 2> /dev/null
+	then	true
+	else	PATH="$PATH:/data/data/com.n0n3m4.droidc/files/gcc/bin"
+		CC=arm-linux-androideabi-gcc
+		if type $CC > /dev/null 2> /dev/null
+		then	true
+		else	echo no C compiler found
+			echo suggestion: install these apps:
+			echo "	C4droid (needed as container for gcc)"
+			echo "	GCC for C4droid"
+			echo "	Better Terminal (for shell and terminal)"
+			echo "	UniversalAndroot (needed to access gcc) for Android < 4"
+			exit 9
+		fi
+	fi
+else	COPT="$COPT -DANSI"	# e.g. for Raspberry Pi
+	if type $CC > /dev/null 2> /dev/null
+	then	true
+	else	echo no C compiler found
+		exit 9
+	fi
+fi
+
+
+#############################################################################
+# build mined
+
+mkdir $OBJDIR
+mkdir $OBJDIR/charmaps
+rm -f $OBJDIR/timestmp.o
+
+oldo () {
+	test `ls -1t $1.c $OBJDIR/$1.o 2> /dev/null | sed -e 1q` != $OBJDIR/$1.o
+}
+
+makec () {
+	name=$1
+	shift
+	if oldo $name
+	then	echo compiling $name.c
+		if $CC -c $COPT $* $name.c -o $OBJDIR/$name.o
+		then	link=true
+		else	noerror=false
+		fi
+	fi
+}
+
+link=false
+noerror=true
+
+
+#############################################################################
+# compile
+
+makec io
+makec keyboard
+makec mousemen
+makec mined1
+makec edit
+makec charprop
+makec pastebuf
+makec textfile
+makec textbuf
+makec justify
+makec search
+makec minedaux
+makec legacy
+makec output
+makec prompt
+makec compose
+makec charcode
+#makec keymaps -DNOSTRINGTABLES -Ikeymaps0
+#makec keymaps -Duse_concatenated_keymaps -Ikeymaps
+#makec keymaps -Ikeymaps1
+makec keymaps
+makec keydefs
+makec dispatch
+makec termprop
+makec width
+makec encoding
+makec handescr
+rm -f $OBJDIR/timestmp.o
+makec timestmp
+
+for charmap in charmaps/*.c
+do	name=`basename $charmap .c`
+	makec charmaps/$name -I.
+done
+
+
+#############################################################################
+# link
+
+if [ ! -f $OBJDIR/mined ]
+then	link=true
+fi
+
+if $link && $noerror
+then	echo linking mined
+	$CC -o $OBJDIR/mined $OBJDIR/*.o $OBJDIR/charmaps/*.o
+fi
+
+
+#############################################################################
+# end

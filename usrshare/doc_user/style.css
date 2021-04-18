@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'Opus Pro';
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/opus-pro-regular-webfont.eot');
+    src: url('fonts/opus-pro-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/opus-pro-regular-webfont.woff') format('woff'),
+         url('fonts/opus-pro-regular-webfont.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Opus Pro';
+    font-weight: normal;
+    font-style: italic;
+    src: url('fonts/opus-pro-italic-webfont.eot');
+    src: url('fonts/opus-pro-italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/opus-pro-italic-webfont.woff') format('woff'),
+         url('fonts/opus-pro-italic-webfont.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Opus Pro';
+    font-weight: bold;
+    font-style: normal;
+    src: url('fonts/opus-pro-bold-webfont.eot');
+    src: url('fonts/opus-pro-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/opus-pro-bold-webfont.woff') format('woff'),
+         url('fonts/opus-pro-bold-webfont.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Opus Pro';
+    font-weight: bold;
+    font-style: italic;
+    src: url('fonts/opus-pro-bolditalic-webfont.eot');
+    src: url('fonts/opus-pro-bolditalic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/opus-pro-bolditalic-webfont.woff') format('woff'),
+         url('fonts/opus-pro-bolditalic-webfont.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Bitstream Vera Sans Mono';
+    font-weight: normal;
+    font-style: normal;
+    src: url('fonts/VeraMono-webfont.eot');
+    src: url('fonts/VeraMono-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/VeraMono-webfont.woff') format('woff'),
+         url('fonts/VeraMono-webfont.ttf') format('truetype'),
+         url('fonts/VeraMono-webfont.svg#bitstream_vera_sans_monoroman') format('svg');
+}
+
+@font-face {
+    font-family: 'Bitstream Vera Sans Mono';
+    font-weight: normal;
+    font-style: italic;
+    src: url('fonts/VeraMono-Italic-webfont.eot');
+    src: url('fonts/VeraMono-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/VeraMono-Italic-webfont.woff') format('woff'),
+         url('fonts/VeraMono-Italic-webfont.ttf') format('truetype'),
+         url('fonts/VeraMono-Italic-webfont.svg#bitstream_vera_sans_monoOb') format('svg');
+}
+
+@font-face {
+    font-family: 'Bitstream Vera Sans Mono';
+    font-weight: bold;
+    font-style: normal;
+    src: url('fonts/VeraMono-Bold-webfont.eot');
+    src: url('fonts/VeraMono-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/VeraMono-Bold-webfont.woff') format('woff'),
+         url('fonts/VeraMono-Bold-webfont.ttf') format('truetype'),
+         url('fonts/VeraMono-Bold-webfont.svg#bitstream_vera_sans_monobold') format('svg');
+}
+
+@font-face {
+    font-family: 'Bitstream Vera Sans Mono';
+    font-weight: bold;
+    font-style: italic;
+    src: url('fonts/VeraMono-Bold-Italic-webfont.eot');
+    src: url('fonts/VeraMono-Bold-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/VeraMono-Bold-Italic-webfont.woff') format('woff'),
+         url('fonts/VeraMono-Bold-Italic-webfont.ttf') format('truetype'),
+         url('fonts/VeraMono-Bold-Italic-webfont.svg#bitstream_vera_sans_monoBdOb') format('svg');
+}
+
+*, table.keypad div.function {
+	font-family: 'Opus Pro';
+}
+code, table.keypad div {
+	font-family: Inconsolata, Consolas, 'Bitstream Vera Sans Mono', 'Anonymous Pro', monofur, monospace;
+}

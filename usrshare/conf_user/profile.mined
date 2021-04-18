@@ -1,0 +1,363 @@
+#############################################################################
+# This is an example or template for setting up environment variables 
+# for configuration and best use of the mined editor.
+# The script can be included in or "sourced" from $HOME/.profile -
+# for users of csh of tcsh the syntax has to be adapted.
+
+
+#############################################################################
+# Use mined as the editor invoked by other applications.
+
+EDITOR=mined
+ export EDITOR
+
+
+#############################################################################
+# General mined options variable.
+# All command line options (as documented in the manual page) that 
+# you normally want as a preference should be collected here.
+
+MINEDOPT=QQEu
+#MINEDOPT=QQEu+D
+	# Recommended options:
+	# p	distinguishes display of line ends and paragraph ends
+	# QQ	nice style of menu selection bar
+	# Eu	enables Unicode paste buffer (for implicit conversion 
+	#	with copy-paste between instances of mined)
+	# +D	configure xterm dynamically to distinguish the two 
+	#	DEL keys and to enable indication of Alt-shifting
+ export MINEDOPT
+
+
+#############################################################################
+# System environment.
+
+# Command to print a file, with "%s" to be replaced by the file name.
+#MINEDPRINT="uprint %s"	# this is the default anyway (with additional PATH)
+# export MINEDPRINT
+
+# Installation directory of mined runtime support library.
+#MINEDDIR=`ls -1 -t $HOME/opt/mined*/mined.hlp | sed -e "1 p" -e d`
+# export MINEDDIR
+
+
+#############################################################################
+# Character encoding and handling preferences.
+
+#########################
+# Select Han character information to be shown.
+
+#MINEDHANINFO=MCJSHKVPTF	# show all information in popup-menu form
+#	include the following letters to select the according information:
+#	M	Mandarin pronunciation
+#	C	Cantonese pronunciation
+#	J	Japanese pronunciation
+#	S	Sino-Japanese pronunciation
+#	H	Hangul pronunciation
+#	K	Korean pronunciation
+#	V	Vietnamese pronunciation
+#	P	Hanyu Pinlu pronunciation
+#	T	Tang pronunciation
+#	D	character description
+#	F	"full": display selected information in popup-menu form
+ export MINEDHANINFO
+
+
+#########################
+# Select keyboard mappings for international scripts.
+#	Script tags attached to the keyboard mappings for use in this 
+#	variable can be looked up in the Input Method flag menu; the 
+#	HOP function toggles between display of the full input method 
+#	name and its tag.
+#	Two mapping tags can be given in the environment variable; 
+#	the first one or the one before a "-" separator is applied 
+#	as preselection, the one after "-" is used for standby 
+#	(activate with Alt-k).
+
+MINEDKEYMAP=py-rs	# select Pinyin mapping, set Radical/Stroke standby
+MINEDKEYMAP=-gr		# set Greek mapping standby
+ export MINEDKEYMAP
+
+
+#########################
+# configuration of character encoding auto-detection
+#	If mined performs auto-detection of text encoding, it can be 
+#	configured which encodings are to be taken into account for 
+#	detection.
+#	For this purpose, set the MINEDDETECT environment variable to the 
+#	desired list of encoding indications (capital letters as listed 
+#	in the manual page for the -E parameter)
+#	to disable auto-detection of other encodings.
+#	UTF-8 auto-detection cannot be disabled this way.
+
+MINEDDETECT="BGC JS KH LWP M Y VN T"	# allow auto-detection of 
+# - CJK encodings: Big5, GB, CNS, JIS (EUC-JP), Shift-JIS, UHC, JOHAB
+# - 8 bit encodings: Latin (actually ISO-8859-*), 
+#		Windows-"ANSI" (CP1252), PC-Latin (CP850), 
+#		MacRoman, (Cyrillic/KOI8-RU), 
+#		VISCII, (TCVN), (TIS-620)
+
+# If the variable is not set, mined uses this default:
+MINEDDETECT="BGC JS KH LWP"
+
+# Remove the one-letter tags of those encodings that you 
+# don't want to be auto-detected, 
+# for better recognition of those encodings that you do use.
+# Note that not all encodings mentioned here are actually auto-detected;
+# see the manual for details about which encodings are auto-detected.
+
+
+#############################################################################
+# Setup for common copy/paste buffer in a heterogeneous network.
+# If you work in a heterogeneous network and want to share a common 
+# temporary directory for paste buffers 
+# to be used for copy/paste operations between multiple invocations 
+# of mined, 
+# you can set a directory and user name for mined temporary files.
+# The user name must be same on all machines (regardless of different 
+# login names you may have) and the directory name to be used may be 
+# different in order to refer to the same mounted network directory.
+
+MINEDTMP=$HOME/tmp
+ export MINEDTMP
+MINEDUSER=myself
+ export MINEDUSER
+
+
+#############################################################################
+# Display preferences.
+
+#########################
+# display of line markers
+# The following variables tell mined which characters to use for 
+# display of TAB characters, line ends, and shifted lines.
+# *	For MINEDTAB, MINEDSHIFT, 
+#	MINEDRET, MINEDDOSRET, MINEDMACRET, MINEDPARA, 
+#	the ISO Latin-1 character set is used 
+#	even if mined runs in UTF-8 mode.
+# *	Additional variables MINEDUTFTAB, MINEDUTFSHIFT, 
+#	MINEDUTFRET, MINEDUTFDOSRET, MINEDUTFMACRET, MINEDUTFPARA, 
+#	can configure UTF-8 encoded indications which take 
+#	precedence on a UTF-8 terminal.
+# *	See also the setting of MINEDDIM (see below) to adjust 
+#	an appropriate moderate colour for these indications.
+# *	Latin-1 encoded line markers are assumed to be taken from the 
+#	terminal's alternate character set if the specified indication is 
+#	in the small letters range (actually "`a...z{|}~").
+# Depending on your visual preference, there are a number of suitable 
+# Unicode characters for use as indications especially in the 
+# Unicode ranges of Arrows, Geometric Shapes and Symbols (U+2190-U+2BFF).
+
+MINEDTAB=123	# TAB displays as 12222223
+MINEDTAB=12	# TAB displays as 11112111
+MINEDTAB=∑∑ª	# TAB displays as ∑∑∑∑∑∑∑ª
+MINEDTAB=ª∑	# TAB displays as ∑∑∑∑ª∑∑∑
+MINEDTAB='~`'	# TAB displays as diamond within a sequence of dots,
+		# using alternate character set (VT100 block graphics)
+MINEDTAB=∑	# TAB displays as ∑∑∑∑∑∑∑∑ (default)
+ export MINEDTAB
+# TAB indication to be used in Unicode terminal:
+#MINEDUTFTAB=‚Äß‚Üí	# arrow embedded in tiny dots
+#MINEDUTFTAB=‚Äß‚áæ	# open arrow embedded in tiny dots
+#MINEDUTFTAB=‚Äß‚á®	# white arrow embedded in tiny dots
+#MINEDUTFTAB=‚Äß‚ñ∑	# white right-pointing triangle embedded in tiny dots
+#MINEDUTFTAB=‚Äß‚û§	# arrowhead embedded in tiny dots
+#MINEDUTFTAB=‚Äß‚Ä£	# triangular bullet embedded in tiny dots
+# export MINEDUTFTAB
+
+# Line end indications
+MINEDRET=123	# line end displays as 122222223
+MINEDRET=∑∑´	# line end displays as ∑∑∑∑∑∑∑∑´
+MINEDRET=´∑	# line end displays as ´∑∑∑∑∑∑∑∑
+MINEDRET=j	# line end displays as lower right corner,
+		# using alternate character set (VT100 block graphics)
+MINEDRET=´	# line end displays as ´ (default)
+ export MINEDRET
+# Line end indication to be used in Unicode terminal:
+#MINEDUTFRET=‚èé	# line end displays as return symbol
+#MINEDUTFRET=‚Äß‚Äß¬´ # line end is filled with the thinner hyphenation point
+#MINEDUTFRET=‚Ü≤	# line end is downwards arrow with tip leftwards
+#MINEDUTFRET=‚Ü©‚óÉ‚Üµ	# leftwards arrow with hook, followed by
+		# left-pointing small triangles, terminated by
+		# downwards arrow with corner leftwards
+# export MINEDUTFRET
+
+# Terminal-specific indication characters
+# (rather to be done in .bashrc)
+setmarkers () {
+	case "$TERM" in
+	rxvt*)	MINEDUTFTAB=‚Äß‚Ä£
+		MINEDUTFRET=‚Ü≤
+		;;
+	*)	case "$KONSOLE_DCOP" in
+		?*)	# KDE konsole
+			MINEDUTFTAB=¬∑
+			MINEDUTFRET=¬´
+			;;
+		*)	# xterm or other terminal
+			MINEDUTFTAB=‚Äß‚áæ
+			MINEDUTFRET=‚èé
+			;;
+		esac
+		;;
+	esac
+	 export MINEDUTFTAB
+	 export MINEDUTFRET
+}
+
+# Indications for DOS line ends (CRLF) and Mac line ends (CR)
+#MINEDDOSRET=µ
+# export MINEDDOSRET
+#MINEDUTFDOSRET=¬µ
+# export MINEDUTFDOSRET
+#MINEDMACRET=@
+# export MINEDMACRET
+#MINEDUTFMACRET=@
+# export MINEDUTFMACRET
+
+# Paragraph end indications
+#MINEDPARA=∂
+# export MINEDPARA
+#MINEDUTFPARA=¬∂
+# export MINEDUTFPARA
+
+# Left and right shift markers indicate a long line that does not fit 
+# in one screen line and is continued left or right of the screen margins.
+# Shift markers are displayed in dimmed reverse mode (on red background).
+MINEDSHIFT='<>'	# left/right shift markers display as </>
+MINEDSHIFT='az'	# left shift marker displays as shaded block,
+		# right shift marker displays as greater/equal sign,
+		# using alternate character set (VT100 block graphics)
+MINEDSHIFT='´ª'	# shift markers display as double angle quotation marks
+		# (default)
+ export MINEDSHIFT
+# Shift markers to be used in Unicode terminal:
+#MINEDUTFSHIFT=‚òú‚òû	# left/right pointing hand
+#MINEDUTFSHIFT=‚Üê‚Üí	# leftward/rightward arrow
+#MINEDUTFSHIFT=‚áê‚áí	# leftward/rightward double arrow
+#MINEDUTFSHIFT=‚óÄ‚ñ∂	# left/right-pointing triangle
+ export MINEDUTFSHIFT
+
+
+#########################
+# display of menu markers
+
+#MINEDMENUMARKER=‚úì	# the default
+#MINEDMENUMARKER=‚òõ	# a nice alternative
+#MINEDMENUMARKER=‚ñ∫	# a triangle pointer
+#MINEDMENUMARKER=‚Ä¢	# a bullet marker
+#MINEDMENUMARKER=‚Üí
+#MINEDMENUMARKER=‚Ä∫
+#MINEDMENUMARKER=¬ª
+#MINEDMENUMARKER=	# if empty, use default alternative
+ export MINEDMENUMARKER
+
+
+#########################
+# display mode (e.g. colour attribute) of line markers (esp. TAB)
+
+# default setting:
+#MINEDDIM=31	# red
+# in xterm only, this gives a moderate gray in either 88 or 256 color mode:
+#MINEDDIM="38;5;83;38;5;245"
+# in rxvt only, this gives a moderate gray:
+#MINEDDIM="38;5;83"
+# export MINEDDIM
+
+# percentage setting (foreground vs. background):
+#MINEDDIM=50%
+#MINEDDIM=	# empty value triggers dim mode (60%) for xterm of MinTTY
+# export MINEDDIM
+
+
+#########################
+# display mode (colour attribute) of status line highlighting
+
+# default setting:
+#MINEDEMPH=31	# red (will become red background)
+# export MINEDEMPH
+
+
+#########################
+# display mode (e.g. colour attribute) of menu borders
+
+#MINEDBORDER=35	# suitable: magenta
+#MINEDBORDER=34	# suitable: blue
+#MINEDBORDER=31	# default: red
+# export MINEDBORDER
+
+
+#########################
+# display mode (character attribute, e.g. colour) of Unicode indications
+# (non-Latin-1 characters in Latin-1 terminals)
+
+#MINEDUNI="§ 46"	# display Unicode characters as "§" and display all 
+			# UTF-8 specialities in ANSI mode 46 (cyan background)
+# export MINEDUNI
+
+
+#########################
+# other display modes
+
+#MINEDCTRL="33;44"	# control character display uses this ANSI mode
+# export MINEDCTRL
+#MINEDMENU=	# menu line and menus use this ANSI mode
+# export MINEDMENU
+#MINEDDIAG=	# dialog and status (bottom) line uses this ANSI mode
+# export MINEDDIAG
+
+
+#########################
+# display mode (character attribute, e.g. colour) of selected menu item
+
+#MINEDSEL=34	# selected menu item background highlighting reverse mode
+# export MINEDSEL
+#MINEDSELFG=43	# selected menu item foreground highlighting reverse mode
+# export MINEDSELFG
+
+# If selected menu items appear too dark (which mined tries to avoid, 
+# depending on the terminal), try one of the workarounds:
+#MINEDSEL="34;1"
+# or
+#MINEDSELFG="43;1"
+
+
+#########################
+# display mode (character attribute, e.g. colour) of combining characters
+# when displayed in separated mode
+
+#MINEDCOMBINING=46	# default: cyan background
+#MINEDCOMBINING=43	# yellow background
+# export MINEDCOMBINING
+
+
+#########################
+# display of text modification status
+
+#MINEDMODF		# String that marks modified text in the file status. 
+# export MINEDMODF	# Default is " (*)".
+
+
+#################################################################
+# Adjusting to terminal properties.
+
+# Display for silly 7-bit terminals with character set switching
+# Enable output translation of 8 bit characters to be displayed using an 
+# alternate character set. The example setting works for the 
+# Siemens 9780x terminal.
+#case "$TERM" in
+#9780*)	MINEDOUT='                                   n   l p    o s   xrv             i`at _      bz    j f   k hQ!"#'\''$%)*01239 8;-BCDEGF HTUVWZK['
+#	 export MINEDOUT;;
+#esac
+
+
+#########################
+# silly terminal connection work-around
+#NoControlSQ=	# Disables ^S and ^Q command functions for dumb terminal 
+		# connections that use these characters for flow control 
+		# but don't filter them out themselves.
+# export NoControlSQ
+
+
+#############################################################################
+# end

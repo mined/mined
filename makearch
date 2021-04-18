@@ -1,0 +1,118 @@
+#! /bin/sh
+
+#############################################################################
+# version and archive name configuration
+version=`sed -e "s,^[^0-9]*\([0-9][0-9]*\)[^0-9]*\([0-9][0-9.]*\).*$,\1.\2," -e t -e d VERSION`
+majorversion=`sed -e "s,^[^0-9]*\([0-9][0-9]*\)[^0-9]*\([0-9][0-9]*\).*$,\1.\2," -e t -e d VERSION`
+
+TARUSER="--owner=mined --group=cygwin"
+
+good="[30;42m"
+error="[41;37m"
+normal="[0m"
+
+
+echo "$good version $version $normal"
+
+case "$1" in
+-)	archive=mined-$version-beta;;
+*)	archive=mined-$version;;
+esac
+
+if [ "$1" = "" ]
+then
+
+    majorrelease=`sed -e 's,\(\..*\)\..*,\1,' VERSION`
+    if egrep -i "$majorrelease" src/help/introduction > /dev/null
+    then
+	true
+    else
+	echo "$error wrong VERSION information in help section 'introduction' $normal" >&2
+	exit 9
+    fi
+
+    fullrelease=`sed -e "/[Mm]in[Ee]d *[0-9]*/ b" -e d VERSION`
+    if egrep -i "$fullrelease" doc/header.html > /dev/null
+    then
+	true
+    else
+	echo "$error wrong VERSION information in doc/header.html $normal" >&2
+	exit 9
+    fi
+
+    if grep "$version (`date +%B\ %Y`)" doc/changes.html > /dev/null
+    then
+	true
+    else
+	echo "$error wrong or missing version date in doc/changes.html $normal" >&2
+	exit 9
+    fi
+    if grep "<a href=#$version>mined $version" doc/changes.html > /dev/null
+    then
+	true
+    else
+	echo "$error wrong or missing version link in doc/changes.html highlights $normal" >&2
+	exit 9
+    fi
+
+    sed -e "1,/<span summary>/ d" -e "/<\/span summary>/ q" doc/overview.html > ov.ov
+    sed -e "1,/<span summary>/ d" -e "/<\/span summary>/ q" doc/mined.html > ov.mi
+    if cmp ov.ov ov.mi
+    then
+	rm -f ov.ov ov.mi
+    else
+	echo "$error update overview in mined.html from overview.html $normal" >&2
+	diff ov.ov ov.mi
+	exit 9
+    fi
+
+    if sed -e '/personal preferences/,/^####/ b pp' -e d -e ': pp' -e '/^[#[]/ d' usrshare/conf_user/minedrc | grep .
+    then
+	echo "$error personal preferences remaining in .minedrc $normal" >&2
+	exit 9
+    fi
+
+fi
+
+#############################################################################
+# file name configuration
+# suppress backup files and recovery files
+suf="[!#~]"
+rm -f usrshare/*/*/*\~ usrshare/*/*/\#*\#
+
+src="src/*.h src/*.c src/*.t"
+srcbuild="src/mnemos.??*$suf src/*.cfg src/*.prj src/charmaps/*.c"
+srcdoc="src/*.doc"
+
+srcmake="src/makefile.*$suf src/mk*$suf src/categors.sed src/vni.*$suf src/insutf8 src/handescr/m*$suf src/handescr/*.se? src/charmaps/*.map src/keymaps?/*.h src/keymaps0/punctuation*$suf src/vms-*"
+man="man/*.*$suf man/makefile src/help/*$suf"
+stuff="README README*$suf LICENCE.*$suf CHANGES *.DOC VERSION doc usrshare/*/*$suf usrshare/*/.minedrc"
+package="*.sed *.add DESCR"
+make="make*$suf configure"
+build="build.opensuse.org/*.*$suf build.debian/*$suf"
+
+# assemble file list
+files="$src $srcbuild $srcdoc $srcmake $man $stuff $package $make $build"
+
+#############################################################################
+# prefix $archive to all file names
+ff=
+for f in $files
+do	ff="$ff $archive/$f"
+done
+files="$ff"
+
+
+#############################################################################
+# make the archive
+ln -s . $archive
+
+rm -f release/$archive.tar.gz
+mkdir -p release
+/bin/tar cvf - $TARUSER --exclude=".@*" --exclude=fonts $files | gzip -c > release/$archive.tar.gz
+#advdef -z4 release/$archive.tar.gz || echo "[43m(optional) cross-run advdef -z4 to compress archives...[0m"
+
+/bin/rm $archive
+
+
+#############################################################################

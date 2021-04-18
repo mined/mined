@@ -1,0 +1,186 @@
+#! /bin/sh
+
+
+########################################################################
+# go into source directory to make ...
+cd src
+
+PATH=$PATH:.	# to find 'type' script for Ultrix
+
+
+########################################################################
+# select make and cc programs
+MAKE=${MAKE-make}
+
+if [ "$GMAKE" = "" ]
+then	# try to find gmake for use with gcc
+	# (on some systems, Mac, I think, cc was gcc but make was not gmake
+	#  which is a problem)
+	if type gmake > /dev/null 2> /dev/null
+	then	GMAKE=gmake
+	elif type gnumake > /dev/null 2> /dev/null
+	then	GMAKE=gnumake
+	else	if type gcc > /dev/null 2> /dev/null
+		then	gdir=`type gcc | sed -e 's,.* ,,' -e 's,/[^/]*$,,'`
+			if [ -x $gdir/make ]
+			then	GMAKE=$gdir/make
+			else	GMAKE=make
+			fi
+		else	GMAKE=make	# $MAKE ?
+				# but make might be gmake while $MAKE is not
+		fi
+	fi
+fi
+
+# if make target is install, prevent using makefile.gcc as installation 
+# target directories would be wrong
+case "$1" in
+*install*)	CC=true;;
+esac
+
+# if CC is explicitly set to gcc, shortcut to use it
+case "$CC" in
+gcc)	$GMAKE -f makefile.gcc $1
+	exit;;
+"")	CC=cc;;
+esac
+
+
+########################################################################
+# for install targets, copy variables (root= etc) only if non-empty
+makevars=`echo $* | tr ' ' '\012' | grep "=."`
+
+
+#############################################################################
+# binary target directory
+SYS=` uname | sed -e 's,_.*,,' `
+ARCH=` uname -m | sed -e "s,/,_,g" `
+OBJDIR=../bin/$SYS.$ARCH
+
+echo OBJDIR=$OBJDIR > m-objdir.inc
+
+
+########################################################################
+# if make target is configure, redefine $MAKE to configure function
+usesymlink=false
+
+case "$1" in
+configure)
+	# trick $MAKE into linking its specific makefile to 'makefile'
+	ignore=
+	makevars=
+	if $usesymlink
+	then	# file system needs to support symbolic links
+		set - makefile
+		MAKE="ln -s"
+	else	# in case development is e.g. on CIFS/Samba file system
+		set - "> makefile"
+		MAKE="eval echo include"
+	fi
+	GMAKE="$MAKE"
+	rm -f makefile
+	;;
+*)	MAKE="$MAKE OBJDIR=$OBJDIR -f"
+	GMAKE="$GMAKE OBJDIR=$OBJDIR -f"
+	;;
+esac
+
+
+########################################################################
+# select makefile suitable for operating system;
+# to add a system-specific make option and have it ignored for configure:
+# add this behind $makevars: ${ignore-OPTION=value}
+case `uname` in
+Linux*)	if [ -n "$ANDROID_ROOT" ]
+	then	# Android: no `make`
+		sh mkmined $1 $makevars
+	else
+		case "`uname -m`" in
+		arm*)	# Raspberry Pi: no termcap API
+			sh mkmined $1 $makevars;;
+		*)	$MAKE makefile.linux $1 $makevars;;
+		esac
+	fi;;
+Sun*)	# SunOS/Solaris
+	if type $CC > /dev/null 2> /dev/null
+	then	if $CC 2> /dev/null | grep "software package not installed" > /dev/null
+		then	$GMAKE makefile.gcc $1 $makevars
+		elif type $CC | grep "/ucb"
+		then	$MAKE makefile.ucb $1 $makevars
+		else	$MAKE makefile.sun $1 $makevars
+		fi
+	else	$GMAKE makefile.gcc $1 $makevars
+	fi;;
+SCO*|UnixWare)	# SCO System V / SCO UnixWare
+	$MAKE makefile.sun $1 $makevars;;
+HP*)	# HP-UX
+	# try to use gmake to avoid "make: Bad character |"
+	$GMAKE makefile.hp $1 $makevars;;
+*BSD*|DragonFly)
+	$GMAKE makefile.bsd $1 $makevars;;
+CYG*)	# Cygwin
+	if gcc -v 2>&1 | grep djgpp
+	then	echo Cross-building for djgpp on Cygwin system
+		# compiling with Cygwin make as djgpp make will often abort
+		/bin/make -f makefile.dj $1 $makevars
+		# final step, linking: needs djgpp make
+		make -f makefile.dj
+	else	$MAKE makefile.cygwin $1 $makevars
+	fi;;
+Darwin*)	# Mac OS X
+	if type gcc > /dev/null 2> /dev/null
+	then	$MAKE makefile.osx $1 $makevars
+	else	echo Mac compilation should have gcc available -
+		echo keyboard mappings do not compile with cc
+		false
+	fi;;
+Haiku)	$MAKE makefile.haiku $1 $makevars;;
+Interix|Windows)	# SFU / Interix (with or without Interix shell)
+	$MAKE makefile.interix $1 $makevars;;
+MINGW*|MSYS*)	# MSYS (MinGW)
+	# could also check $MSYSTEM for "MINGW32" or "MSYS"?
+	if gcc -v 2>&1 | grep "msys"
+	then	CCFLAGS=-DANSI $MAKE makefile.gcc $1 $makevars
+	else	echo Build with MinGW compiler does not work due to weak terminal control support
+		echo Install MSYS development environment
+		echo See http://www.mingw.org/wiki/HOWTO_Create_an_MSYS_Build_Environment
+		exit 1
+	fi;;
+OpenVMS)
+	@vms-make.com
+	;;
+ULTRIX|OSF1)	# Ultrix or Tru64
+	#$GMAKE makefile.gcc $1 $makevars
+	$GMAKE makefile.bsd $1 $makevars
+	;;
+Minix)	if false	# this used to work
+	then	if type gcc > /dev/null 2> /dev/null
+		then	#CCFLAGS=-DANSI $GMAKE makefile.minix $1 $makevars
+			$MAKE makefile.bsd $1 $makevars
+		else	echo Need gcc on Minix
+			exit 1
+		fi
+	else	$MAKE makefile.bsd $1 $makevars
+	fi
+	;;
+IRIX*)
+	#$GMAKE makefile.gcc $1 $makevars
+	$MAKE makefile.sun $1 $makevars
+	;;
+GNU*)	# GNU Hurd
+	CCFLAGS=-DANSI $GMAKE makefile.gcc $1 $makevars
+	;;
+*)
+	if type gcc > /dev/null 2> /dev/null
+	then	echo Trying to make in GNU mode
+		$GMAKE makefile.gcc $1 $makevars
+	else	echo Trying to make with Sun makefile
+		# setting sysV, thus supposed to work on
+		# SINIX/ReliantUNIX (according to openssh config.guess)
+		$MAKE makefile.sun $1 $makevars
+	fi;;
+esac
+
+
+########################################################################
+# end

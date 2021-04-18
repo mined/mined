@@ -1,0 +1,71 @@
+#! /bin/sh -f
+
+if make UnicodeData.txt >&2
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt >&2
+	exit 1
+fi
+
+
+CC=${CC-cc}
+
+(
+cat <</eoc
+#include <stdio.h>
+
+long range_low;
+long range_high = -2;
+char * range_category = "";
+int range_class = -1;
+
+void
+flush ()
+{
+	if (range_high >= 0) {
+		printf ("	{0x%04X, 0x%04X, '%c', %d},\n", range_low, range_high, range_category [1], range_class);
+	}
+}
+
+void
+comb (cc, category, combclass)
+	long cc;
+	char * category;
+	short combclass;
+{
+	if (cc == range_high + 1
+		&& strcmp (category, range_category) == 0
+		&& combclass == range_class
+		) {
+		range_high = cc;
+	} else {
+		flush ();
+		range_low = cc;
+		range_high = cc;
+		range_category = category;
+		range_class = combclass;
+	}
+}
+
+int
+main () {
+/eoc
+
+
+# transform
+#0300;COMBINING GRAVE ACCENT;Mn;0;...
+
+LC_ALL=C sed -e 's-^\([^;]*\);\([^;]*\);\(M[cne]\);\([^;]*\);.*-	comb (0x\1, "\3", \4);	/* \2 */-' -e t -e d UnicodeData.txt
+
+
+cat <</eoc
+	flush ();
+	return 0;
+}
+/eoc
+) > mkcombin.c
+
+if $CC -o mkcombin.exe mkcombin.c
+then	./mkcombin.exe > combin.t
+	rm -f mkcombin.c mkcombin.exe
+else	exit 1
+fi

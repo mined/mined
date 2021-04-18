@@ -1,0 +1,65 @@
+#! /bin/sh
+
+#############################################################################
+# Input assignments for shifted keys and some other configuration 
+# resources for xterm, referring to the file Xdefaults.mined 
+# from the mined distribution.
+
+# The preferred way to activate those settings is to include them 
+# into the $HOME/.Xdefaults or $HOME/.Xresources file you use anyway.
+
+# Alternatively, this script can be called from your 
+# X initialisation script (probably $HOME/.xinitrc) or, if needed, 
+# can be invoked manually or even from the login script $HOME/.profile 
+# if properly guarded against invocations without X server (which would 
+# otherwise cause a long timeout delay).
+# If you use the approach to invoke this script, however (manually 
+# or from .profile), the settings will not take effect in the terminal 
+# window from which the script it was first called, but only in 
+# terminal windows opened later.
+
+# An example how to guard invocation is the following but it may 
+# not work on all systems (e.g. if ping is not available):
+#xhost=`echo $DISPLAY | sed -e "s,:.*,,"`
+##echo trying to ping X host $xhost
+#if ping -c 1 -w 1 "$xhost" > /dev/null && xset -q > /dev/null 2> /dev/null
+#then	sh -c xinitrc.mined	# invoke this script, add path if needed
+#fi
+
+	# try to find Xdefaults.mined
+	case "$MINEDDIR" in
+	?*)	try1=$MINEDDIR/conf_user/Xdefaults.mined;;
+	esac
+	xdefaults=`
+		(
+		 ls Xdefaults.mined
+		 ls $try1
+		 ls /usr/share/mined/Xdefaults.mined
+		 ls /usr/local/share/mined/Xdefaults.mined
+		 ls /usr/share/lib/mined/Xdefaults.mined
+		 ls /opt/mined/share/Xdefaults.mined
+		 ls /usr/share/doc/packages/mined/Xdefaults.mined
+		 ls $HOME/opt/mined*/*share/Xdefaults.mined
+		) 2> /dev/null | sed -e "1 p" -e d`
+	if [ "$xdefaults" = "" ]
+	then	xdefaults=`locate Xdefaults.mined | sed -e "$ p" -e d`
+	fi
+	# apply it
+	if [ "$xdefaults" = "" ]
+	then	echo cannot find mined X resource file Xdefaults.mined
+	else	xrdb -merge $xdefaults
+	fi
+
+
+#############################################################################
+# enable HOP function on middle keypad key ("5") for KDE konsole
+# this can be enabled (or called explicitly) additionally to reassign 
+# the X key symbol of that key so that konsole (being limited by the 
+# deficient QT framework) can recognize that key and send a proper 
+# escape sequence
+
+# PATH="`dirname $0`:$PATH" kp5
+
+
+#############################################################################
+# end

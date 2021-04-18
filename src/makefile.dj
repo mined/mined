@@ -1,0 +1,160 @@
+#############################################################################
+# mined text editor makefile	- djgpp with conio and mouse
+
+deprecated:
+	echo WARNING: this makefile is deprecated - use simplified makefile.dos
+	false
+
+
+#############################################################################
+# Where and how to install
+# installation root, usually empty
+root	= $(INSTALLROOT)
+
+# configuration of installation directories:
+# * [l]rundir refers to the "Mined runtime support library" -
+#   it contains the online help file, auxiliary scripts (some of which 
+#   might actually be installed in .../bin, too), configuration samples etc.
+# * [l]docdir is optional and refers to the mined web documentation 
+#   (a copy of the mined home page).
+
+# directories for target "make install"
+prefix	= $(root)
+bindir	= $(prefix)/bin
+mandir	= $(prefix)/bin
+rundir	= $(prefix)/bin
+
+# directories for target "make localinstall"
+lprefix	= $(root)
+lbindir	= $(lprefix)/bin
+lmandir	= $(lprefix)/bin
+lrundir	= $(lprefix)/bin
+
+#INSTALL = install --mode=+r,u+w
+INSTALL = install -m 644
+INSTALLBIN = install
+#INSTALL = /bin/cp -p
+#INSTALLBIN = /bin/cp -p
+
+
+#############################################################################
+# compilation target options
+
+# terminal handling mode 1: termio
+#SCREEN	= -DTERMIO
+# link termcap functions:
+#SLIB	= -ltermcap	# usual termcap library
+#SLIB	= -L/usr/lib/termcap -ltermcap	# if deprecated (Linux)
+#SLIB	= -lcurses	# may work on System V Unix too (Solaris)
+#SLIB	= -lncurses	# includes termcap library (Linux)
+
+# terminal handling mode 2: sgtty (old, BSD)
+#SCREEN	= -DSGTTY
+#SLIB	= -ltermcap
+
+# terminal handling mode 3: curses
+# Does not work with djgpp
+
+
+#SCREEN	= -Dconio
+
+# select operating system flavour (define sysV if on System V flavour)
+#SYSTEM	= -Dunix -DsysV
+#SYSTEM	= -Dunix -DsysV -DFDSET
+#SYSTEM	= -Dunix
+SYSTEM	=
+
+# select operating system environment
+#DEFS	= -Dunix
+DEFS	= -DFORK
+
+
+# collection of system parameters for compilation
+SYSFLAGS	= $(SCREEN) $(SYSTEM) $(DEFS)
+
+
+#############################################################################
+# link options
+
+# link dynamically
+LDOPTS=-d y	# -dn or -Bstatic links statically
+GLDOPTS=	# -[B]static links statically
+
+
+#############################################################################
+# compiler selection and compiler-specific options
+# (source warnings, optimisation and debug)
+
+CC=gcc
+include mkinclud.gcc
+
+# Redefine CFLAGS to leave out $(GFLAGS) to omit -ansi
+# (and the warnings, but this is not the development version anyway)
+# Collection of compilation parameters:
+CFLAGS	= $(SYSFLAGS) $(OPT) $(DEBUG)
+
+
+#############################################################################
+# make actions
+
+DJDIR=$(dir $(DJGPP))
+DJPMODE=$(DJDIR)BIN\PMODSTUB.EXE
+#PMODE=PMODSTUB.EXE
+PMODE=$(DJPMODE)
+
+# default target:
+# generate DOS stand-alone version with pmode DPMI module
+
+# distinguish DOSBox (which cannot COPY two files to produce DPMI version)
+COMMAND:=$(subst :,_,$(COMSPEC))
+
+mined.exe:	$(COMMAND)
+
+# use $(COMSPEC) /C to support both DOS make and cross-make on cygwin
+$(COMMAND):	mined $(PMODE) dj # non-DOSBox
+	$(COMSPEC) /C echo !!! If $(PMODE) is not available for copying, try "make pmode" first
+	$(COMSPEC) /C COPY /B $(PMODE) + mined mined.exe
+	$(COMSPEC) /C COPY /B mined.exe dj
+
+Z_\COMMAND.COM:	mined # DOSBox
+	echo Cannot compose DPMI executable on DOSBox - real mode MINED.EXE produced
+
+dj:
+	mkdir dj
+
+
+# restrict CHARMAPS to exclude CJK encodings
+CHARTABS:=$(subst .map,.c,$(wildcard charmaps/*.map))
+CHARMAPS:=$(subst .map,.o,$(wildcard charmaps/*.map))
+CHARMAPS:=$(patsubst charmaps/cjk-%.o,,$(CHARMAPS))
+
+# tweak KEYMAPS dependencies... (obsolete?)
+KEYMAPS=
+#KEYMAPSDEP=keymapsi.h
+#KEYMAPSFLAGS=-Ikeymaps0 -DNOSTRINGTABLES
+
+KEYMAPSDEP=keymaps.t
+
+include mkinclud.mak
+
+ARCH=djgpp
+MOUSELIB=dosmouse.c
+
+# override generation of character mapping tables,
+# trying to cross-compile when running in a cygwin system
+charmaps/%.c: charmaps/%.map charcode.h mkchrtab
+	./mkchrtab -S $<
+
+
+# retrieve pmode package, extract pmode stub and copy into DJGPP bin dir.
+pmode:	pmode13b.zip
+	unzip -jo pmode13b.zip BIN/PMODSTUB.EXE
+	$(COMSPEC) /C copy PMODSTUB.EXE $(DJPMODE)
+
+# retrieve pmode archive
+pmode13b.zip:
+	$(WGET) http://www.delorie.com/pub/djgpp/current/v2misc/pmode13b.zip
+
+
+#############################################################################
+# end

@@ -1,0 +1,79 @@
+For a full description of mined commands see the manual page.
+Mined commands are either mapped to control keys, function keys, 
+or sequences starting with the ESCape key.
+Apart from cursor movement (see help on "keyboard"), the most important 
+commands are:
+
+^] or ^@ or ESC @	Set mark (to remember the current location).
+			(With HOP it moves to the remembered location.)
+^Y		Copy text between mark and cursor into paste buffer.
+^U		Cut (move) text between mark and cursor into paste buffer.
+^P		Paste contents of paste buffer to current position.
+		(With HOP it pastes inter-window buffer, from other mined).
+ESC b		Copy contents of buffer into a file. (Appends with HOP.)
+ESC i or F4	Insert file at current cursor position.
+
+^G or ESC g	Goto (various options, also used as HOP key).
+ESC / or F8	Search. (ESC \ searches backwards.)
+ESC ,		Search and replace.
+ESC r		Search and replace with confirmation.
+ESC R		Search and replace on current line.
+ESC ESC		Save file (if needed) and exit.
+ESC q		Quit, don't save (confirm if text modified).
+ESC h or F1	Help.
+
+Paragraph justification (word-wrap)
+-----------------------------------
+ESC <		Set left margin for justification.
+ESC ;		Set left margin of first line of paragraph only.
+ESC :		Set left margin of next lines of paragraph only.
+ESC >		Set right margin for justification.
+ESC j		Justify (word-wrap) paragraph.
+
+Character input support
+-----------------------
+^V for various kinds of special character input:
+^V control-char      enter the control character.
+^V [, \, ], ^^, __   enter the corresponding control character.
+^V <accent> <char>   enter an accented character composed accordingly.
+^V # xxxx            enter character with hexadecimal value
+^V # # xxxxxx        enter character with octal value
+^V # = xxxxx         enter character with decimal value
+^V # U ... xxxx      enter character with hex (oct/dec) Unicode value
+^V <space> <name> <space> , or:
+^V <char> <char>     enter character by mnemonic character name;
+                     recognised mnemonics are those of RFC 1345, HTML, 
+                     TeX, and supplementary mnemonics
+Examples:
+	"^Vae" enters the "ae" ligature
+	"^V'e" enters e with accent d'aigu
+	"^V ae' " enters the Latin ligature ae with acute accent
+	"^V-," or "^V neg " enters the negation symbol
+	"^Va*" or "^V a* " enters the Greek small letter alpha
+	"^V euro " enters the Euro character
+	"^V#20ac" enters the hex character value 20AC (in current encoding)
+	"^V#U20ac" enters the character with Unicode value 20AC (the Euro)
+If numeric input is followed by a Space, numeric input continues for 
+further characters; terminate with Return/Enter.
+
+Accented character input support
+--------------------------------
+Accent prefix keys can precede a character to be compose into an 
+accented letter; multiple accent prefix keys can be combined.
+F5		diaeresis (umlaut) / dialytika
+ Ctrl-F5	ring / cedilla / iota (ypogegrammeni)
+ Shift-F5	tilde / perispomeni
+ Alt-F5		stroke
+ Ctrl-Shift-F5	ogonek / prosgegrammeni
+ Alt-Shift-F5	breve / vrachy
+F6		acute / tonos
+ Ctrl-F6	circumflex / oxia
+ Shift-F6	grave / varia
+ Alt-F6		caron / psili
+ Ctrl-Shift-F6	macron / descender
+ Alt-Shift-F6	dot above / dasia
+Alt-/Control-1	for full listing of modified digit key accent functions, 
+		see manual
+Control-,	for full listing of modified punctuation key accent 
+		functions, see manual
+

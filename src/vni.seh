@@ -1,0 +1,11 @@
+1 i\
+/***************************************************\
+	mined keyboard mapping table\
+	* generated with mkkbmap VNI\
+	  from UnicodeData.txt\
+*/\
+struct keymap keymap_VNI [] = {
+
+$ a\
+	{NIL_PTR}\
+};

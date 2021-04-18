@@ -1,0 +1,197 @@
+#! /bin/sh
+
+if [ -f Unihan_DictionaryLikeData.txt -a -f Unihan_OtherMappings.txt -a -f Unihan_Readings.txt ]
+then	true
+else	if make Unihan.zip
+	then	unzip Unihan.zip Unihan_DictionaryLikeData.txt Unihan_OtherMappings.txt Unihan_Readings.txt
+	else	echo Could not acquire Unicode database
+		exit 1
+	fi
+fi
+
+punct=
+case "$1" in
+-c)	punct=Chinese
+	shift;;
+-j)	punct=Japanese
+	shift;;
+-k)	punct=Korean
+	shift;;
+esac
+
+name=$1
+shortcut=$2
+mergein=$3
+
+ranges () {
+# insert priority marks before Unicode values:
+prio	Unicode block
+01	4E00..9FFF; CJK Unified Ideographs
+02	3400..4DBF; CJK Unified Ideographs Extension A
+03	20000..2A6DF; CJK Unified Ideographs Extension B
+04?	2A700..2B73F; CJK Unified Ideographs Extension C
+04?	2B740..2B81F; CJK Unified Ideographs Extension D
+11?	2E80..2EFF; CJK Radicals Supplement
+21	F900..FAFF; CJK Compatibility Ideographs
+22	2F800..2FA1F; CJK Compatibility Ideographs Supplement
+23?	3300..33FF; CJK Compatibility
+31?	FE30..FE4F; CJK Compatibility Forms
+41?	3000..303F; CJK Symbols and Punctuation
+42?	3200..32FF; Enclosed CJK Letters and Months
+51?	31C0..31EF; CJK Strokes
+#(?)	do these occur?
+99	others - if this occurs:
+	- add range using 'grep CJK Blocks.txt'
+	- assign / arrange prios
+}
+
+priouni () {
+    sed	-e "s,\(U+0*4[EeFf]\),01 \1," -e t \
+	-e "s,\(U+0*[5-9]\),01 \1," -e t \
+	-e "s,\(U+0*3[4-9A-Fa-f]\),02 \1," -e t \
+	-e "s,\(U+0*4[0-9A-Da-d]\),02 \1," -e t \
+	-e "s,\(U+2[0-9Aa]\),03 \1," -e t \
+	-e "s,\(U+2[Aa][789A-Fa-f]\),04 \1," -e t \
+	-e "s,\(U+2[Bb][0-9A-Ba-b]\),04 \1," -e t \
+	-e "s,\(U+0*2[Ee][89A-Fa-f]\),11 \1," -e t \
+	-e "s,\(U+0*[Ff][9Aa]\),21 \1," -e t \
+	-e "s,\(U+2[Ff][89Aa]\),22 \1," -e t \
+	-e "s,\(U+0*33\),23 \1," -e t \
+	-e "s,\(U+0*[Ff][Ee][34]\),31 \1," -e t \
+	-e "s,\(U+0*30[0-3]\),41 \1," -e t \
+	-e "s,\(U+0*32\),42 \1," -e t \
+	-e "s,\(U+0*31[C-Ec-e]\),51 \1," -e t \
+	-e "s,\(U+\),99 \1,"
+}
+
+(
+cat <<\/eoc
+#include <stdio.h>
+
+char * keys = "";
+
+void
+printutf8 (unichar)
+	unsigned long unichar;
+{
+	if (unichar == '\\' || unichar == '"') {
+		printf ("\\");
+	}
+
+	if (unichar < 0x80) {
+		printf ("%c", unichar);
+	} else if (unichar < 0x800) {
+		printf ("%c", 0xC0 | (unichar >> 6));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x10000) {
+		printf ("%c", 0xE0 | (unichar >> 12));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x200000) {
+		printf ("%c", 0xF0 | (unichar >> 18));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x4000000) {
+		printf ("%c", 0xF8 | (unichar >> 24));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x80000000) {
+		printf ("%c", 0xFC | (unichar >> 30));
+		printf ("%c", 0x80 | ((unichar >> 24) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	}
+}
+
+void
+addmap (k, ch)
+	char * k;
+	unsigned long ch;
+{
+	if (strcmp (k, keys) != 0) {
+		if (* keys != '\0') {
+			printf ("\"},\n");
+		}
+		if (* k != '\0') {
+			printf ("	{\"%s\", \"", k);
+		}
+	} else {
+		printf (" ");
+	}
+	if (* k != '\0') {
+		printutf8 (ch);
+	}
+	keys = k;
+}
+
+int
+main () {
+/eoc
+
+LC_ALL=C
+export LC_ALL
+
+# extract mappings from Unihan database, merge with additional data
+(
+sed	-e "s/^U+\([^	]*\)	k$name	\([^	]*\)$/\2	\1/" \
+	-e t -e d Unihan_DictionaryLikeData.txt Unihan_OtherMappings.txt Unihan_Readings.txt
+cat ${mergein:-/dev/null}
+) |
+sed -f $0.sed |
+tr '[A-Z]' '[a-z]' |
+sed -e "s,Ü,ü,g" -e "s,	\(....\)$,	0\1," -e "s,	,	U+," |
+priouni > .kmuhan
+LC_ALL=C sort .kmuhan | uniq |
+sed	-e 's/\(.*\)	.. U+\(.*\)/	addmap ("\1", 0x\2);/'
+grep "	99 " .kmuhan > .kmuhan.99
+rm -f .kmuhan
+
+cat <</eoc
+	addmap ("", 0);
+	return 0;
+}
+/eoc
+) > keymaps/$name.c
+
+if ${CC-cc} -o keymaps/$name.exe keymaps/$name.c
+then	if [ -f keymaps/$name.h ]
+	then	echo saving previous keyboard mapping file to keymaps/$name.h.sav
+		mv -i keymaps/$name.h keymaps/$name.h.sav
+	fi
+	(
+	echo "/***************************************************"
+	echo "	mined keyboard mapping table"
+	echo "	* generated with mkkbmap (mkkmuhan)"
+	echo "	  from Unihan database, k$name entries"
+	if [ -n "$mergein" -a -f "$mergein.gen" ]
+	then	cat $mergein.gen
+	fi
+	if [ -n "$punct" ]
+	then	echo "	* supplemented with punctuation mappings"
+	fi
+	echo "*/"
+	echo "struct keymap keymap_$name [] = {"
+	if [ -n "$punct" ]
+	then	cat keymaps0/punctuation.$punct
+		echo
+	fi
+	keymaps/$name.exe
+	echo "	{NIL_PTR}"
+	echo "};"
+	) > keymaps/$name.h
+
+	./mkkentry -H $name $shortcut
+
+	rm -f keymaps/$name.c keymaps/$name.exe
+
+	if [ -s .kmuhan.99 ]
+	then	echo unidentified character ranges, see .kmuhan.99
+		false
+	else	rm -f .kmuhan.99
+	fi
+fi

@@ -1,0 +1,9 @@
+#! /bin/sh
+
+case `uname` in
+CYG*)	# this script should be installed as /etc/preremove/mined.sh
+	# don't remove Explorer context menu entries
+	#don't /usr/share/mined/setup_install/bin/setupreg.sh -
+	;;
+*)	;;
+esac

@@ -1,0 +1,38 @@
+#! /bin/sh
+
+# add keyboard mapping table entry to configuration file keymaps.cfg
+
+source=
+case "$1" in
+-*)	source="	(`echo $1 | sed -e 's,^-,,'`)"
+	shift;;
+esac
+
+imname=
+case "$1" in
++)	imname="$2"
+	shift; shift;;
+esac
+
+name=$1
+shortcut=`echo $name | sed -e "s,^\(..\).*,\1," | tr "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "abcdefghijklmnopqrstuvwxyz"`
+shortcut=${2-$shortcut}
+tablename="$name"
+imname="${imname:-$name}"
+
+entry="$imname	$tablename	$shortcut$source"
+
+if egrep "^#*$entry" keymaps.cfg > /dev/null
+then	echo "mapping already in keymaps.cfg"
+elif	egrep "	$tablename	" keymaps.cfg > /dev/null
+then	echo "mapping for this table already in keymaps.cfg"
+else	echo "#$entry" >> keymaps.cfg
+	echo "mapping added to keymaps.cfg (still disabled)"
+	echo "check name and shortcut, enable and sort in manually"
+	if make -f mkinclud.mak checkkeymapstags
+	then	true
+	else	echo "ERROR: check reported duplicate keyboard mapping tags"
+		false
+	fi
+fi
+

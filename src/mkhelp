@@ -1,0 +1,17 @@
+#! /bin/sh
+
+cd help >& 2
+
+for help in introduction keyboard function-keys menu commands
+do
+	echo "<!--HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH-->"
+	echo "	mined help topic '$help'"
+	echo "<!-------------------------------------------------------------------------->"
+	echo
+	cat $help
+	echo
+done
+echo "<!-------------------------------------------------------------------------->"
+echo "	end mined help file"
+echo "<!-------------------------------------------------------------------------->"
+

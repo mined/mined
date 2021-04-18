@@ -1,0 +1,3 @@
+	/* dummy map for handling ASCII terminals (e.g. VT52) */
+	/* some compilers do not accept an empty array (e.g. Sun ucb) */
+	{0, 0},

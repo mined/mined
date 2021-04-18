@@ -1,0 +1,395 @@
+To build MinEd from this package, first try the makefile according to 
+the instructions in INSTALL.DOC - only if that turns out not to work 
+on some system, you should proceed with the hints in this file.
+
+
+-----------------------------------------------------------------------------
+How to compile MinEd
+
+
+The make script makemined checks a number of systems already and invokes 
+an appropriate makefile.
+If this fails, go into the 'src' subdirectory.
+Select a makefile closest to your operating system.
+For your convenience, you may set a link
+	ln -s makefile.<selected> makefile
+The script 'configure' in the main directory sets this link based 
+on assumptions of the 'makemined' script.
+It also generates an include file 'm-objdir.inc' to set the binary 
+target directory (used only with 'mkinclud.cc', not 'mkinclud.gcc').
+The binary target directory will be a subdirectory of 'bin', based 
+on 'uname' and 'uname -m', to enable build for different architectures 
+from the same directory; to use another target directory, invoke
+	make OBJDIR=...
+
+
+Supplied makefiles
+
+Unix systems:
+	makefile.linux	on Linux (link to makefile.gcc)
+	makefile.gcc	should work with most GNU-C installations
+	makefile.bsd	on BSD-like systems
+	makefile.sun	on SunOS and other System V Unix systems
+	makefile.ucb	supposed to work with UCB cc (e.g. on SunOS)
+	makefile.hp	on HP-UX (similar to makefile.ucb)
+	makefile.osx	on Mac OS X (similar to makefile.bsd)
+	makefile.haiku	on Haiku (BeOS lookalike)
+	makefile.minix	on Minix
+DOS/Windows systems:
+	makefile.cygwin	for the cygwin Unix-compliant environment
+	makefile.dj	for djgpp
+			compiles on plain DOS, runs also in Windows console
+			(supporting long file names since Windows 98/2000)
+	makefile.dos	simplified makefile for djgpp
+			avoids make problems, runs in DOSBox
+	makefile.interix for "Windows Services for Unix" subsystem (by MS)
+Include files:
+	mkinclud.mak	rules for making mined
+	mkinclud.gcc	gcc compiler parameters
+	mkinclud.cc	cc compiler parameters
+	m-objdir.inc	generated file to indicate binary directory
+Turbo-C 3.0:
+	mined.prj
+OpenVMS:
+	vms-make.com	build script (only checking the primary dependencies)
+	vms-link.opt	link file list used by vms-make.com
+	vms-complib.com	auxiliary script (automatically called), needed once 
+			to compile the character encoding tables
+
+
+-----------------------------------------------------------------------------
+Adapting the makefile if needed
+
+
+Individual makefile
+
+If you don't find a working makefile, try to adapt one, especially 
+select a suitable screen handling mode as commented in the makefile.
+5 basic modes are available:
+* termio (Unix)
+* sgtty (Unix, BSD-style)
+* curses (Unix and others, but not recommended)
+* conio (DOS-based, detected automatically)
+* ANSI (selected if none else chosen and conio not detected)
+Also consider the other settings, e.g. the sysV variable (see makefile).
+
+
+Flags
+
+Additional flags for compilation and linking can be supplied with the 
+environment variables $WFLAGS and $LDFLAGS respectively.
+
+
+Screen control / the case against curses
+
+Mined prefers to be compiled without curses for a number of reasons.
+Older Unix curses implementions used to behave quite clumsy at output, 
+much more than direct terminal control, and they obstructed the use of 
+8-bit character sets long in the post-ASCII ages.
+(Even in 2004, the curses function 'meta' to enable transparent 
+8-bit input fails to work as announced - on Linux ncurses, if the stty 
+setting istrip is in effect, additional direct termio manipulation 
+is needed to enable 8-bit input; on SunOS curses, there doesn't seem 
+to be a way to make this work at all.)
+Also even as of 2004, curses does not yet support UTF-8.
+There is, however, a build option to use curses; it was originally 
+intended for a quick port to VMS (not the current re-port).
+
+The newer ncurses library does not have these problems any more.
+With ncursesw 5.4, it works with UTF-8, but is still buggy (opening a 
+menu over double-width characters will produce display garbage, 
+display of UTF-8 codes with more than 3 bytes crashes ncurses); the 
+crash bug seems to have gone with ncursesw 5.7.
+And curses still has another major drawback: it is less flexible with 
+respect to colour configuration (selecting a foreground colour only, 
+with default background, or background colour only, are not 
+established with reasonable documentation at the interface; 256 colour 
+mode of xterm is not really supported).
+
+There is a make target to compile a curses version while keeping the 
+system-specific adaptations of the various makefiles:
+	make minced
+This make target uses ncursesw in order to support UTF-8. Its development 
+package (libncursesw[N]-dev[el]) needs to be installed in this case.
+On some systems, ncurses headers are deployed into a subdirectory. It may 
+be necessary to add a parameter like
+	make ICURSES=-I/usr/include/ncursesw minced
+
+
+Source file generation
+
+(This step is not needed anymore since mined 2000.15)
+On some systems (esp. MSDOS), the build procedure for generated source files 
+does not work; you can cross-generate the charmaps and keymaps files 
+on a Unix or cygwin system, in the subdirectory src using the commands:
+	make pc
+	make keymaps.t
+
+
+Workarounds for compilation problems
+
+On some systems, the compiler may fail to compile the large tables 
+for character encoding, keyboard mapping, or Han character descriptions.
+On SunOS on Intel, cc did not compile the old format of handescr.t 
+(out of memory); on SunOS on Sparc, /opt/SUNWspro/bin/cc just hangs on 
+compiling it.
+With 2011.18, the table storage format of handescr.t has changed so that 
+it can be compiled on (most of) these systems.
+On Max OS X, cc did not compile keymaps.t (strings too long);
+also here the unknown linker option -d y would have to be tweaked. Use 
+gcc to avoid the problem (CC=gcc make or CC=gcc gmake) or use the 
+makemined script. With 2012.21, the problem may have been resolved.
+
+Use these compilation defines (via the make variable OPT)
+to disable certain large tables:
+
+OPT=-DnoCJKcharmaps to disable CJK character encodings
+	(affects charcode.c and mousemen.c (charcode.h and charemen.t))
+OPT=-DnoCJKkeymaps to disable CJK input methods
+	(affects keymaps.c)
+OPT=-DnoHANinfo to disable character information from the Unihan database
+	(affects handescr.c)
+OPT=-DNOCJK to disable all of the above
+OPT=-DNOCHARNAMES to disable Unicode character names
+	(affects edit.c)
+OPT=-DNODECOMPOSE to disable Unicode decompositions
+	(affects edit.c)
+
+
+-----------------------------------------------------------------------------
+Special interoperability notes
+
+
+Immediate detection of resized terminal
+
+With 2013.23, an alternative mode for catching Window size changes 
+was implemented (as a workaround for cygwin 1.7 which did not interrupt 
+select() or read() on WINCH - this was fixed in 1.7.18).
+This could be enabled for systems that don't interrupt select() on WINCH 
+by #undef selectread in io.c; it works by not using select(), applying 
+VTIME timeout and restarting read().
+
+
+-----------------------------------------------------------------------------
+Special notes for specific platforms
+
+
+SunOS SUNWspro C compiler
+
+Some releases of mined used to be linked statically on SunOS in order 
+to make it backwards-portable to a SunOS system without termcap or 
+curses libraries installed. However, since recent SunOS versions 
+(5.10), static libraries seem to be no longer available by default, so 
+dynamic linking is the default again.
+
+To produce a statically linked version with the non-gnu Sun makefile 
+(makefile.sun), use the LDFLAGS variable as a makefile parameter 
+to add the respective compiler options to trigger static linking:
+	make LDFLAGS=-Bstatic
+Error messages saying that -ltermcap and -lc are not found indicate 
+that static libraries are not installed so static linking is not 
+possible. Try another machine or the gnu environment instead.
+
+
+SunOS ucb C compiler
+
+With this system, the space-optimised version of the keyboard mapping 
+tables cannot be compiled.
+The ucb makefile provides a workaround to use the plain tables.
+This is achieved by two settings in makefile.ucb:
+KEYMAPSDEP=keymapsi.h
+KEYMAPSFLAGS=-Ikeymaps0 -DNOSTRINGTABLES
+With 2012.21, the problem may have been resolved.
+
+
+AIX
+
+For AIX, the Han character information table would not be compiled and 
+is disabled in the source.
+
+
+Mac OS X
+
+If you do not have a compiler installed yet, you may get yourself an 
+Apple ID (free Apple Developer registration), from 
+https://developer.apple.com/xcode/
+download the "Command Line Tools for Xcode" and install the package.
+
+Formerly, neither sed nor gcc seemed to be able to handle the long strings 
+occurring in the raw Radical/Stroke input method tables or previous 
+mined versions.
+(An alternative format was introduced (with 2000.13.2) and a 
+pre-transformed table for Radical/Stroke included in the distribution 
+as a workaround. This should help on other platforms too which have 
+this problem.)
+The new tweaked table format should also resolve the issue.
+
+
+HP-UX
+
+On an older version of HP-UX, the keyboard mapping tables could not 
+be compiled because some entries were too long for the preprocessor.
+The option -H20000 is passed to cpp (from makefile.hp) to resolve this.
+On a newer HP-UX installation, this might compile well without the option
+(and maybe on an older one as well with the new tweaked table format).
+If you run into this problem, you can also get around it by 
+configuring out the Radical/Stroke input method from keymaps.cfg, 
+using a "#" character to comment the line out.
+
+
+Interix
+
+The space-optimised version of the keyboard mapping tables cannot 
+be generated in the usual way (due to a memory problem of sed), here 
+also caused by the Radical/Stroke input method.
+The Interix makefile provides for a workaround.
+(The optimised version could however be compiled if taken from a 
+different platform; this would save about 400KB in the binary program.)
+With 2012.21, the issues should be resolved.
+
+
+Cygwin
+
+Note: A Windows/cygwin binary version of mined is available from the 
+mined web site http://towo.net/mined/.
+The cygwin download archive includes the cygwin libraries needed 
+by mined, so it can be used without an installed cygwin environment.
+
+The cygwin version compiles seamlessly (using the gnu makefile).
+There are also binary and source packages available with the cygwin 
+distribution.
+
+Note: The cygwin version of mined runs well in Windows command prompt 
+windows, the cygwin console, and cygwin terminals like xterm, mintty, 
+urxvt.
+It does not run in pure DOS (or DOS emulators like DOSBox).
+
+
+MSYS (MinGW command environment)
+
+To compile mined for an MSYS/MinGW environment, the MSYS version of the 
+compiler is needed, not the MinGW compiler!
+(See http://www.mingw.org/wiki/HOWTO_Create_an_MSYS_Build_Environment for 
+installation.)
+
+The sources contain a number of __MINGW32__ conditionals from an 
+incomplete and unsuccessful porting attempt to MinGW before the distinction 
+of the two compilers was unveiled. They are not relevant for the MSYS build.
+
+
+DOS/all
+
+Including keymaps table files separately would not work due to the long 
+file names of some of them (djgpp fails on the make dependencies, 
+although not in FreeDOS, Turbo-C cannot include them). Therefore 
+the concatenated keymaps file (now keymaps.t) is kept; also it is 
+now included in the distribution, so it does not need to be generated.
+If you change the configuration of charmaps or keymaps files, however, 
+make will want to regenerate them which does not work on DOS;
+see "Source file generation" above.
+
+
+DOS/djgpp
+
+Note: A djgpp-compiled DOS/Windows binary release of mined 
+is available from the mined web site http://towo.net/mined/.
+
+To compile mined with djgpp, you will have to go into the 'src' 
+sub-directory and address makefile.dj or makefile.dos explicitly, 
+or copy it to makefile for convenience:
+	cd src
+	copy makefile.dos makefile
+	make
+
+Compiling large tables may not work, depending on the system.
+CJK tables (CJK codepages, CJK input methods, and Han character information) 
+are disabled in the sources.
+In DOSBox, also disable Unicode character information to compile edit.c:
+	make OPT=-DNOCHARNAMES
+(works without this limitation on FreeDOS).
+
+In a Windows environment, the djgpp make.exe may crash after every 
+single compilation (and would have to be restarted for the next); a 
+remedy is to use cygwin make with djgpp gcc for all compile steps, 
+then use djgpp make for final linking:
+	... # prepare PATH and DJGPP environment for djgpp gcc
+	cd src
+	cp makefile.dos makefile
+	/bin/make
+	make
+
+The makefile.dj or makefile.dos produces a stand-alone version, using 
+the pmode/dj DPMI module which is available from the djgpp distribution.
+(See the makefile for its URL.) This does not work, however, on DOSBox, 
+due to the inability of the DOSBox COPY command to concatenate two files.
+On DOSBox, a real-mode binary is produced instead.
+
+Note: The djgpp-compiled DOS version is a "dual-mode" executable that 
+runs in pure DOS as well as in a Windows command console (supporting 
+long file names there in Windows 98, 2000, or later), including the 
+cygwin console.
+It does NOT run, however, in cygwin terminals like xterm, mintty, rxvt.
+
+
+DOS/other
+
+Turbo-C (Borland C) (deprecated):
+Proper handling of ^C and ^S fails despite all attempts to use DOS/BIOS 
+calls to fix it.
+
+EMX (very deprecated):
+The promise of the EMX environment to be able to compile 
+dual-mode applications does not hold - at least not with curses.
+EMX cannot compile the table with CJK character information 
+(handescr.h), reporting virtual memory exhausted, so this feature has 
+been disabled for EMX.
+EMX building was reenabled with 2000.10 but deprecated again with 2000.16 
+as there have always been lots of compilation and make problems and 
+there is no advantage compared to the cygwin and djgpp versions.
+
+
+OpenVMS
+
+The VMS build script vms-make.com checks some 'make'-style dependencies 
+and uses an object library for the character mapping tables.
+It uses the CC/DECC compiler.
+For the VAX machine target, some large tables are disabled in the 
+sources: Unicode character names and decompositions, 
+CJK character encodings and Han character information.
+(CJK input methods are not disabled.)
+Although there are some conditionals for the VAXC compiler in the sources, 
+this is not a complete port as some desired features are just missing.
+
+
+-----------------------------------------------------------------------------
+Debugging features
+
+Mined supports three specific debugging features:
+* Using printf (to stdout) and redirecting to a different terminal, 
+  as mined reopens /dev/tty for its own display output.
+* Putting debug code (printf and other) at the beginning of the line, 
+  i.e. not indented.
+* Using #ifdef debug_whatever conditional compilation.
+The latter two options are detected by the makefile to prevent accidental 
+slipping of debug code into the build.
+
+
+-----------------------------------------------------------------------------
+Build and source generation
+
+To build mined, several source files, especially tables with a suffix ".t", 
+are generated under control of the makefiles (mkinclud.mak, mk* scripts).
+As these are included in the source distribution archive, it is supposed 
+that this generation only occurs on development systems, thus no legacy 
+compatibility is strived for during this process.
+
+Some tools (uniset) and source files (Unicode and other character 
+information files) are automatically downloaded.
+
+Build dependencies include some non-standard Unix commands:
+iconv, unzip, gzip, groff (for man groff_char, nroff, tbl)
+wget
+(optional: ctags, zip)
+
+
+-----------------------------------------------------------------------------

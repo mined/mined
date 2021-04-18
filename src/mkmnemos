@@ -1,0 +1,21 @@
+#! /usr/bin/bash
+
+# transform UnicodeData entries into mnemonic entry forms, 
+# to be filled with the respective mnemonics
+#	00DF;LATIN SMALL LETTER SHARP S;Ll;0;L;;;;;N;;German;;;
+# ->
+#		{"", 0x00DF /* ß LATIN SMALL LETTER SHARP S */},
+
+case "$1" in
++)	#setop UnicodeData.txt - unicode-previous/UnicodeData.txt |
+	setop <(cut -d ";" -f 1,2 UnicodeData.txt) - <(cut -d ";" -f 1,2 unicode-previous/UnicodeData.txt) |
+	egrep -e "(LATIN|GREEK|CYRILLIC) "
+	;;
+*)	cat "$@"
+	;;
+esac |
+sed -e 's-^\([^;]*\);\([^;]*\).*-	{"", 0x\1 /* U+\1 \2 */},-' |
+./insutf8 | sed -e 's,U+[^ ]* ,,'
+
+echo "[43;30m edit output to add mnemonics [0m" >&2
+echo "[43;30m then check uniqueness with ./mnemos.check [0m" >&2

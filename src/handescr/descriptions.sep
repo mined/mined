@@ -1,0 +1,10 @@
+# split lines into code statement and definition statement
+# remove sorting weight added by descriptions.sed
+s,^U+\(.....\)	.. D	\(.*\),code \1\
+d="\2",
+
+t
+
+s,^U+\(.....\)	.. \(.\)	\(.*\),code \1\
+\2="\3",
+

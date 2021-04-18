@@ -1,0 +1,222 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
+<meta name="keywords" content="editor, text mode editor, programmers editor, programming editor, Unicode editor, UTF-8 editor, Unicode text editor, UTF-8 text editor, Unicode text mode editor, UTF-8 text mode editor, text mode Unicode editor, text mode UTF-8 editor, text mode HTML editor, CJK editor">
+<meta name="robots" content="index">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Unicode text editor MinEd</title>
+
+<script>
+top.select ("overview");
+</script>
+
+</head>
+
+
+<dl>
+
+<table align=right cellspacing=0 cellpadding=9 border=0>
+<tr><td colspan=9 bgcolor=#32E95D><b>User comments</b>
+<tr><td><td><td>
+<td colspan=6 bgcolor=#FDEB97>
+I do like having a small editor that can deal with unicode.
+<tr><td><td>
+<td colspan=7 bgcolor=#FDB297>
+I find it quite neat that you can use the mouse ... although it is a console app.
+<tr><td>
+<td colspan=8 bgcolor=#FDEB97>
+... really nicely done. 
+In particular the menus and the mouse interaction are very pretty.
+</table>
+
+<dd>
+<h3>Introduction to MinEd</h3>
+Mined is a powerful text editor with a comprehensive yet concise and 
+easy-to-use user interface supporting modern interaction paradigms, 
+and fast, small-footprint behaviour.
+<p>
+Mined provides both extensive Unicode and CJK support offering many 
+specific features and covering special cases that other editors 
+are not aware of (like auto-detection features and automatic handling 
+of terminal variations, or Han character information).
+<p>
+Mined supports full mouse control and menu system in plain-text terminals 
+(and it was the first editor supporting Unicode in xterm).
+<p>
+Mined offers a full set of text and file management features, like 
+data loss prevention (using backup, recovery files, and file locking 
+interoperable with other editors, and file change monitoring), 
+an interactive file chooser, and an interactive file switcher.
+<p>
+Basically, mined is an editor tailored to reliable and efficient 
+editing of plain text documents and programs, with comfortable 
+features and intuitive interactive behaviour designed for this purpose.
+
+<p id=nodescr>
+See <a href=design.html>Mined Design Principles</a> for some further 
+comments on the approach of making mined a useful editing tool.
+<p id=nodescr>
+See <a href=features.html>Mined Features</a> for a more 
+comprehensive listing of mined features.
+<p id=nodescr>
+See <a href=keyboard.html>Mined Keyboard and Keypad Functions</a> for a 
+quick guide to keypad assignments and basic keyboard functions.
+
+
+<p id=nodescr>
+<br>
+<table id=nodescr align=center width=90% cellspacing=9 cellpadding=9 border=0>
+<tr>
+<td colspan=3 valign=top bgcolor=#FDEB97>
+
+<table>
+<tr>
+<td colspan=2>
+<h3 style="margin-bottom: 0.5em;">Presentation</h3>
+<a target=iuc href=http://www.global-conference.com/iuc27/>
+	<img border=0 width=40 align=left src=unicode.org.png></a>
+	<i>on the 27th Internationalization and Unicode Conference</i>
+<td>
+<ul>
+  <li><a target=pdf href=http://towo.net/mined/mined_iuc27.pdf>Conference Paper</a>
+  <li><a target=pdf href=http://towo.net/mined/mined_iuc27-presentation.pdf><nobr>Conference Presentation</nobr></a>
+</ul>
+</table>
+
+<tr><td width=50>
+<td colspan=3 valign=top bgcolor=#FDB297>
+<h3><a href=screenshots.html>Screenshots</a></h3>
+
+<tr><td>
+<td width=50>
+<td colspan=3 valign=top bgcolor=#32E95D>
+<h3><a href=download.html><nobr><img border=0 align=absmiddle src=handr.gif> Download</nobr></a></h3>
+
+</table>
+
+</dl>
+
+
+<table align=right>
+<!-- graphic tag -->
+</table>
+
+<p id=overview>
+<dl>
+<dd><h3>Feature Overview</h3>
+
+<span summary>
+	<h4>Security and safety features</h4>
+	<ul>
+	<li><img align=absmiddle src=new-rot.gif title=2015.25>Transparent editing of encrypted files, 
+		using filters configurable by file type
+	<li>Systematic text and file handling safety, avoiding loss of data
+	<li>Backup features, supporting simple or versioned backup
+	<li>Hard link preservation
+	<li>Optional password hiding
+	</ul>
+
+	<h4>Interactive features</h4>
+	<ul>
+	<li>Intuitive user interface
+	<li>Logical and consistent concept of navigating and editing text 
+		(without ancient line-end handling limitations or insert/append confusion)
+	<li>Supports various control styles:
+	<ul>
+		<li>Editing with command control, function key control, or menu control
+		<li>Navigation by cursor keys, control keys, mouse or scrollbar
+	</ul>
+	<li>Concise and comprehensive menus (driven by keyboard or mouse)
+	<li><i>HOP</i> key paradigm doubles the number of navigation functions 
+		that can be most easily reached and remembered by 
+		intuitively amplifying or expanding the associated function
+	<li>Interactive file chooser and interactive file switcher
+	<li>Proper handling of window size changes in any state of interaction
+	</ul>
+
+	<h4>Versatile character encoding support</h4>
+	<ul>
+	<li>Extensive Unicode support, including double-width and combining characters,
+		script highlighting, 
+		various methods of character input support 
+		(mapped keyboard input methods, mnemonic and numeric input),
+		supporting CJK, Vietnamese, Hebrew, Arabic, and other scripts
+	<li>Character information from recent Unicode version
+	<li>Extensive accented character input support, including 
+		multiple accent prefix keys
+	<li>Support for Greek (monotonic and polytonic)
+	<li>Support for Cyrillic accented characters
+	<li>Support of bidirectional terminals
+	<li>Support of Arabic ligature joining on all terminals
+	<li>East Asian character set support: handling of major CJK encodings 
+		(including GB18030 and JIS encodings with combining characters)
+	<li>Support for a large number of 8 bit encodings 
+		(with combining characters for Vietnamese, Thai, Arabic, Hebrew)
+	<li>Support of CJK input methods by enhanced keyboard 
+		mapping including multiple choice mappings (handled by a pick list menu);
+		characters in the pick list being sorted by relevance of Unicode ranges
+	<li>Han character information with description and pronunciation
+	<li>Auto-detection of text character encoding, edits files with 
+		mixed character encoding sections (e.g. mailboxes),
+		transparent handling and auto-detection of UTF-16 encoded files
+	<li>Auto-detection of UTF-8 / CJK / 8 bit terminal mode and detailed features
+		(like different Unicode width and combining data versions)
+	<li>Comprehensive and flexible (though standard-conformant) set of 
+		mechanisms to specify both text and terminal encodings 
+		with useful precedences
+	<li>Flexible combination of any text encoding with any terminal encoding
+	<li>Encoding support tested with: xterm, mlterm, rxvt, 
+		cxterm, kterm, hanterm, 
+		KDE konsole, gnome-terminal, Linux console, 
+		cygwin console, mintty, PuTTY
+	</ul>
+
+	<h4>Text editing features</h4>
+	<ul>
+	<li>Text layout features:
+	<ul>
+		<li>Paragraph wrapping, also justifying item lists
+		<li>Auto-indentation and Undent function (smart Backspace)
+		<li>Smart quotes (with quotation marks style selection 
+		and auto-detection) and smart dashes
+		<li><img align=absmiddle src=new-rot.gif title=2015.25>Advanced list support (bullet and numbered lists)
+	</ul>
+	<li>Search and replacement patterns can have multiple lines
+	<li>Cross-session paste buffer (copy/paste between multiple 
+		&ndash; even subsequent or remote &ndash; invocations of mined)
+	<li>Optional Unicode paste buffer mode with implicit conversion
+	<li>Marker stack for quick return to previous text positions
+	<li>Multiple paste buffers (emacs-style)
+	<li>Optional rectangular copy/paste area
+	<li>Interactive selection highlighting (with mouse or keyboard selection), 
+		standard dual-mode Del key behaviour
+	<li>Program editing features, HTML support and syntax highlighting, 
+		identifier and function definition search, also across files; 
+		structure input support
+	<li>Visible indications of special text contents 
+		(TAB characters, different line-end types, character 
+		codes that cannot be displayed in the current mode)
+	<li>Full binary transparent editing with visible indications 
+		(illegal UTF-8 or CJK, mixed line end types, NUL characters, ...)
+	<li>Print function that works in all text encodings
+	<li>Optional emacs command mode
+	</ul>
+
+	<h4>Small-footprint operation, portability and interworking</h4>
+	<ul>
+	<li>Plain text mode (terminal) operation
+	<li>Optimized use of terminal features for a wide range of terminals,
+	including large terminal support (2015x2015) of recent xterm and mintty
+	<li>Instant start-up
+	<li>Runs on many platforms (including legacy systems):
+		Linux, Android, Raspberry Pi,
+		Unix (SunOS, BSD, Mac OS X, QNX, GNU Hurd, HP-UX, IBM AIX, Irix, SCO UnixWare, Ultrix, Tru64),
+		DOS (djgpp), Windows (cygwin, Interix, MSYS), 
+		OpenVMS, Haiku
+	</ul>
+</span summary>
+</dl>
+
+<hr>
+

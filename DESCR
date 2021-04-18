@@ -1,0 +1,119 @@
+Mined is a powerful text editor with a comprehensive yet concise and 
+easy-to-use user interface supporting modern interaction paradigms, 
+and fast, small-footprint behaviour.
+
+Mined provides both extensive Unicode and CJK support offering many 
+specific features and covering special cases that other editors 
+are not aware of (like auto-detection features and automatic handling 
+of terminal variations, or Han character information).
+
+Mined supports full mouse control and menu system in plain-text terminals 
+(and it was the first editor supporting Unicode in xterm).
+
+Mined offers a full set of text and file management features, like 
+data loss prevention (using backup, recovery files, and file locking 
+interoperable with other editors, and file change monitoring), 
+an interactive file chooser, and an interactive file switcher.
+
+Basically, mined is an editor tailored to reliable and efficient 
+editing of plain text documents and programs, with comfortable 
+features and intuitive interactive behaviour designed for this purpose.
+
+
+Feature Overview
+
+Security and safety features
+* Transparent editing of encrypted files, 
+  using filters configurable by file type
+* Systematic text and file handling safety, avoiding loss of data
+* Backup features, supporting simple or versioned backup
+* Hard link preservation
+* Optional password hiding
+
+Interactive features
+* Intuitive user interface
+* Logical and consistent concept of navigating and editing text 
+  (without ancient line-end handling limitations or insert/append confusion)
+* Supports various control styles:
+  - Editing with command control, function key control, or menu control
+  - Navigation by cursor keys, control keys, mouse or scrollbar
+* Concise and comprehensive menus (driven by keyboard or mouse)
+* HOPkey paradigm doubles the number of navigation functions 
+  that can be most easily reached and remembered by 
+  intuitively amplifying or expanding the associated function
+* Interactive file chooser and interactive file switcher
+* Proper handling of window size changes in any state of interaction
+
+Versatile character encoding support
+* Extensive Unicode support, including double-width and combining characters,
+  script highlighting, 
+  various methods of character input support 
+  (mapped keyboard input methods, mnemonic and numeric input),
+  supporting CJK, Vietnamese, Hebrew, Arabic, and other scripts
+* Character information from recent Unicode version
+* Extensive accented character input support, including 
+  multiple accent prefix keys
+* Support for Greek (monotonic and polytonic)
+* Support for Cyrillic accented characters
+* Support of bidirectional terminals
+* Support of Arabic ligature joining on all terminals
+* East Asian character set support: handling of major CJK encodings 
+  (including GB18030 and JIS encodings with combining characters)
+* Support for a large number of 8 bit encodings 
+  (with combining characters for Vietnamese, Thai, Arabic, Hebrew)
+* Support of CJK input methods by enhanced keyboard 
+  mapping including multiple choice mappings (handled by a pick list menu);
+  characters in the pick list being sorted by relevance of Unicode ranges
+* Han character information with description and pronunciation
+* Auto-detection of text character encoding, edits files with 
+  mixed character encoding sections (e.g. mailboxes),
+  transparent handling and auto-detection of UTF-16 encoded files
+* Auto-detection of UTF-8 / CJK / 8 bit terminal mode and detailed features
+  (like different Unicode width and combining data versions)
+* Comprehensive and flexible (though standard-conformant) set of 
+  mechanisms to specify both text and terminal encodings 
+  with useful precedences
+* Flexible combination of any text encoding with any terminal encoding
+* Encoding support tested with: xterm, mlterm, rxvt, 
+  cxterm, kterm, hanterm, 
+  KDE konsole, gnome-terminal, Linux console, 
+  cygwin console, mintty, PuTTY
+
+Text editing features
+* Text layout features:
+  - Paragraph wrapping, also justifying item lists
+  - Auto-indentation and Undent function (smart Backspace)
+  - Smart quotes (with quotation marks style selection 
+  and auto-detection) and smart dashes
+  - Advanced list support (bullet and numbered lists)
+* Search and replacement patterns can have multiple lines
+* Cross-session paste buffer (copy/paste between multiple 
+  - even subsequent or remote - invocations of mined)
+* Optional Unicode paste buffer mode with implicit conversion
+* Marker stack for quick return to previous text positions
+* Multiple paste buffers (emacs-style)
+* Optional rectangular copy/paste area
+* Interactive selection highlighting (with mouse or keyboard selection), 
+  standard dual-mode Del key behaviour
+* Program editing features, HTML support and syntax highlighting, 
+  identifier and function definition search, also across files; 
+  structure input support
+* Visible indications of special text contents 
+  (TAB characters, different line-end types, character 
+  codes that cannot be displayed in the current mode)
+* Full binary transparent editing with visible indications 
+  (illegal UTF-8 or CJK, mixed line end types, NUL characters, ...)
+* Print function that works in all text encodings
+* Optional emacs command mode
+
+Small-footprint operation, portability and interworking
+* Plain text mode (terminal) operation
+* Optimized use of terminal features for a wide range of terminals,
+  including large terminal support (2015x2015) of recent xterm and mintty
+* Instant start-up
+* Runs on many platforms (including legacy systems):
+  Linux, Android, Raspberry Pi,
+  Unix (SunOS, BSD, Mac OS X, QNX, GNU Hurd, HP-UX, IBM AIX, Irix, SCO UnixWare, Ultrix, Tru64),
+  DOS (djgpp), Windows (cygwin, Interix, MSYS), 
+  OpenVMS, Haiku
+

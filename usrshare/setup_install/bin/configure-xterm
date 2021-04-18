@@ -1,0 +1,28 @@
+#! /bin/sh
+
+# configure xterm for best use with mined
+
+#############################################################################
+# Set options; you may disable any of these according to your needs.
+
+# enable "Log to File" menu option
+log=--enable-logging
+# enable alternative sets of function key assignments
+keys=--enable-hp-fkeys --enable-sco-fkeys
+# disable unused features
+dis=--disable-tek4014 --disable-vt52
+
+# in case this script is used to configure rxvt, 
+# add rxvt option to enable everything but 256 colors
+rxvt=--enable-everything
+
+#############################################################################
+
+# Override "rm" script that may be in user's path to give preference 
+# to "rm -i" (a very useful script to have...);
+# "configure" scripts should use rm -f rather than just rm!
+PATH=/bin:/usr/bin:$PATH
+export PATH
+
+# Configure xterm.
+./configure --enable-wide-chars --enable-256-color $rxvt $log $keys $dis $*

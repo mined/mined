@@ -1,0 +1,17 @@
+#! /bin/sh
+
+#############################################################################
+# assign X key symbol "Menu" to the middle keypad key (labelled "5") 
+# in order to make it available for KDE konsole for assignment of 
+# an escape sequence; reason: the QT framework used by konsole does 
+# not maintain the usual key symbol KP_Begin (or Begin) for this key 
+# and thus obstructs its usage; a report and fix request for this 
+# deficiency has been set to qt-bugs@troll.no
+
+#############################################################################
+# key symbol (X keysym) to assign
+new=${1-Menu}
+
+xmodmap -pke | grep -w KP_5 |
+sed -e "s,= *[^ ][^ ]*\( .*KP_5\),= $new\1," |
+xmodmap -

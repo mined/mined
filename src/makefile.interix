@@ -1,0 +1,118 @@
+#############################################################################
+# mined text editor makefile	- Interix: gcc without GNU make
+
+
+#############################################################################
+# Where and how to install
+# installation root, usually empty
+root	= $(INSTALLROOT)
+
+# configuration of installation directories:
+# * [l]rundir refers to the "Mined runtime support library" -
+#   it contains the online help file, auxiliary scripts (some of which 
+#   might actually be installed in .../bin, too), configuration samples etc.
+# * [l]docdir is optional and refers to the mined web documentation 
+#   (a copy of the mined home page).
+
+# directories for target "make install"
+prefix	= $(root)/usr
+bindir	= $(prefix)/bin
+mandir	= $(prefix)/share/man
+rundir	= $(prefix)/share/mined
+
+# directories for target "make localinstall" (for interix, same as install)
+lprefix	= $(root)/usr
+lbindir	= $(lprefix)/bin
+lmandir	= $(lprefix)/share/man
+lrundir	= $(lprefix)/share/mined
+
+#INSTALL = install --mode=+r,u+w
+INSTALL = install -m 644
+INSTALLBIN = install
+#INSTALL = /bin/cp -p
+#INSTALLBIN = /bin/cp -p
+
+
+#############################################################################
+# system environment adaption
+
+# select library directory
+LIBDIR	= /usr/lib${LIB}
+
+
+#############################################################################
+# compilation target options
+
+# terminal handling mode 1: termio
+SCREEN	= -DTERMIO
+# link termcap functions:
+SLIB	= -ltermcap
+#SLIB	= -lcurses
+
+# terminal handling mode 2: sgtty (old, BSD)
+#SCREEN	= -DSGTTY
+#SLIB	= -ltermcap
+
+# terminal handling mode 3: curses
+# Choose curses only if other options don't work 
+# (see COMPILE.DOC for discussion).
+# Use target "make minced" to use UTF-8 enabled ncurses (>= 5.4), 
+# or see separate makefile.curses for options with legacy curses.
+
+
+# select operating system flavour (define sysV if on System V flavour)
+SYSTEM	= -Dunix -DsysV
+#SYSTEM	= -Dunix -DsysV -DFDSET
+#SYSTEM	= -Dunix
+
+# select operating system environment
+DEFS	= -Dunix -Dpc
+
+
+# collection of system parameters for compilation
+SYSFLAGS	= $(SCREEN) $(SYSTEM) $(DEFS)
+
+
+#############################################################################
+# link options
+
+# link dynamically
+LDOPTS=
+GLDOPTS=
+
+
+#############################################################################
+# compiler selection and compiler-specific options
+# (source warnings, optimisation and debug)
+
+CC=gcc
+include mkinclud.cc	# sic!
+
+
+#############################################################################
+# make actions
+
+# Interix sed cannot convert Radical/Stroke table to optimised format
+#KEYMAPSDEP=keymapsi.h
+#KEYMAPSFLAGS=-Ikeymaps0 -DNOSTRINGTABLES
+# ... but including keymaps.t in the distribution should resolve the issue
+# (maybe also its new wrapped format)
+KEYMAPSDEP=keymaps.t
+
+# avoid generation of keymaps makefile
+MAKEMAPS=mkcharmaps
+
+include mkinclud.mak
+
+
+
+#############################################################################
+# test targets
+
+dyntest:
+	echo CHARMAPS: $(CHARMAPS)
+	echo KEYMAPS: $(KEYMAPS)
+
+
+#############################################################################
+# end

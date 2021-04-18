@@ -1,0 +1,9 @@
+# remove leading blank in mapping
+s,	 ,	,
+
+# transform into C table entry
+s/\(.*\)		*\(.*\)/	{"\1", "\2"},/
+t
+
+# transform entries without mapping
+s/\(.*\)/	{"\1", ""},/

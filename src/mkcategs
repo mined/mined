@@ -1,0 +1,33 @@
+#! /bin/sh
+
+# extract table of character categories from Unicode data description file
+
+sed=true
+
+if make PropertyValueAliases.txt >&2
+then	true
+else	echo Could not acquire Unicode description file PropertyValueAliases.txt >&2
+	exit 1
+fi
+
+case "$1" in
+-sed)	sed=true; shift;;
+-h)	sed=false; shift;;
+esac
+
+#gc ; L         ; Letter                           # Ll | Lm | Lo | Lt | Lu
+#gc ; Lo        ; Other_Letter
+
+(
+echo '	{"L&", "Letter"},'
+echo '	{"Sc", "Currency Symbol"},'
+sed -e 's:^gc *; *\([^ ]*\) *; *\([^ ]*\).*:	{"\1", "\2"},:' -e 't categ' -e d \
+    -e ': categ' -e 's:\([^" ]*\)_\([^" ]*\):\2", "\1:' \
+    PropertyValueAliases.txt
+) |
+if $sed
+then	# make sed script
+    sed -e 's/	{"\([^"]*\)", "\([^"]*\)".*/s@"\1"@"\2"@/' > categors.sed
+else	# make C table
+    cat > categors.t
+fi

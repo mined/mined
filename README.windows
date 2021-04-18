@@ -1,0 +1,38 @@
+-----------------------------------------------------------------------------
+What is MinEd? (Pronounce "min-ed")
+
+Mined is a powerful text editor with a comprehensive and easy-to-use 
+user interface and fast, small-footprint behaviour.
+
+For an overview of major features and highlights, see http://towo.net/mined/
+
+-----------------------------------------------------------------------------
+
+The Windows stand-alone version of mined installs itself into a sub-directory 
+of the "Program Files" directory (as configured on your system).
+It makes registry entries to be available for text files in the 
+Windows Explorer context menu, and in the command PATH for invocation 
+from a Windows console command line.
+You have these options to start mined:
+* In Explorer, right-click on a text file and select "MinEd".
+* In a command prompt, type
+	WINED options files
+  to start a mined window with the given files.
+* In a command prompt, type
+	MINED options files
+  to invoke mined in the Windows console window.
+
+Note: In a separate mined window (using the context menu or calling 
+WINED), Windows keyboard mapping is enabled by default; i.e. control 
+keys are assigned the typical Windows functions, like Control-C, 
+Control-X, and Control-V for Copy/Cut/Paste functions.
+In a console mode invocation (calling MINED), the mined default 
+keyboard mapping is enabled. The mapping can be changed from the 
+Options menu.
+
+-----------------------------------------------------------------------------
+
+Info: The Windows version of mined was built with cygwin and uses the 
+mintty terminal application as a window container.
+
+-----------------------------------------------------------------------------

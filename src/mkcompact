@@ -1,0 +1,52 @@
+#! /bin/sh
+
+(
+cat <</eoc
+#include <stdio.h>
+
+struct interval {
+    unsigned long first;
+    unsigned long last;
+};
+
+static struct interval ivs [] = {
+/eoc
+
+cat
+
+cat <</eoc
+};
+
+#define arrlen(arr)	(sizeof (arr) / sizeof (* arr))
+
+int
+main ()
+{
+	int i = 0;
+	unsigned long ibeg;
+	unsigned long iend;
+	while (i < arrlen (ivs)) {
+		ibeg = ivs [i].first;
+		iend = ivs [i].last;
+		i ++;
+		while (i < arrlen (ivs) && ivs [i].first == iend + 1) {
+			iend = ivs [i].last;
+			i ++;
+		}
+		printf ("	{0x%04lX, 0x%04lX},\n", ibeg, iend);
+	}
+}
+/eoc
+) > compactranges.c
+
+if type gcc > /dev/null 2> /dev/null
+then	cc0=gcc
+else	cc0=cc
+fi
+
+if ${CC-$cc0} -o compactranges.exe compactranges.c
+then	./compactranges.exe
+	rm -f compactranges.c compactranges.exe
+else	exit 1
+fi
+

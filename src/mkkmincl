@@ -1,0 +1,79 @@
+#! /bin/sh
+
+make keymapsk.t >&2
+
+# convert keyboard mapping tables
+
+# from structured format (array of string pairs)
+#	struct keymap keymap_ArabicKeyboard [] = {
+#		{"q", "ض"},	/* dad (ض) */
+#		{"w", "ص"},	/* sad (ص) */
+
+# to optimized format (single string with NUL byte separators)
+#	char keymap_ArabicKeyboard [] =
+#		"q\000ض\000"
+#		"w\000ص\000"
+
+LC_ALL=C
+export LC_ALL
+
+# make tool to wrap long strings (needed for some compilers)
+(cat <<\/eoc
+#include <stdio.h>
+#define limit 73
+int main () {
+	int c;
+	int bytecol = 0;
+	while ((c = getchar ()) != EOF) {
+		putchar (c);
+		bytecol ++;
+		if (c == '\n') {
+			bytecol = 0;
+		}
+		if (bytecol > limit && c == ' ') {
+			fputs ("\"\n		\"", stdout);
+			bytecol = 3;
+		}
+	}
+}
+/eoc
+) > usplit.c
+
+case `uname` in
+Minix)	# Minix gcc does not recognize stdout...!?!
+	CC=cc;;
+esac
+if ${CC-cc} -o usplit.exe usplit.c
+then	true
+else	exit 1
+fi
+
+for file in $*
+do	kmname=`sed -e "/keymap_.*=/ b name" -e d -e ": name" -e "s,.* \(keymap_[^ ]*\) .*,\1," -e q "$file"`
+	if sed -e "/#ifdef/,/#endif/ d" keymapsk.t | grep $kmname > /dev/null 2>&1
+	then	ifdef=false
+	else	ifdef=true
+		echo "#ifdef use_CJKkeymaps"
+		echo "CJK keymap:" >&2
+	fi
+
+	echo converting "$file" to optimized string format >&2
+	# convert
+	#	struct keymap keymap_ArabicKeyboard [] = {
+	#		{"q", "ض"},	/* dad (ض) */
+	# to
+	#	char keymap_ArabicKeyboard [] =
+	#		"q\000ض\000"
+	# for the sake of Haiku sed, don't use ".*" below, but "[^"]"
+	# for the sake of UnixWare sed, add first -e t
+	sed	-e 's/struct *keymap *\([^ ]*\) .*/char \1 [] =/' -e t \
+		-e 's/^	{"\([^"]*\)", "\([^"]*\)"},.*/	"\1\\000\2\\000"/' \
+		-e t -e d "$file" | ./usplit.exe
+	echo "	;"
+
+	if $ifdef
+	then	echo "#endif"
+	fi
+done
+
+rm -f usplit.c usplit.exe

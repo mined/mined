@@ -1,0 +1,96 @@
+#! /bin/sh -f
+
+if make Scripts.txt
+then	true
+else	echo Could not acquire Unicode data file Scripts.txt
+	exit 1
+fi
+
+if [ ! -f categors.sed ]
+then	if make categors.sed
+	then	true
+	else	echo Could not build categories transformation script
+		exit 1
+	fi
+fi
+
+
+CC=${CC-cc}
+
+(
+cat <</eoc
+#include <string.h>
+#include <stdio.h>
+
+long range_low;
+long range_high = -2;
+char * range_name = "";
+char * range_category = "";
+
+void
+flush ()
+{
+	if (range_high >= 0) {
+		printf ("	{0x%04lX, 0x%04lX, \"%s\", \"%s\"},\n", range_low, range_high, range_name, range_category);
+	}
+}
+
+#define consider_sub_category
+
+void
+range (low, high, name, category)
+	long low;
+	long high;
+	char * name;
+	char * category;
+{
+	if (low == range_high + 1
+		&& strcmp (name, range_name) == 0
+#ifdef consider_sub_category
+		&& strcmp (category, range_category) == 0
+#else
+		&& category [0] == range_category [0]
+#endif
+		) {
+		range_high = high;
+	} else {
+		flush ();
+		range_low = low;
+		range_high = high;
+		range_name = name;
+		range_category = category;
+	}
+}
+
+int
+main () {
+/eoc
+
+
+# transform
+#00F8..01BA    ; LATIN # L& [195] LATIN SMALL LETTER O WITH STROKE..LATIN SMALL LETTER EZH WITH TAIL
+#01BB          ; LATIN # Lo       LATIN LETTER TWO WITH STROKE
+
+LC_ALL=C egrep '^[^#]' Scripts.txt |
+sed	-e '/^#/ d' \
+	-e 's/^\([0-9A-F][0-9A-F]*\)\.\.\([0-9A-F][0-9A-F]*\) *; *\([^ ]*\) *# *\([^ ]*\).*/\1	{0x\1, 0x\2, "\3", "\4"},/' \
+	-e 's/^\([0-9A-F][0-9A-F]*\) *; *\([^ ]*\) *# *\([^ ]*\).*/\1	{0x\1, 0x\1, "\2", "\3"},/' \
+	-e 's,^\(....\)	,00\1	,' \
+	-e 's,^\(.....\)	,0\1	,' \
+| sort | sed -e 's,^.*	,	,' -e 's,_, ,g' |
+sed -f categors.sed |
+sed -e "s/{/range (/" -e "s/},/);/"
+
+
+cat <</eoc
+	flush ();
+	return 0;
+}
+/eoc
+) > mkscript.c
+
+if $CC -o mkscript.exe mkscript.c
+then	./mkscript.exe > scripts.tt
+	rm -f mkscript.c mkscript.exe
+else	exit 1
+fi

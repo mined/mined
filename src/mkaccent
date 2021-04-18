@@ -1,0 +1,188 @@
+#! /bin/sh
+
+# generate mnemonics for accented letters
+# uses accents.cfg
+
+if make UnicodeData.txt >&2
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt
+	exit 1
+fi
+
+
+script=`echo ${1-GREEK} | tr '[a-z]' '[A-Z]'`
+
+file=mkaccents.$script
+export file
+case "$script" in
+ARABIC) mnemofile=mnemos.ara;;
+CYRILLIC) mnemofile=mnemos.cyr;;
+GREEK) mnemofile=mnemos.grk;;
+HEBREW) mnemofile=mnemos.heb;;
+LATIN) mnemofile=mnemos.lat;;
+-) mnemofile=mnemos.com;;
+esac
+
+
+#############################################################################
+# generate C program header
+(
+cat <<\/eoc
+#include <stdio.h>
+
+int b;
+
+void
+printutf8 (unichar)
+	unsigned long unichar;
+{
+	if (unichar == '\\' || unichar == '"') {
+		printf ("\\");
+	}
+
+	if (unichar < 0x80) {
+		printf ("%c", unichar);
+	} else if (unichar < 0x800) {
+		printf ("%c", 0xC0 | (unichar >> 6));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x10000) {
+		printf ("%c", 0xE0 | (unichar >> 12));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x200000) {
+		printf ("%c", 0xF0 | (unichar >> 18));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x4000000) {
+		printf ("%c", 0xF8 | (unichar >> 24));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	} else if (unichar < 0x80000000) {
+		printf ("%c", 0xFC | (unichar >> 30));
+		printf ("%c", 0x80 | ((unichar >> 24) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 18) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 12) & 0x3F));
+		printf ("%c", 0x80 | ((unichar >> 6) & 0x3F));
+		printf ("%c", 0x80 | (unichar & 0x3F));
+	}
+}
+
+void
+compose (base, postfix, code, name, combining)
+	unsigned long base;
+	char * postfix;
+	unsigned long code;
+	char * name;
+	int combining;
+{
+/*	{"α'", 0x03AC / * ά GREEK SMALL LETTER ALPHA WITH TONOS * /},	*/
+	printf ("	{\"");
+	printutf8 (base);
+	printf ("%s\", 0x%04X /* %s", postfix, code, combining ? "◌" : "");
+	printutf8 (code);
+	printf (" %s */},\n", name);
+}
+
+int
+main () {
+/eoc
+) > $file.c
+
+
+#############################################################################
+# generate data into C program
+
+case "$script" in
+-) sed -e "s,^\([^;]*\);\(COMBINING [^;]*\);[^;]*;[^;]*;[^;]*;\([^;]*\);.*,\1;\2;\3," \
+	-e t -e d UnicodeData.txt
+	;;
+*) sed -e "s,^\([^;]*\);\($script[^;]* LETTER [^;]*\);[^;]*;[^;]*;[^;]*;\([^;]*\);.*,\1;\2;\3," \
+	-e t -e d UnicodeData.txt > $file
+	egrep -v " WITH " $file > $file.base
+	egrep " WITH " $file
+	;;
+esac |
+(cat <<\/EOS
+#char "03AC" "GREEK SMALL LETTER ALPHA WITH TONOS"
+#compose "GREEK SMALL LETTER ALPHA" "'" "03B1 0301"
+
+char () {
+	code=$1
+	name="$2"
+}
+
+compose () {
+	basename="$1"
+	postfix="$2"
+#	0391;GREEK CAPITAL LETTER ALPHA;
+	base=`sed -e "s,^\([^;]*\);$basename;.*,\1," -e t -e d $file.base`
+	echo "	compose (0x$base, \"$postfix\", 0x$code, \"$name\", 0);"
+}
+
+combining () {
+	basename="$1"
+	postfix="$2"
+	echo "	compose ('	', \"$postfix\", 0x$code, \"$name\", 1);"
+}
+
+/EOS
+
+#	~	TILDE
+#	->
+#	s= WITH TILDE:=~=g
+sed -e "s,\(..*\)	\(..*\),s= WITH \2:=\1=g," \
+	-e 's,[&],\\&,g' accents.cfg > accents.sed
+
+case "$script" in
+-) sed -e h -e 's,^\([^;]*\);\([^;]*\);.*,char "\1" "\2",' -e p -e g \
+	-e 's,;COMBINING ,;SPACE WITH ,' \
+	-e 's,^\([^;]*\);\(.*\)\( WITH [^;]*\);\([^;]*\),combining "\2" "\3:" "\4",' \
+	-e 's, AND ,: WITH ,g' > $file.with
+	sed -e "/^char/ b" -f accents.sed -e t -e d $file.with
+	;;
+*) sed -e h -e 's,^\([^;]*\);\([^;]*\);.*,char "\1" "\2",' -e p \
+	-e g \
+	-e 's,^\([^;]*\);\(.*\)\( WITH [^;]*\);\([^;]*\),compose "\2" "\3:" "\4",' \
+	-e 's, AND ,: WITH ,g' > $file.with
+	sed -f accents.sed $file.with
+	;;
+esac
+
+) | sh >> $file.c
+
+
+rm -f $file $file.base $file.with
+
+
+#############################################################################
+# finish C program
+(
+cat <</eoc
+	return 0;
+}
+/eoc
+) >> $file.c
+
+
+if ${CC-cc} -o $file.exe $file.c
+then	echo "	/* $script accented mnemos - generated automatically */" > $file.mnemo
+	./$file.exe >> $file.mnemo
+	rm -f $file.exe $file.c
+fi
+
+yellow=[43m
+green=[42m
+red=[41m
+normal=[0m
+
+case "$mnemofile" in
+mnemos.*)	if cmp $file.mnemo $mnemofile
+		then	echo "${yellow} $mnemofile unchanged ${normal}"
+		else	echo "${red} $mnemofile changed ${normal}"
+		fi
+		/bin/mv $file.mnemo $mnemofile
+		;;
+esac

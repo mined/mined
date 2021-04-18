@@ -1,0 +1,446 @@
+#############################################################################
+# Configuration file for MinEd text editor.
+# Place (a copy of) this file in your home directory as $HOME/.minedrc
+# (prepending a dot to the filename)
+# and adapt options according to your preferences.
+
+# Syntax:
+<option> <value>
+# the option name must begin in the first column; it can optionally be 
+# preceded by the verb "set " or "unset ", or the option name can be 
+# prepended with "no_"; "unset " or "no_" reverses many options:
+set <option>
+unset <option>
+<no_option>
+
+# if the option takes a value, it is separated with 
+# white space and an optional equals sign:
+set <option>=<value>
+
+# Note: all options would be overridden by a corresponding command line option
+# - either via the environment variable $MINEDOPT ($MINED) or explicitly
+
+# Volatile preferences when editing multiple files:
+# Note that options relating to editing features (such as tabwidth) 
+# will be re-established on each file opened,
+# while options relating to interactive behaviour or display features 
+# (such as file_chooser sorting options, or keyboard options) will 
+# remain changed after they are toggled interactively (from Options menu),
+# so the preference selected here is volatile for them.
+
+
+#############################################################################
+# Keyboard and emulation options
+
+# Option "keypad_windows": assign functions as common with other applications 
+# to the keypad keys; this implies "shift selection mode"
+# * This option detaches the useful Mark/Copy to paste buffer functions 
+#   from the Home/End keys;
+#   use option "keypad_shift_selection" instead to avoid this, or
+#   use option "home_selection" or "small_home_selection" to restore them
+#keypad_windows
+
+# Option "keypad_shift_selection": assign text selection functions to 
+# shifted keypad keys; unshifted keypad keys are not affected
+keypad_shift_selection
+
+# Option "keypad_mined": mined default keypad functions
+#keypad_mined
+
+# Option "home_selection": assign Home/End keys to Mark/Copy to paste buffer
+#home_selection
+# Option "small_home_selection": same for Home/End keys of small keypad
+#small_home_selection
+
+
+# Option "emul": emulation mode, especially control key function mapping;
+# takes a single-letter value:
+#	e: emacs mode
+#	s: WordStar mode
+#	w: Windows keyboard mode
+#	W: Windows behaviour (-w, CRLF for new files, cmd.exe with ESC !)
+#	p: pico mode
+#	m: mined default
+#emul m
+
+
+# Option "im_space": select behaviour of space key in input method 
+# selection menus; takes a single-letter value:
+#	n navigate to the next choice (like cursor-right)
+#	r navigate to the next row (like cursor-down)
+#	s select the current choice (like Enter)
+#im_space n
+
+# Option "im": set primary and secondary input methods;
+# the secondary input method, after a dash, is preselected as stand-by 
+# for quick selection with Alt-k
+#im -gr # preselect Greek as a stand-by input method
+
+
+#############################################################################
+# Visual selection options
+# (these can also be affected by the emulation options above)
+
+# Option "sel_keep_on_search": keep visual selection when searching
+#sel_keep_on_search
+
+# Option "sel_auto_copy": automatically copy mouse selection
+#sel_auto_copy
+
+
+#############################################################################
+# Paste buffer options (these are also volatile preferences)
+
+# Option "unicode_paste_buffer": paste buffer is encoded in Unicode;
+# facilitates code conversion by copy-paste between different text encodings
+unicode_paste_buffer
+
+# Option "rectangular": set rectangular copy/paste mode initially
+# Option "square": same
+#rectangular
+#square
+
+
+# Option "paste_stay": keep cursor before pasted region
+#paste_stay
+
+# Option "delete_to_buffer": for delete-word and delete-to-end-of-line,
+# also copy the deleted text into the paste buffer (emacs style);
+# disables "paste_stay"
+#delete_to_buffer
+
+
+#############################################################################
+# File handling options
+
+# Option "backup_mode": select backup file handling mode;
+# takes a single-letter value:
+#	-: no backup files
+#	s: simple backup files ("filename~")
+#	e: emacs style numbered backup files ("filename.~N~")
+#	v: VMS style numbered backup files ("filename;N")
+#	n: numbered backup files (whichever style occurs)
+#	a: automatic backup files (whichever style occurs)
+# Note: this option would be overridden by the environment variable 
+# VERSION_CONTROL (and its distinct values)
+backup_mode s
+
+# Option "backup_directory": select directory to store backup files;
+# directory name can be relative or absolute, use ~ to refer to home directory
+#backup_directory .bu
+#backup_directory ~/.backups
+
+# Option "file_chooser": select sort order for file chooser (F3)
+# takes a single-letter value:
+#	x: sort by filename extensions
+#	d: list directories first
+# The option can be repeated to select both
+#file_chooser d
+#file_chooser x
+
+
+#############################################################################
+# Editing options (these are non-volatile preferences)
+
+# Option "tab_snap": select side of Tab and wide characters with 
+# gravity while navigating vertically over it;
+# values:
+#	- stay left of the Tab column range (on the wide character)
+#	+ stay right of the Tab column range (behind the wide character)
+
+# Option "word_skip": go further on word moves, skip interpunction
+#word_skip
+
+
+# Option "justify": set auto-justification level (change with j/J flag);
+# values:
+#	1 automatic word wrap at line end when typing over right margin
+#	2 automatic word wrap at line end when typing within paragraph
+#justify 1
+
+
+# Option "smart_quotes": enable smart quotes mode initially, deriving 
+# the default quotation marks styles (an active style and a standby 
+# alternate style) from the locale environment;
+# without this option, only the standby style is derived from the locale
+#smart_quotes
+# Smart quotes style using the given locale:
+#smart_quotes fr
+#smart_quotes fr_CH
+# Smart quotes style as given (only preconfigured styles are recognized):
+#smart_quotes "«» ‹›"
+
+
+# Option "plain_BS": Backspace performs "plain" instead of "smart" 
+# backwards deletion by default, i.e. no auto-undent and only delete 
+# one combining character of a combined character;
+# without this option, use Control-Backspace for the "plain" function;
+# with this option, use Shift-Control-Backspace for the "smart" function
+#plain_BS
+
+
+#############################################################################
+# Text display options
+
+# Option "tab": set tabulator width used for display
+# Option "tabstop": same
+# Option "tabwidth": same
+# Option "tabexpand": expand TAB key to number of spaces
+# Valid values are 2, 4, 8
+#set tab  8
+#tabstop=4
+#tabexpand=2
+
+
+# Option "separated_display": do not display combining characters as such 
+# but separate the combining characters for display
+#separated_display
+
+# Option "display_mac": recognise Mac line ends (CR) and indicate them
+#display_mac
+
+# Option "display_paragraphs": distinguished display of line ends and 
+# paragraph ends with different symbols
+#display_paragraphs
+
+
+# Options "hide_passwords" and "show_passwords":
+# replace word after string "password" with stars for display
+#show_passwords
+#hide_passwords
+
+
+#############################################################################
+# Information display options
+
+# Option "display_charinfo": display character information on status line 
+#			(like HOP ESC u)
+# Option "display_script": include Unicode script information
+# Option "display_charname": include Unicode character name
+# Option "display_namedseq": display Unicode named sequences (overriding 
+#			other character information information)
+# Option "display_decomposition": include Unicode decomposition
+# Option "display_mnemos": include mined mnemonic input sequences
+# Options "no_display_...": disable respective option
+#display_charinfo
+display_script
+display_charname
+display_namedseq
+#display_decomposition
+#display_mnemos
+no_display_charinfo
+
+
+# Option "display_fileinfo": display file and text position information 
+#			(disables character information)
+# Option "no_display_fileinfo": disable file and text position information
+display_fileinfo
+#no_display_fileinfo
+
+
+# Option "display_haninfo_short": display short Han character information 
+#			on status line (disables character/file information)
+#display_haninfo_short
+
+# Option "display_haninfo_full": display full Han character information 
+#			as a popup below current character
+display_haninfo_full
+
+
+#############################################################################
+# Display appearance options
+
+# Option "file_tabs": enable file tabs with filename menu in title area
+# Option "no_file_tabs": disable file tabs with filename menu in title area
+file_tabs
+#no_file_tabs
+
+
+# Option "splash_logo": level of splash logo display:
+#	0	none
+#	1	text only
+#	2	SIXEL graphics if available (mlterm, xterm 298 if enabled)
+#splash_logo 2
+
+
+# Option "page_stay": keep cursor at top/bottom of page after page down/up
+#page_stay
+
+# Option "no_window_title": disable filename display in window title
+#no_window_title
+
+
+# Option "cursor_style": set cursor style while editing:
+#	(if supported by terminal)
+# 1	blinking block		█
+# 2	steady block		█
+# 3	blinking underline	_
+# 4	steady underline	_
+# 5	blinking bar		▏
+# 6	steady bar		▏
+# Note that the cursor style will be reset to its default value, 
+# not necessarily its previous value
+#cursor_style 1
+
+
+# Option "menu_background": draw full menu background shading
+menu_background
+
+# Further options for menu appearance; preferably not set for all terminals
+# border style: simple/round corners, fat/double borders, plain/none
+#menu_corners_simple
+#menu_corners_round
+#menu_borders_fat
+#menu_borders_double
+#menu_borders_plain
+#menu_borders_none
+
+# border technique: ASCII, VT100 block graphics (default Unicode)
+#menu_borders_ascii
+#menu_borders_vt100
+
+# selection bar: fancy aligned (using Unicode partial blocks)/plain
+#menu_selection_fancy
+#menu_selection_plain
+
+
+#############################################################################
+# Additional personal preferences
+
+#...
+
+
+#############################################################################
+# Conditional options: file type specific
+
+#[*.*] conditional configuration on filename pattern
+
+
+# Redirection/Forward include: Files with option "<<" will further 
+# also be matched against the given pattern.
+[*.text]
+<< *.txt
+
+[*.txt]
+smart_quotes
+
+#[*.français]
+#smart_quotes fr
+
+#[*.suisse]
+#smart_quotes fr_CH
+#smart_quotes "«» ‹›"
+
+
+# Options to enable file read/write filtering with a filter command;
+# this is useful especially for handling encrypted files;
+# the filter specification may contain "%s" to embed the filename, 
+# otherwise the filename will be appended.
+
+# These options also trigger further filename matches to be applied 
+# to the base name suffix, i.e. with the encryption suffix stripped:
+# for example, for files "file.txt.gpg" with any option "filter_...", 
+# further conditional preference sections for "*.txt" will also be applied.
+# (Note that for this reason, unlike other patterns, patterns that trigger 
+# read/write filters can only be matched in one section, so a second 
+# section like [*.gpg] would be ignored.)
+
+[*.pgp~]
+<< *.pgp
+
+[*.pgp]
+<< *.gpg
+
+[*.gpg~]
+<< *.gpg
+
+[*.gpg]
+# Options to enable encryption with GnuPG:
+
+# Using shell script wrapper:
+#filter_read	decrypt
+#filter_write	encrypt
+
+# Using GnuPG:
+filter_read	"gpg -d"
+filter_write	"gpg -e --yes -o"
+
+# The following two variants work on Unix/Linux/cygwin but not with Windows GnuPG:
+# Using GnuPG with file providing passphrase:
+filter_read	"gpg -d --passphrase-file $HOME/.pass"
+filter_write	"gpg -e --passphrase-file $HOME/.pass --yes -o"
+# Using GnuPG with some messages suppressed:
+#filter_read	"gpg -q -d --passphrase-file $HOME/.pass 2> /dev/null"
+#filter_write	"gpg -q -e --passphrase-file $HOME/.pass --yes -o 2> /dev/null"
+
+[*.ssl]
+# Options to enable encryption with OpenSSL:
+# Choose your preferred encryption method with the parameter after 'enc',
+# or add additional sections for [*.des3] etc. according to your convention.
+
+# Using shell script wrapper:
+#filter_read decrypt
+#filter_write encrypt
+# Using OpenSSL:
+filter_read	"openssl enc -des3 -d -in"
+filter_write	"openssl enc -des3 -out"
+# Using OpenSSL with file providing password:
+filter_read	"openssl enc -des3 -pass file:$HOME/.pass -d -in"
+filter_write	"openssl enc -des3 -pass file:$HOME/.pass -out"
+
+
+[.*]
+# Option for hiding of passwords is actually the default for 
+# "hidden files" (beginning with "." by Unix convention)
+#hide_passwords
+
+[*.rhtml]
+# Option "highlight_html" or "highlight_xml" (equivalent) activate 
+# HTML/XML syntax highlighting;
+# filename suffixes html, htm, xhtml, shtml, mhtml, sgml, 
+# xml, xul, xsd, xsl, xslt, wsdl, dtd, jsp, php, asp, aspx
+# enable highlighting by default
+highlight_html
+
+[*.a68]
+# Option "strop_bold": use virtual bold stropping; all-caps words are 
+# displayed small and bold, plus single-cap input support for all-caps words
+# Option "strop_underline": same but using underline instead of bold
+strop_bold
+#strop_underline
+
+[*.xml]
+tabstop=4
+[*.xsd]
+tabstop=4
+
+[*.scala]
+tabexpand=2
+
+
+#############################################################################
+# Additional conditional personal preferences
+
+#...
+
+#[merk*]
+#smart_quotes de
+
+#[...]
+#...
+
+
+#############################################################################
+# Conditional options: terminal specific
+
+#[=TERM] conditional configuration on terminal type ($TERM value)
+
+[=xterm]
+#options only applicable for $TERM=xterm
+
+[=cygwin]
+#options only applicable for $TERM=cygwin
+
+
+#############################################################################
+# End

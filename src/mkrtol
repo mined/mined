@@ -1,0 +1,28 @@
+#! /bin/sh -f
+
+if make DerivedBidiClass.txt >&2
+then	true
+else	echo Could not acquire Unicode data file DerivedBidiClass.txt >&2
+	exit 1
+fi
+
+#0590          ; R # Cn       <reserved-0590>
+#05D0..05EA    ; R # Lo  [27] HEBREW LETTER ALEF..HEBREW LETTER TAV
+#0710          ; AL # Lo       SYRIAC LETTER ALAPH
+#0671..06D3    ; AL # Lo  [99] ARABIC LETTER ALEF WASLA..ARABIC LETTER YEH BARREE WITH HAMZA ABOVE
+#202E          ; RLO # Cf       RIGHT-TO-LEFT OVERRIDE
+#202B          ; RLE # Cf       RIGHT-TO-LEFT EMBEDDING
+
+echo "static struct interval strong_right_to_left [] = {"
+sed	-e "s/ *; *R .*//" -e t -e "s/ *; *AL .*//" -e t \
+	-e "s/ *; *RLE .*//" -e t -e "s/ *; *RLO .*//" -e t \
+	-e d DerivedBidiClass.txt |
+sed	-e "s/\([0-9A-F]*\)\.\.*\([0-9A-F]*\)/	{0x\1, 0x\2},/" \
+	-e "t ok" \
+	-e "s/^\([0-9A-F]*\)/	{0x\1, 0x\1},/" \
+	-e ": ok" \
+	-e "s/{0x\(....\),/{0x0\1,/" |
+sort |
+sed	-e "s/0x0/0x/" |
+./mkcompact
+echo "};"

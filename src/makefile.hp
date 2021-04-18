@@ -1,0 +1,101 @@
+#############################################################################
+# mined text editor makefile	- HP-UX (similar to UCB)
+
+
+#############################################################################
+# Where and how to install
+# installation root, usually empty
+root	= $(INSTALLROOT)
+
+# configuration of installation directories:
+# * [l]rundir refers to the "Mined runtime support library" -
+#   it contains the online help file, auxiliary scripts (some of which 
+#   might actually be installed in .../bin, too), configuration samples etc.
+# * [l]docdir is optional and refers to the mined web documentation 
+#   (a copy of the mined home page).
+
+# directories for target "make install"
+prefix	= $(root)/usr
+bindir	= $(prefix)/bin
+mandir	= $(prefix)/share/man
+rundir	= $(prefix)/share/lib/mined
+#docdir	= $(rundir)/doc
+
+# directories for target "make localinstall"
+lprefix	= $(root)/usr/local
+lbindir	= $(lprefix)/bin
+lmandir	= $(lprefix)/man
+lrundir	= $(lprefix)/share/mined
+#ldocdir	= $(lrundir)/doc
+
+#INSTALL = install --mode=+r,u+w
+INSTALL = install -m 644
+INSTALLBIN = install
+#INSTALL = /bin/cp -p
+#INSTALLBIN = /bin/cp -p
+
+
+#############################################################################
+# compilation target options
+
+# terminal handling mode 1: termio
+SCREEN	= -DTERMIO
+# link termcap functions:
+SLIB	= -ltermcap	# usual System V termcap library
+#SLIB	= -L/usr/lib/termcap -ltermcap	# if deprecated (Linux)
+#SLIB	= -lcurses	# may work on System V Unix too (Solaris)
+#SLIB	= -lncurses	# includes termcap library (Linux)
+
+# terminal handling mode 2: sgtty (old, BSD)
+#SCREEN	= -DSGTTY
+#SLIB	= -ltermcap
+
+# terminal handling mode 3: curses
+# Choose curses only if other options don't work 
+# (see COMPILE.DOC for discussion).
+# Use target "make minced" to use UTF-8 enabled ncurses (>= 5.4), 
+# or see separate makefile.curses for options with legacy curses.
+
+
+# select operating system flavour (define sysV if on System V flavour)
+SYSTEM	= -Dunix -DsysV
+#SYSTEM	= -Dunix -DsysV -DFDSET
+#SYSTEM	= -Dunix
+
+# select operating system environment
+DEFS	= -Dunix
+
+
+# collection of system parameters for compilation
+HPFLAGS	= +Onolimit -Wp,-H20000
+# -H20000 for cpp is needed to compile the keyboard mapping tables
+# add -Aa / -Ae for aux. files with ANSI function headers?
+
+SYSFLAGS	= $(SCREEN) $(SYSTEM) $(DEFS) $(HPFLAGS)
+
+
+#############################################################################
+# link options
+
+LDOPTS=
+GLDOPTS=
+
+
+#############################################################################
+# compiler selection and compiler-specific options
+# (source warnings, optimisation and debug)
+
+CC=cc
+include mkinclud.cc
+
+
+#############################################################################
+# make actions
+
+KEYMAPSDEP=keymaps.t
+
+include mkinclud.mak
+
+
+#############################################################################
+# end

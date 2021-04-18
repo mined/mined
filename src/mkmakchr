@@ -1,0 +1,37 @@
+#! /bin/sh
+
+# generate makefile to make all character mapping tables
+
+# not used
+case "$1.$2" in
+-O.?*)	OBJDIR="$2"; shift; shift;;
+*)	OBJDIR=.;;
+esac
+
+case "$OPT" in
+*-DNOCJK*|*-DnoCJKcharmaps*)
+	echo all: `echo charmaps/*.map | sed -e "s, *charmaps/cjk-[^ ]*.map,,g" -e 's,\([^ ]*\)\.map,$(OBJDIR)/\1.o,g'`
+	;;
+*)	echo all: `echo charmaps/*.map | sed -e 's,\([^ ]*\)\.map,$(OBJDIR)/\1.o,g'`
+	;;
+esac
+
+echo
+
+case "$CC" in
+?*)	echo CC="$CC";;
+esac
+echo OPT="$OPT"
+
+echo
+
+for map in charmaps/*.map
+do	mapname=`basename $map .map`
+	echo charmaps/$mapname.c: $map charcode.h mkchrtab
+	echo "	CC=\$(CC) OPT=\"\$(OPT)\" $(SH) ./mkchrtab -S $map"
+	echo
+	echo "\$(OBJDIR)/charmaps/$mapname.o: charmaps/$mapname.c"
+	echo "	mkdir -p \$(OBJDIR)/charmaps"
+	echo "	\$(CC) \$(OPT) -I. -c charmaps/$mapname.c -o \$(OBJDIR)/charmaps/$mapname.o"
+	echo
+done

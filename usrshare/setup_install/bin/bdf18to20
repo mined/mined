@@ -1,0 +1,76 @@
+#! /bin/sh
+
+# convert an 18x18 BDF font into a corresponding 20x20 BDF font
+# padding an empty margin of 1 pixel to each side
+
+padfont () {
+	echo Calculating shifted font cells for font "$1" >&2
+	echo This may take 30 minutes or more, please be patient >&2
+
+	(
+	LC_ALL=C sed -f - $1 <<\/EOS
+# convert an 18x18 BDF font into a corresponding 20x20 BDF font
+# padding an empty margin of 1 pixel to each side
+
+
+# prefix pixel pattern with a function call that calculates the shift
+s,^\([0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F][0-9A-F]\)$,pix \1,
+t
+
+# pad upper and lower margin with 1 line of blank pixels each
+/^BITMAP/ a\
+echo 000000
+
+/^ENDCHAR/ i\
+echo 000000
+
+
+# adapt font name and properties
+s,^\(FONT .*\)-18-120-100-100-\([^-]*\)-180-,\1-20-200-75-75-\2-200-,
+s,^SIZE 12 100 100,SIZE 20 75 75,
+s,^FONTBOUNDINGBOX 18 18 ,FONTBOUNDINGBOX 20 20 ,
+s,^FONT_ASCENT 15,FONT_ASCENT 16,
+s,^FONT_DESCENT 3,FONT_DESCENT 4,
+s,^PIXEL_SIZE 18,PIXEL_SIZE 20,
+s,^POINT_SIZE 120,POINT_SIZE 200,
+s,^RESOLUTION_X 100,RESOLUTION_X 75,
+s,^RESOLUTION_Y 100,RESOLUTION_Y 75,
+s,^AVERAGE_WIDTH 180,AVERAGE_WIDTH 200,
+
+# adapt character properties
+s,^SWIDTH 1080 ,SWIDTH 960 ,
+s,^DWIDTH 18 ,DWIDTH 20 ,
+s,^BBX 18 18 ,BBX 20 20 ,
+
+
+# escape single quote marks, quote lines and add echo command
+s,','\\'',g
+s,^,echo ',
+s,$,',
+
+
+# prepend shell command for pixel shift calculation
+1 i\
+pix () {\
+	n=`printf %d 0x$*`\
+	printf '%06X\\n' `expr $n / 2`\
+}\
+
+
+# end
+/EOS
+) | sh
+}
+
+case "$1" in
+"")	echo Transforming all 18x18 fonts in current directory to 20x20 >&2 ;;
+esac
+
+for f in ${*-18x18*.bdf}
+do	f20=`echo $f | sed -e "s,18,20,g"`
+	if [ -f $f20 ]
+	then	echo Font file $f20 already exists. Rename / Remove, then repeat >&2
+	else	echo Transforming $f to $f20 >&2
+		padfont $f > $f20
+	fi
+done

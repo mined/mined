@@ -1,0 +1,392 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
+<meta name="keywords" content="editor, text mode editor, programmers editor, programming editor, Unicode editor, UTF-8 editor, Unicode text editor, UTF-8 text editor, Unicode text mode editor, UTF-8 text mode editor, text mode Unicode editor, text mode UTF-8 editor, text mode HTML editor, CJK editor">
+<meta name="robots" content="index">
+
+<style>
+.reverse {color: white; background-color: black;}
+.unispecial {background-color: cyan;}
+code {background-color: #CCC0C0;}
+</style>
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Unicode text editor MinEd</title>
+
+<script language="JavaScript">
+top.select ("unicode");
+
+function chapter (ch) {
+	if (ch.id) {
+		/* highlight chapter in navigation */
+		if (top.select2) {
+			top.select2 ("unicode", ch.id);
+		}
+	}
+}
+</script>
+
+</head>
+
+<br>
+<center>
+<h3>MinEd Unicode Howto</h3>
+<h4>Environment setup and Usage of mined for Unicode text</h4>
+</center>
+
+<br>
+<ul>
+<li>For an overview of mined features for Unicode editing, 
+    <br>see the 
+    <a href=features.html#unicode>Mined Features</a> page.
+<ul><li>For an overview of how to use these features, 
+    <br>see the section on 
+    <a href=#handling>Handling Unicode text</a>
+</ul>
+<p>
+<li>For general information on Unicode and its support on computers, 
+    <br>see also Markus Kuhn's 
+    <a target=_blank href=http://www.cl.cam.ac.uk/~mgk25/unicode.html>
+    UTF-8 and Unicode FAQ for Unix/Linux</a>.
+<ul><li>For setup hints for a Unicode-enabled environment, even on 
+    legacy computers, 
+    <br>see the section on 
+    <a href=#setup>Unicode environment setup</a> below.
+</ul>
+</ul>
+
+
+<a name=handling></a>
+<span id=handling onMouseOver="chapter (this);">
+<br>
+<dl>
+<dd>
+<h4>Handling Unicode text with mined</h4>
+
+<dl>
+
+<p>
+<dt><i>Screen handling</i>
+<dd>
+	Usually, mined will auto-detect a UTF-8 terminal and also 
+	the detailed features it has (like double-width and 
+	combining characters, Arabic ligature joining, different width 
+	data sets).
+
+<p>
+<dt><i>Character encoding</i>
+<dd>
+	By default, mined detects automatically if the text in an edited 
+	file is UTF-8 encoded (Unicode character set) or not (either 
+	8 bit encoded or CJK encoded); it also detects and maintains UTF-16.
+	<br>
+	Mined handles illegal UTF-8 sequences transparently so 
+	if you accidentally open an 8 bit or CJK encoded file in UTF-8 
+	mode, or a file with mixed parts, you can edit the text without 
+	problems and will not loose any information. Non-UTF-8 codes 
+	are indicated by display background highlighting.
+	<br>
+	While editing, you can switch the character encoding assumed 
+	for text interpretation with the encoding menu 
+	(left-click to toggle current and previous encoding, 
+	right-click to open menu).
+
+<p>
+<dt><i>Unicode display on non-Unicode terminal</i>
+<dd>
+	Characters that cannot be displayed in the encoding of the terminal 
+	are indicated by some suitable replacement, indicated by 
+	coloured background.
+	Indications are chosen as to suggest the text character as best 
+	as possible, with special indications for combining characters 
+	<code class=unispecial>'</code>, 
+	quotation marks <code class=unispecial>"</code>, 
+	dashes <code class=unispecial>-</code>, 
+	the Euro symbol <code class=unispecial>E</code> etc., and 
+	using a base character according to <i>Unicode decomposition</i> 
+	for accented and other precomposed characters.
+	<br>
+	Please consult the manual page, section 
+	<a href=mined.html#utf8display>Unicode display</a> for details.
+
+<p>
+<dt><i>Combining characters</i>
+<dd>
+	Mined supports display and editing of combined characters 
+	consisting of a base character and one or more combining 
+	characters, in one of two modes:
+	<ul>
+	<li>Combined display mode: combined characters are displayed as 
+	they should appear, navigation within the combined character 
+	is possible (Control-cursor-left/right), the character information 
+	display (HOP ESC u, or from “?” Info menu) shows which part (base 
+	or combining character) of the combined character you are 
+	positioned on, Mark/Copy/Paste and Control-Del acts on the 
+	respective position.
+	<li>Separated display mode: base character and combining characters 
+	are separated for explicit handling.
+	</ul>
+	These modes can be selected and are indicated in the 
+	Combining display flag: <code>ç</code>: combined mode, 
+	<code class=unispecial>`</code>: separated mode.
+	<br>
+	See the manual page, section <a href=mined.html#combined>
+	Combining characters</a> for details.
+
+<p>
+<dt><i>Bidirectional display</i>
+<dd>
+	Mined auto-detects if it is running in a terminal supporting 
+	Arabic (by checking LAM/ALEF ligature joining) and other 
+	right-to-left scripts (e.g. mlterm), or it can be told so with 
+	the command line parameter <code>+UU</code>.
+	<br>
+	The mined runtime support library contains a script 
+	<code>mterm</code> to invoke the <code>mlterm</code> terminal 
+	emulator with suitable parameters to set up bidi mode and a 
+	suitable font.
+
+<p>
+<dt><i>CJK and 8 bit character set support on Unicode terminal</i>
+<dd>
+	Mined support for major CJK encodings is also best used in a 
+	UTF-8 terminal (unless you need specific CJK input features of 
+	dedicated terminals); this setup is also well suited for editing 
+	text encoded in various 8 bit character sets.
+	<br>
+	See the <a href=features.html#cjk>mined features</a> page for an 
+	overview of CJK support features.
+	<br>
+	See the manual page, sections 
+	<a href=mined.html#charencoding>Character encoding support</a> and 
+	<a href=mined.html#cjk>CJK support</a> for details.
+
+</dl>
+</dl>
+</span>
+
+
+<a name=setup></a>
+<span id=setup onMouseOver="chapter (this);">
+<br>
+<dl>
+<dd>
+<h4>Unicode environment setup</h4>
+<dl>
+
+<p>
+<dt><i><img align=absmiddle src=handr.gif>Quick and easy</i>
+<dd>
+	Use the command <a href=uterm.html><code>uterm</code></a> to 
+	invoke a UTF-8 enabled terminal with automatic selection of a 
+	suitable font for best coverage of Unicode characters.
+	<ul type=circle>
+	<li>The <code>uterm</code> script comes with the mined 
+	package; it is included in the mined runtime support library 
+	and may be installed in the path with the mined application.
+	<li>Note: The <code>uterm</code> script assumes that a UTF-8 enabled 
+	version of xterm or rxvt-unicode is already installed on your 
+	system, as well as fonts suitable for your needs.
+	If this is not the case on your system, follow the advice below.
+	</ul>
+
+	<p><i><img align=absmiddle src=handr.gif>On Windows / cygwin:</i>
+	Use the command <code>wined</code> to start mined in a 
+	mintty terminal configured to use UTF-8 and Windows 
+	look-and-feel.
+	<br>(When running an X server, <a href=uterm.html><code>uterm</code></a> 
+	works too, as described above.)
+	<br>The cygwin 1.7 console also runs UTF-8 by default.
+
+	<p><i><img align=absmiddle src=handr.gif>On Windows / Explorer:</i>
+	With the mined stand-alone Windows package installed, 
+	right-click on a text file to open its context menu, and 
+	select “MinEd”.
+
+	<p><i><img align=absmiddle src=handr.gif>On Mac OS X:</i>
+	Preferably, use xterm or <a target=_blank href=http://www.iterm2.com/>iTerm 2</a>
+	as the native Mac terminal application does not support the mouse.
+
+<p>
+<dt><i>Install suitable terminal</i>
+<dd>
+	Mined is a text mode editor. Its UTF-8 display and input support 
+	is available with terminal emulators supporting UTF-8 and running 
+	in UTF-8 mode, like 
+	<a target=_blank href=http://invisible-island.net/xterm/xterm.html>
+	xterm</a> (version >= 145), 
+	<a target=_blank href=http://sourceforge.net/projects/rxvt-unicode>
+	rxvt-unicode</a>, 
+	<a target=_blank href=http://sourceforge.net/projects/mlterm>
+	mlterm</a>, KDE konsole, gnome-terminal, Linux console, 
+	cygwin console, mintty, PuTTY.
+	<ul>
+	<li>If you don't have a recent version of xterm on your 
+	system, compile it yourself; 
+	invoke <code>configure --enable-wide-chars</code> or use the script 
+	<code>configure-xterm</code> from the mined runtime support 
+	library. Then invoke <code>make</code>. You may want to compact 
+	the resulting executable with <code>strip xterm</code>; then 
+	install it into your path, e.g. in <code>$HOME/bin</code>.
+	<br><img align=absmiddle src=handr.gif>Note: xterm, like 
+	mined, can be used to enable UTF-8 and Unicode support on 
+	legacy systems, even if they do not offer any “locale” support, 
+	and without needing root privilege.
+	</ul>
+
+<p>
+<dt><i>Install suitable fonts</i>
+<dd>
+	Install Unicode fonts for your X server.
+<ul>
+<li>To check if your X installation already provides Unicode fonts, 
+you may invoke the command <nobr><code>xlsfonts | grep iso10646</code></nobr>.
+If this doesn't list anything, or if you cannot find a suitable font 
+setup, do one of the following:
+<dl>
+<dd>
+
+<li><i>Automatic installation:</i>
+<dd>The Mined runtime support library contains a script 
+<code>installfonts</code> that downloads these fonts and installs them 
+with your X server. It finally gives some hints how to add them to 
+your permanent font configuration.
+
+<li><i>Manual installation:</i>
+<dd>
+<ul>
+<li>Retrieve some of the following fonts:
+<ol>
+<li>	<a href=http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts.tar.gz>
+	UCS fonts for X</a>
+	with their 
+	<a href=http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts-asian.tar.gz>
+	CJK supplement</a>
+	from Markus Kuhn's page
+	<a target=_blank href=http://www.cl.cam.ac.uk/~mgk25/ucs-fonts.html>
+	Unicode fonts and tools for X11</a>
+<li>	<a href=http://www.cl.cam.ac.uk/~mgk25/download/ucs-fonts-75dpi100dpi.tar.gz>
+	Adobe and B&H bitmap fonts</a>
+	from the same site which contain fixed width Courier and 
+	Lucida Typewriter fonts
+<li>	<a href=http://www.inp.nsk.su/~bolkhov/files/fonts/univga/uni-vga.tgz>
+	Unicode VGA font</a>
+	from 
+	<a target=_blank href=http://www.inp.nsk.su/~bolkhov/files/fonts/univga/>
+	Dmitry Bolkhovityanov</a>'s site
+<li>	<href=http://bibliofile.mc.duke.edu/gww/fonts/Monospace/MonospaceRoman.bdf.tar.gz>
+	Monospace Roman BDF fonts</a>
+	and their Oblique / Bold / Bold Oblique supplements from 
+	<a target=_blank href=http://bibliofile.mc.duke.edu/gww/fonts/Unicode.html>
+	George Williams Unicode fonts page</a>
+</ol>
+
+<li>The nicest looking font in the UCS fonts archive mentioned above 
+is the 10x20 size font, it is suitable for higher screen resolutions.
+Unfortunately, the CJK double-width fonts are not distributed in 
+the corresponding 20x20 size, but only in the 18x18 size. The 
+corresponding single-width font in 9x18 size, however, looks quite 
+spindly and for my taste rather awkward.
+<br>
+For this reason, I am providing a script to generate 20x20 CJK fonts 
+automatically from the 18x18 UCS fonts distributed for X servers.
+It is <code>bdf18to20</code> and you find it in the mined runtime 
+support library. Go into the directory where you unpacked the fonts 
+and invoke the script.
+
+<li>Install the fonts with your X server: unpack them into a directory 
+(e.g. <code>$HOME/xfonts</code>), go into that directory, invoke the 
+<code>mkfontdir</code> command. Then make sure that the fonts are 
+loaded into your X server, using the command
+<code>xset +fp $HOME/xfonts</code>; a suitable place to include this 
+automatically would be your <code>$HOME/.xinitrc</code> X 
+initialisation file if you have one.
+<dl>
+<dd><i>Note:</i> If you are working in a network, make sure the xset 
+command is invoked such that the X server has access to the given 
+directory on the machine it is running on.
+<dd>Some X servers (e.g. Exceed on Windows) do not accept BDF fonts; 
+use the “Compile Fonts” function of the configuration menu to install 
+the fonts.
+</dl>
+
+</ul>
+
+</dl>
+</ul>
+
+<p>
+<dt><i>Start terminal in UTF-8 mode</i>
+<dd>
+	Invoke a terminal window in UTF-8 mode and configure it to use 
+	fonts sufficient to display the text you want to edit.
+<ul>
+<li>Invoke xterm with suitable resource configuration or command line 
+parameters.
+<ul>
+<li>I recommend to invoke xterm with the script
+<a href=uterm.html><code>uterm</code></a> from the mined runtime 
+support library.
+<li>Alternatively, invoke <code>xterm -u8</code> or 
+<code>xterm -en UTF-8</code> to enforce UTF-8 mode, depending on system 
+configuration; also the option <code>+lc</code> may be needed in addition.
+</ul>
+<br><img align=absmiddle src=handr.gif>Mined detects UTF-8 terminal 
+mode automatically (exception: cygwin 1.7 UTF-8 console after rlogin 
+or telnet).
+So it will work even if your locale environment is not configured properly.
+<dl>
+<dd><i>Note:</i> xterm is quite touchy about configuring suitable 
+matching fonts for single-width and double-width glyphs. If you are 
+unlucky, CJK character display will result in garbage on the screen. 
+My recommendation is to generate the 20x20 UCS fonts with my 
+<code>bdf18to20</code> script as mentioned above and configure xterm 
+to use 10x20 &ndash; it will then automatically select one of the 20x20 
+fonts for double-width characters; if you have a preference among 
+them, use the -fw command line option or the wideFont X resource (in 
+your <code>$HOME/.Xdefaults</code> file).
+See the pattern file <code>Xdefaults.mined</code> in the mined runtime 
+support library for suggestions of suitable entries.
+(Double-width font matching works much better with rxvt which even seems 
+to scale double-width fonts in an acceptable way if needed.)
+</dl>
+
+<li>If you prefer rxvt, use rxvt-unicode and make sure to indicate 
+using UTF-8 by setting a locale in your environment that is installed 
+on your system, for example <code>LC_ALL=en_US.UTF-8 urxvt</code> on cygwin.
+<dl>
+<dd><i>Note:</i> rxvt is quite touchy about configuring a known locale 
+setting; it does not have a strict UTF-8 option that would reliably 
+work on all systems.
+</dl>
+
+<li>
+<i>Note:</i> For hints how to configure the environment explicitly so 
+that rxvt, konsole and other applications work with UTF-8, see the 
+mined manual page (about LC_CTYPE and other environment variables).
+Accurate locale setting is not needed by xterm and mined.
+<br>For other terminals (e.g. mlterm), see their manual for how to 
+configure UTF-8 mode.
+
+<li>Alternatively, you can start mined directly together with its own 
+terminal window. For this purpose, the mined runtime support library 
+contains the script <code>umined</code>.
+<img align=absmiddle src=handr.gif> If starting xterm, this script also 
+configures xterm on-the-fly to apply the most recent version of 
+Unicode width data as built-in to xterm in contrast to system-provided 
+locale data (which may refer to an older version of Unicode) for handling 
+of wide and combining characters.
+<li>On a Windows system, you can also use the script 
+<code>wined</code> or <code>wined.bat</code> which will invoke mined 
+in a mintty terminal window, configured to use UTF-8 and Windows 
+look-and-feel.
+</ul>
+
+</dl>
+</dl>
+</span>
+
+
+<hr>
+<dt>Mined <a target=_top href=./>homepage</a> and download.
+<dt><a href=mailto:mined@towo.net>Thomas Wolff</a>

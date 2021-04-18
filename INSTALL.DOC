@@ -1,0 +1,197 @@
+Guide to compilation and installation of the MinEd editor
+
+
+------------------------------------------------------------------------
+Build
+	(see below for exotic systems, esp not supporting make)
+
+- Go to the main package directory (the one containing this file),
+  then invoke make:
+	make
+  or call the mined build script:
+	./makemined
+
+  This automatically selects a suitable makefile in the 'src' 
+  subdirectory for the most common operating environments, based on 
+  the output of the 'uname' command.
+  It also generates an include file 'm-objdir.inc' to set the binary 
+  target directory (used only with 'mkinclud.cc', not 'mkinclud.gcc').
+
+  -------------------------------------------------------
+
+  To override automatic selection of the makefile and use gcc, 
+  you may invoke:
+	CC=gcc make
+
+  -------------------------------------------------------
+
+  On a 64 bit system, makefile.gcc tries to find out the proper 
+  library directories.
+
+  -------------------------------------------------------
+
+  To build a version that does not need the terminfo database 
+  (accessing with the termcap API) but works on modern terminals, invoke:
+	make mansi
+
+  -------------------------------------------------------
+
+  If you want to check mined with curses, you may invoke:
+	make minced
+
+  This uses the ncursesw library which supports UTF-8. Using curses is 
+  discouraged, however; see COMPILE.DOC for further comments.
+
+  -------------------------------------------------------
+
+  To build a statically linked version, use the LDFLAGS variable as a 
+  makefile parameter to add the respective compiler options:
+	make LDFLAGS="-static-libgcc -static"
+  or (with older gcc):
+	make LDFLAGS=-Bstatic
+
+  This may be useful for running on a similar machine 
+  without termcap/ncurses libraries installed.
+
+  -------------------------------------------------------
+
+  If compilation fails, you may try to select a suitable makefile 
+  in the subdirectory src:
+	cd src; make -f makefile.<system>
+  On some systems (e.g. SunOS) that host both Gnu and other development 
+  environments, you may have to invoke gmake explicitly:
+	cd src; gmake -f makefile.gcc
+  (The main directory make script takes care of this automatically.)
+
+  Choose one closest to your operating system. Try makefile.bsd 
+  for BSD style Unix, or makefile.sun for System V style Unix.
+  Also please consult the file COMPILE.DOC for some hints on how to 
+  adapt a makefile for your system. In this case, if you need help, or 
+  if you finally succeed, please send a note to mined@towo.net so I 
+  can extend the range of automatically supported systems.
+
+
+------------------------------------------------------------------------
+Build on exotic systems
+
+  Android
+	Install the following Apps:
+		C4droid (needed as container for gcc)
+		GCC for C4droid
+		Better Terminal (for shell and terminal)
+		UniversalAndroot (needed to access gcc) for Android < 4
+
+	In a terminal (Better Terminal recommended) get root access with
+		su
+	Then in the src subdirectory, call the script
+		sh mkmined
+
+	To install, run
+		sh mkmined install
+
+  VMS / OpenVMS
+	In the src subdirectory, call the script
+		@vms-make
+	to build mined in an architecture-specific subdirectory
+	([.VAX], [.ALPHA], [.IA64]).
+
+
+------------------------------------------------------------------------
+Terminal control library
+  Mined uses the termcap API (unless built as mansi or on VMS, DOS, Android) 
+  which it finds in a static or dynamic runtime library, either 
+  termcap, tinfo, ncursesw or ncurses (due to a bug in older ncurses 
+  libraries ncursesw is preferred) - the makefile will automatically 
+  select the best working arrangement.
+  (It does not need the ncurses-devel package for compilation.)
+
+
+-----------------------------------------------------------------------------
+Install options
+
+- For installation into the usual system directories under /usr 
+  of your target system, being the super-user (root), invoke:
+	make install
+
+  Alternatively, to install into /usr/local, invoke:
+	make localinstall
+
+  Alternatively, to install into /opt, invoke:
+	make optinstall
+
+  Different assumptions about the subdirectory structure are taken 
+  for these 3 install targets (as configured in makefile.*), 
+  corresponding to typically different filesystem hierarchies.
+
+  -------------------------------------------------------
+  Install targets
+
+  To install mined to a specific location, especially as a non-root 
+  user, a number of options are available, for example:
+
+  To install into $HOME/usr/bin and $HOME/usr/share, invoke:
+	make install root=$HOME
+  or (equivalent):
+	make install DESTDIR=$HOME
+  or (equivalent):
+	make install INSTALLROOT=$HOME
+
+  To install into $HOME/bin and $HOME/share, invoke:
+	make install prefix=$HOME
+
+  To install into $HOME/opt/mined, invoke:
+	make optinstall root=$HOME
+
+  -------------------------------------------------------
+  Install details
+
+  The default install directories and the directory for installation 
+  of the Mined runtime support library can be modified by setting 
+  the following variables when invoking make; defauls are listed here:
+  For all install targets:
+	root=/
+  For make install:
+	prefix = $(root)/usr
+	rundir = $(prefix)/share/mined	# on most systems
+	rundir = $(prefix)/share/lib/mined	# on SunOS, HPUX, UCB
+  For make localinstall:
+	lprefix = $(root)/usr/local	# on most systems
+	lprefix = $(root)/sw		# on Mac OS X
+	lrundir = $(lprefix)/share/mined
+
+  So, to select an individual installation directory, e.g. 
+  if you are not the "root" user, or if you are preparing a 
+  system-specific package, invoke something like
+	make install prefix=/software
+  or
+	make install root=tmp.mined-package
+  or
+	make optinstall root=$HOME
+  or
+	make localinstall lrundir=/opt/mined
+
+  To change a makefile to regularly install to other locations, adapt 
+  the first few variables in the makefile you use (src/makefile.*).
+
+
+------------------------------------------------------------------------
+Installation actions
+
+  This installs the binary program, the manual page, the online help 
+  file, and the runtime support library, to appropriate locations as 
+  used by various systems.
+
+
+------------------------------------------------------------------------
+Setup: Access to Mined runtime support library
+
+  Mined needs access to some files in the Mined runtime support library 
+  (online help file mined.hlp, uprint script).
+  If it is not installed in one of the usual places, 
+  configure the user environments so that MINEDDIR contains the 
+  path name of the Mined runtime support library (so that 
+  $MINEDDIR/help/mined.hlp and $MINEDDIR/bin/uprint are found).
+  The PC binary versions do not need this directory.
+
+
+------------------------------------------------------------------------

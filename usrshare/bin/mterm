@@ -1,0 +1,42 @@
+#! /bin/sh
+
+# invoke mlterm in UTF-8 mode with suitable options
+# and set environment variables
+
+#############################################################################
+# Font selection
+font="-w 20"
+
+#############################################################################
+# Configure environment for UTF-8
+
+# If the effective locale variable (defined and "non-null" environment 
+# variable in the order of precedence LC_ALL, LC_CTYPE, LANG) 
+# already indicates UTF-8, nothing needs to be modified.
+# Otherwise the first of these variables that is defined and "non-null" 
+# needs to be manipulated to have the suffix ".UTF-8".
+case "${LC_ALL:-${LC_CTYPE:-$LANG}}" in
+*.UTF-8 | *.utf8)	true;;
+*)	def=en_US	# .UTF-8 locale most likely to be installed at least
+	case "${LC_ALL:-null}" in
+	"$LC_ALL")	LC_ALL=`echo ${LC_ALL:-$def} | sed -e "s,[.@].*,,"`.UTF-8
+			export LC_ALL;;
+	*)	case "${LC_CTYPE:-null}" in
+		"$LC_CTYPE")	LC_CTYPE=`echo ${LC_CTYPE:-$def} | sed -e "s,[.@].*,,"`.UTF-8
+				export LC_CTYPE;;
+		*)	case "${LANG:-null}" in
+			"$LANG")	LANG=`echo ${LANG:-$def} | sed -e "s,[.@].*,,"`.UTF-8
+					export LANG;;
+			*)	LC_CTYPE=$def.UTF-8
+				export LC_CTYPE;;
+			esac
+		esac
+	esac
+esac
+#echo LC_ALL=${LC_ALL-<undefined>}, LC_CTYPE=${LC_CTYPE-<undefined>}, LANG=${LANG-<undefined>}
+
+#############################################################################
+# Further mlterm options for full Unicode support, true by default:
+# -m -Z -D
+
+exec mlterm -E utf8 -k esc -Y $font $*

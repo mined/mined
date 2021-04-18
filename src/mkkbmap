@@ -1,0 +1,106 @@
+#! /bin/sh
+
+mktitmap () {
+	kmap=$1
+	map=$2
+	if egrep "ENCODE:[ 	]*BIG5" $kmap
+	then
+		if iconv -f BIG5 -t UTF8 $kmap > /tmp/$map.utf
+		then
+			`dirname $0`/mkkmcxt /tmp/$map.utf
+		else	echo cannot convert $kmap to UTF-8
+		fi
+		rm -f /tmp/$map.utf
+	elif egrep "ENCODE:[ 	]*GB" $kmap
+	then
+		if iconv -f GB18030 -t UTF8 $kmap > /tmp/$map.utf ||
+		   iconv -f GBK -t UTF8 $kmap > /tmp/$map.utf ||
+		   iconv -f GB2312 -t UTF8 $kmap > /tmp/$map.utf
+		then
+			`dirname $0`/mkkmcxt /tmp/$map.utf
+		else	echo cannot convert $kmap to UTF-8
+		fi
+		rm -f /tmp/$map.utf
+	elif egrep "ENCODE:[ 	]*JIS" $kmap
+	then
+		if iconv -f UJIS -t UTF8 $kmap > /tmp/$map.utf
+		then
+			`dirname $0`/mkkmcxt /tmp/$map.utf
+		else	echo cannot convert $kmap to UTF-8
+		fi
+		rm -f /tmp/$map.utf
+	elif egrep "ENCODE:[ 	]*KS" $kmap
+	then
+		if iconv -f UHC -t UTF8 $kmap > /tmp/$map.utf
+		then
+			`dirname $0`/mkkmcxt /tmp/$map.utf
+		else	echo cannot convert $kmap to UTF-8
+		fi
+		rm -f /tmp/$map.utf
+	else	echo cannot handle encoding of $kmap
+	fi
+}
+
+while [ "$1" != "" ]
+do
+	kmap="$1"
+
+	if [ ! -d keymaps ]
+	then	mkdir keymaps
+	fi
+
+	case $kmap in
+	*.kmap)	`dirname $0`/mkkmyudt $kmap;;
+	*.utf)	`dirname $0`/mkkmcxt $kmap;;
+	*.mim)	`dirname $0`/mkkmmim $kmap;;
+	*.vim)	`dirname $0`/mkkmvim $kmap;;
+	*.tit)	map=`basename $kmap .tit`
+		mktitmap $kmap $map
+		;;
+	*.cit)	map=`basename $kmap .cit`
+		if cit2tit $kmap > /tmp/$map.tit
+		then	mktitmap /tmp/$map.tit $map
+		else	echo cannot decompile $kmap
+		fi
+		rm -f /tmp/$map.tit
+		;;
+	*.*)	echo unknown keyboard mapping file type $kmap;;
+	*)	hantag=`echo $kmap | tr '[A-Z]' '[a-z]'`
+		case "$hantag" in
+		cj|cangjie)	case "$2" in
+				+)	./mkkmhkscs
+					cjuni=keymaps/hkscs.uni
+					shift;;
+				*hkscs*cj*.txt)	./mkkmhkscs "$2"
+					cjuni=keymaps/hkscs.uni
+					shift;;
+				*)	cjuni=;;
+				esac
+				`dirname $0`/mkkmuhan -c Cangjie cj $cjuni;;
+		mainlandtele*)	`dirname $0`/mkkmuhan -c MainlandTelegraph mt;;
+		taiwantele*)	`dirname $0`/mkkmuhan -c TaiwanTelegraph tt;;
+		canton*)	`dirname $0`/mkkmuhan -c Cantonese ct;;
+		hanyu*|pinlu)	`dirname $0`/mkkmuhan -c HanyuPinlu hp;;
+		mand*)	`dirname $0`/mkkmuhan -c Mandarin md;;
+		tang)	`dirname $0`/mkkmuhan -c Tang tn;;
+		kun|japanesekun)	`dirname $0`/mkkmuhan -j JapaneseKun jk;;
+		on|japaneseon)	`dirname $0`/mkkmuhan -j JapaneseOn jo;;
+		kor*)	`dirname $0`/mkkmuhan -k Korean kr;;
+		viet*)	`dirname $0`/mkkmuhan Vietnamese vn;;
+		viqr|VIQR)	if make viqr
+				then	./mkkentry -U VIQR vq
+				fi;;
+		vni|VNI)	if make vni
+				then	./mkkentry -U VNI vi
+				fi;;
+		vtelex|Vtelex)	if make vtelex
+				then	./mkkentry -U Vtelex vt
+				fi;;
+		*)	echo generating keyboard mapping for $kmap script from UnicodeData >&2
+			`dirname $0`/mkkmudat $kmap
+			;;
+		esac;;
+	esac
+
+	shift
+done

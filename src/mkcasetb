@@ -1,0 +1,28 @@
+#! /bin/sh -f
+
+if make UnicodeData.txt
+then	true
+else	echo Could not acquire Unicode data file UnicodeData.txt
+	exit 1
+fi
+
+LC_ALL=C
+export LC_ALL
+
+#0041;LATIN CAPITAL LETTER A;Lu;0;L;;;;;N;;;;0061;
+#0061;LATIN SMALL LETTER A;Ll;0;L;;;;;N;;;0041;;0041
+#01C4;LATIN CAPITAL LETTER DZ WITH CARON;Lu;0;L;<compat> 0044 017D;;;;N;LATIN CAPITAL LETTER D Z HACEK;;;01C6;01C5
+#01C5;LATIN CAPITAL LETTER D WITH SMALL LETTER Z WITH CARON;Lt;0;L;<compat> 0044 017E;;;;N;LATIN LETTER CAPITAL D SMALL Z HACEK;;01C4;01C6;01C5
+#01C6;LATIN SMALL LETTER DZ WITH CARON;Ll;0;L;<compat> 0064 017E;;;;N;LATIN SMALL LETTER D Z HACEK;;01C4;;01C5
+
+tr -d '\015' < UnicodeData.txt |
+sed \
+-e "s,^\([^;]*\);[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\([^;][^;]*\);\([^;]*\);\([^;]*\)$,src \1 upper '\2' lower '\3' title '\4'," \
+-e t \
+-e "s,^\([^;]*\);[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\([^;]*\);\([^;][^;]*\);\([^;]*\)$,src \1 upper '\2' lower '\3' title '\4'," \
+-e t \
+-e "s,^\([^;]*\);[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;[^;]*;\([^;]*\);\([^;]*\);\([^;][^;]*\)$,src \1 upper '\2' lower '\3' title '\4'," \
+-e t \
+-e d |
+sed -e "s/src \([^ ]*\) upper '\([^ ]*\)' lower '\([^ ]*\)' title '\([^ ]*\)'/	{0x\1, 0x\2 - 0x\1, 0x\3 - 0x\1, 0x\4},/" \
+    -e "s/0x - 0x[^ ,}]*/0/g" -e "s/0x}/0}/" > casetabl.t

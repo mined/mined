@@ -1,0 +1,64 @@
+Function key assignments
+------------------------
+(only the most important assignments listed here)
+
+F1	help
+Control/Shift/Alt-F1 or F1 F1 displays a quick Fn help reference
+HOP Control/Shift/Alt/F1-F1 toggles a permament Fn help reference
+F2	save (write current file, 
+		confirm if file exists and file name or directory was changed)
+Alt-F2	save as ... (write to a different file, prompt for name)
+F3	load and edit (edit other file, ask if current file should be saved)
+Control-F3	load and view (edit other file read-only)
+Alt-F3	cycle word casing (small/titling/all caps)
+F4	insert (paste other file)
+F5		diaeresis accent prefix key
+ Ctrl-F5:	ring/cedilla
+ Shift-F5:	tilde
+ Alt-F5:	stroke
+ Ctrl-Shift-F5:	ogonek
+ Alt-Shift-F5:	breve
+F6		acute accent prefix
+ Ctrl-F6:	circumflex
+ Shift-F6:	grave
+ Alt-F6:	caron
+ Ctrl-Shift-F6:	macron
+ Alt-Shift-F6:	dot above
+F7		search
+F8		search
+Alt-F8		search backwards
+Shift-F8	search and replace
+Control-F8	search and replace interactively (with confirmation)
+F9		search again (repeat last search pattern)
+Alt-F9		search last pattern in other direction
+Shift-F9	search for current identifier
+F10		open pull-down menu
+F11		toggle character case (upper <-> lower)
+Shift-F11	toggle word case
+   Alt-F3	cycle word casing (small/titling/all caps)
+Control-F11	transform character mnemonic from text
+Alt-F11		convert to current encoding and search for next wrong code
+F12		set up directory for automatic remembering of file positions
+
+Paste buffer functions are assigned to the keypad; see help on "keyboard".
+
+Alternate key functions and menu open key functions
+---------------------------------------------------
+(invoked with ESC <key> or Alt-<key> if configured; see Xdefaults.mined)
+
+Alt-blank	open pop-up menu
+Alt-f		open File menu
+Alt-e		open Edit menu
+Alt-s		open Search menu
+Alt-p		open Paragraph menu
+Alt-o		open Options menu
+Alt-I / Alt-K	open Input Method menu
+Alt-Q		open Smart Quotes style menu
+Alt-E		open Encoding menu
+F10		open File menu
+Shift-F10	open pop-up menu
+Alt-F10		open Info menu
+Alt-h		help
+Alt-shift-h	open/close HTML tag
+   with HOP:	embed copy area in HTML tag
+
