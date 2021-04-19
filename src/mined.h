@@ -169,7 +169,6 @@ extern pid_t vfork ();
 
 extern pid_t wait ();
 
-extern int select ();
 #ifndef __MINGW32__
 extern unsigned int sleep ();
 #endif
@@ -347,6 +346,8 @@ typedef enum {
   OPEN
 } FLAG;
 
+#define negate(flag)	if (flag) flag = False; else flag = True;
+
 typedef enum {LEFTDOUBLE, RIGHTDOUBLE, LEFTSINGLE, RIGHTSINGLE} quoteposition_type;
 
 #ifdef VAXC
@@ -471,9 +472,6 @@ extern char html_file [];	/* Temp. file for HTML embedding buffer */
 extern char panic_file [];	/* file for panic-write-back */
 extern FLAG yank_status;	/* Status of yank_file */
 extern FLAG redraw_pending;	/* was a redraw suppressed in find_y ? */
-extern long chars_saved;	/* # of chars saved in paste buffer */
-extern long bytes_saved;	/* # of bytes saved in paste buffer */
-extern int lines_saved;	/* # of lines saved in paste buffer */
 
 extern int hop_flag;		/* set to 2 by HOP key function */
 extern int hop_flag_displayed;
@@ -542,6 +540,7 @@ extern FLAG darkness_detected;	/* could background colour be queried ? */
 extern FLAG fg_yellowish;	/* foreground colour near yellow ? */
 extern FLAG bright_term;	/* need to improved contrast ? */
 extern FLAG bw_term;		/* black/white terminal ? */
+extern FLAG csi_term;		/* terminal supports CSI control sequences */
 extern FLAG suppress_colour;	/* don't use ANSI color settings */
 
 extern FLAG configure_xterm_keyboard;	/* deleteIsDEL, metaSendsEscape */
@@ -868,7 +867,7 @@ extern void display _((int y, LINE *, int count, int new_pos));
 extern void display_flush _((void));
 /* from output.c */
 extern void putmark _((char mark, char * utfmark));
-extern FLAG marker_defined _((character marker, char * utfmarker));
+extern int marker_defined _((character marker, char * utfmarker));
 extern void put_blanks _((int endpos));
 extern void set_cursor_xy _((void));
 extern void put_line _((int scr_y, LINE *, int offset, FLAG clear, FLAG prop_pos));
@@ -894,7 +893,14 @@ extern int col_count _((char *));
 extern void utf8_info _((char *, int *, unsigned long *));
 extern int isjoined _((unsigned long, char *, char *));
 extern int iscombined _((unsigned long, char *, char *));
-#define multichar(c)	((character) c >= 0x80 && (cjk_text == False || (text_encoding_tag != 'S' && text_encoding_tag != 'x') || (character) c < 0xA1 || (character) c > 0xDF))
+#define multichar(c)	((character) c >= 0x80 && \
+			(cjk_text == False || \
+			 (text_encoding_tag == 'S' || text_encoding_tag == 'x') \
+			 ? ((character) c < 0xA1 || (character) c > 0xDF) \
+			 : text_encoding_tag == 'i' \
+			 ? ((character) c & 0xF0) == 0xC0 \
+			 : 1 \
+			))
 extern int iscombining _((unsigned long ucs));
 extern int iswide _((unsigned long ucs));
 extern int uniscrwidth _((unsigned long, char *, char *));
@@ -1032,6 +1038,7 @@ extern void MOUSEfunction _((void)), FOCUSout _((void)), FOCUSin _((void));
 extern void AMBIGnarrow _((void)), AMBIGwide _((void));
 extern void ANSIseq _((void));
 extern void OSC _((void));
+extern void BEGIN_BRACKETED_PASTE _((void)), END_BRACKETED_PASTE _((void));
 extern void MOVUP _((void)), MOVDN _((void)), MOVLF _((void)), MOVRT _((void));
 extern void SD _((void)), SU _((void)), MOVPD _((void)), MOVPU _((void));
 extern void BFILE _((void)), EFILE _((void));
@@ -1102,7 +1109,7 @@ extern FLAG CONV _((void));
 extern void BADch _((unsigned long cmd));
 extern void SCORR _((FLAG pref_direction));
 
-extern void checkout _((void)), checkin _((void));
+extern void backup _((void)), checkout _((void)), checkin _((void));
 extern void SPELL _((void));
 
 extern void FS _((void)), FSTATUS _((void));
@@ -1140,6 +1147,7 @@ extern void F1 _((void)), F2 _((void)), F3 _((void)), F4 _((void)), F5 _((void))
  */
 extern int bottom_line _((FLAG attrib, char *, char *, char * inbuf, FLAG statfl, char * term_input));
 extern void status_uni _((char * msg));
+extern void status_file _((char * msg, char * file));
 extern character status2_prompt _((char * term, char * msg1, char * msg2));
 extern character prompt _((char * term));
 #define status_msg(str)		status_line (str, NIL_PTR)

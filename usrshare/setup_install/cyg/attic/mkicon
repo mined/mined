@@ -1,0 +1,42 @@
+#! /bin/sh
+
+case `uname` in
+CYG*)	true;;
+*)	echo script to create desktop icon designated for Cygwin only
+	exit;;
+esac
+
+# All Users Start menu Programs folder
+ProgramsAll="$(cygpath -A -P)"
+
+# current user Start menu Programs folder
+Programs="$(cygpath -P)"
+
+# Cygwin/X Editors sub-folder
+Editors="Cygwin-X/Editors"
+
+# if cygwin is installed for All Users, put it there, else to current user
+if [ -w "$ProgramsAll/$Editors" ]
+then	FOLDER="$ProgramsAll/$Editors"
+elif [ -w "$Programs/$Editors" ]
+then	FOLDER="$Programs/$Editors"
+else	echo Cannot install icon to All Users or current user Cygwin folder
+	return 1
+fi
+
+
+icon=`dirname $0`/../mined.ico
+
+mkshortcut --arguments="bash -l -c umined" \
+	--name="$FOLDER/mined" \
+	--icon="$icon" \
+	--desc="Powerful text editor with Unicode and CJK support" \
+	--show=min \
+	--workingdir="%HOME%" \
+	/bin/run.exe
+
+if [ $? = 1 ]
+then	false
+else	# observed return value 205
+	true
+fi

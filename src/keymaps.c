@@ -65,9 +65,9 @@ struct keymapping {
 
 # include "keymapsx.h"
 # ifdef keymapping_stringtables
-	/* link with keymaps1/*.o */
+	/* link with keymaps1/​*.o */
 # else
-	/* link with keymaps0/*.o from keymaps0/*.h */
+	/* link with keymaps0/​*.o from keymaps0/​*.h */
 # endif
 
 #else
@@ -77,11 +77,11 @@ struct keymapping {
 #  include "keymaps.t"
 #  else
 #  include "keymapsc.h"
-	/* #includes keymaps1/*.c, link with -Ikeymaps1 */
+	/* #includes keymaps1/​*.c, link with -Ikeymaps1 */
 #  endif
 # else
 #  include "keymapsi.h"
-	/* #includes keymaps0/*.h, link with -Ikeymaps0 */
+	/* #includes keymaps0/​*.h, link with -Ikeymaps0 */
 # endif
 
 #endif

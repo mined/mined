@@ -2,10 +2,14 @@
 
 #############################################################################
 # binary target directory
-#SYS=` uname | sed -e 's,_.*,,' `
-#ARCH=` uname -m | sed -e "s,/,_,g" `
-#OBJDIR=../bin/$SYS.$ARCH
-OBJDIR=../bin/sh
+if [ -n "$ANDROID_ROOT" ]
+then
+	OBJDIR=../bin/Android
+else
+	SYS=` uname | sed -e 's,_.*,,' `
+	ARCH=` uname -m | sed -e "s,/,_,g" `
+	OBJDIR=../bin/$SYS.$ARCH
+fi
 
 
 #############################################################################
@@ -67,6 +71,7 @@ fi
 #############################################################################
 # build mined
 
+mkdir ../bin
 mkdir $OBJDIR
 mkdir $OBJDIR/charmaps
 rm -f $OBJDIR/timestmp.o
@@ -93,6 +98,8 @@ noerror=true
 
 #############################################################################
 # compile
+
+rm -f $OBJDIR/timestmp.o
 
 makec io
 makec keyboard
@@ -121,7 +128,6 @@ makec termprop
 makec width
 makec encoding
 makec handescr
-rm -f $OBJDIR/timestmp.o
 makec timestmp
 
 for charmap in charmaps/*.c

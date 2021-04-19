@@ -1307,7 +1307,8 @@ get_string (str1, str2, fl, term_chars)
  */
 static
 void
-status2_uni (msg1, msg2)
+status2_uni (attrib, msg1, msg2)
+  FLAG attrib;
   char * msg1;
   char * msg2;
 {
@@ -1320,7 +1321,7 @@ status2_uni (msg1, msg2)
   mapped_text = False;
   /* don't need to save and set utf16_file = False; */
 
-  bottom_line (VALID, msg1, msg2, NIL_PTR, False, "");
+  bottom_line (attrib, msg1, msg2, NIL_PTR, False, "");
 
   /* pop text encoding */
   utf8_text = save_utf8_text;
@@ -1332,7 +1333,15 @@ void
 status_uni (msg)
   char * msg;
 {
-  status2_uni (msg, NIL_PTR);
+  status2_uni (VALID, msg, NIL_PTR);
+}
+
+void
+status_file (msg, file)
+  char * msg;
+  char * file;
+{
+  status2_uni (True, msg, file);
 }
 
 character

@@ -2,8 +2,13 @@
 
 # list files containing tables for all configured keyboard mappings
 
+filter="grep -v Radical_Stroke"
+filter=cat
+
 # extract configured keyboard mappings from keymaps.cfg
-confkeymaps=`LC_ALL=C sed -e '/^[-#]/ d' -e 's/^[ 	"]*\([^	]*\)		*\([A-Za-z0-9_][^ 	]*\).*\([^ 	][^ 	]\).*/\2.h/' -e t -e d keymaps.cfg`
+confkeymaps=`LC_ALL=C sed -e '/^[-#]/ d' -e 's/^[ 	"]*\([^	]*\)		*\([A-Za-z0-9_][^ 	]*\).*\([^ 	][^ 	]\).*/\2.h/' -e t -e d keymaps.cfg |
+	$filter
+	`
 
 kmlist=
 for map in ${*-$confkeymaps}

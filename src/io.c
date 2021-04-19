@@ -164,11 +164,28 @@ extern int kill _((pid_t, int));
 # endif
 #endif
 
-#ifdef vms
-# include <socket.h>	/* for select () and struct timeval */
-# ifdef CURSES
-# define _getch_
+
+
+#ifndef __TURBOC__
+#include <sys/time.h>	/* for struct timeval; legacy: for select () */
+# ifdef vms
+#  include <socket.h>	/* for select () and struct timeval */
+#  ifdef CURSES
+#  define _getch_
+#  endif
+# else
+/*#  include <sys/select.h>*/
+#  ifdef FD_SET
+extern int select _((int n, fd_set *, fd_set *, fd_set *, struct timeval *));
+#  else
+extern int select _((int n, int *, int *, int *, struct timeval *));
+#  endif
 # endif
+#endif
+
+
+#if defined (vms) && defined (CURSES)
+# define _getch_
 #endif
 
 #ifdef CURSES_INPUT	/* currently not defined */
@@ -180,11 +197,6 @@ extern int kill _((pid_t, int));
 #ifndef CURSES
 extern int getch ();
 #endif
-#endif
-
-
-#ifndef __TURBOC__
-#include <sys/time.h>	/* for struct timeval (for select in inputreadyafter) */
 #endif
 
 
@@ -1611,8 +1623,12 @@ void
 putescape (s)
   char * s;
 {
-  if (screen_version > 0) {
+  if (!csi_term && *s == '\033' && s[1] == '[') {
+ 	return;
+  }
+  if (screen_version > 0 && ! tmux_version) {
 	/* pass through transparently to host terminal: */
+	/* (would cause colour/positioning garbage in tmux) */
 	_putescape ("\033P");
 	_putescape (s);
 	_putescape ("\033\\");
@@ -2690,7 +2706,7 @@ putoutchar (c)
 		return FINE;
 	}
   }
-  if (screen_version > 0 && screen_version < 400 && c >= 0x80 && c < 0xA0) {
+  if (screen_version > 0 && screen_version < 400 && ! tmux_version && c >= 0x80 && c < 0xA0) {
 	/* embed C1 control characters (workaround for 'screen' bug) */
 	putoutchar ('\033');
 	putoutchar ('P');
@@ -2911,7 +2927,7 @@ set_cursor (x, y)
   static char s [22];
 #endif
 
-  if (screen_version > 0) {
+  if (screen_version > 0 && ! tmux_version) {
 	/* flush cursor position (workaround for 'screen' bug) */
 #ifdef ANSI
 	termputstr ("\033[1;1H", aff1);
@@ -3027,7 +3043,9 @@ get_terminfo (TERMname)
 	if (term_getnum ("Co", "colors") == 0 && ! cAF) {
 		bw_term = True;
 	}
-	standout_glitch = term_getflag ("xs", "xhp");	/* standout glitch */
+	if (term_getflag ("xs", "xhp")) {	/* standout glitch */
+		standout_glitch = True;
+	}
 
 	/* add function key escape sequences */
 	add_terminfo_entries ();
@@ -3604,6 +3622,7 @@ start_screen_mode (kb)
 		putescape ("\033[>0;15m");
 		/* and then enable VT220 Keyboard with Application Keypad mode */
 		putescape ("\033[?1061h\033[?66h");
+		vt220_keyboard = True;
 	}
 
 	/* set mouse modes */
@@ -6059,8 +6078,8 @@ mark_on ()
 		bold_on ();
 	} else {
 #if defined (unix) || defined (vms)
-		if (can_dim && ! screen_version && ansi_esc &&
-		    (! cMH || ! * cMH)) {
+		if (can_dim && ! screen_version && ! tmux_version && ansi_esc
+		    && (! cMH || ! * cMH)) {
 			cMH = "[2m";
 		}
 		termputstr (cMH, aff1);
@@ -6125,7 +6144,7 @@ blink_off ()
 void
 disp_normal ()
 {
-	if (screen_version > 0) {
+	if (screen_version > 0 && ! tmux_version) {
 		/* workaround to reset attributes passed by transparently */
 		reverse_on ();
 		reverse_off ();

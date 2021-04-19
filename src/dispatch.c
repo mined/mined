@@ -455,7 +455,7 @@ display_FHELP ()
 void
 toggle_FHELP ()
 {
-  always_disp_help = ! always_disp_help;
+  negate (always_disp_help);
 }
 
 void
@@ -466,7 +466,7 @@ FHELP (func)
   fhelp_keyshift = keyshift;
   if (hop_flag > 0) {
 	hop_flag = 0;
-	always_disp_help = ! always_disp_help;
+	negate (always_disp_help);
   } else {
 	display_FHELP ();
   }
@@ -761,7 +761,7 @@ command (c)
 {
   if (c == FUNcmd) {
 	return keyproc;
-  } else if (/* c >= 0 && */ c < arrlen (key_map)) {
+  } else if (c < arrlen (key_map)) {
 	return key_map [c];
   } else {
 	return Scharacter;
@@ -1047,7 +1047,7 @@ ctrlK ()
   unsigned long c;
 
   if (! char_ready_within (500, NIL_PTR)) {
-	status_msg ("^K: Save Done eXit Quit Read Log <n>mark / block: B/K mark Cop Ydel moV Wr...");
+	status_uni ("^K: Save Done eXit Quit Read Log <n>mark / block: B/K mark Cop Ydel moV Wr...");
   }
   if (quit) {
 	return;
@@ -1105,7 +1105,7 @@ ctrlO ()
   unsigned long c;
 
   if (! char_ready_within (500, NIL_PTR)) {
-	status_msg ("^O: L/R left/right margins...");
+	status_uni ("^O: L/R left/right margins...");
   }
   if (quit) {
 	return;
@@ -1517,7 +1517,7 @@ EMAX ()
   unsigned long c;
 
   if (! char_ready_within (500, NIL_PTR)) {
-	status_msg ("^X ...");
+	status_uni ("^X ...");
   }
   if (quit) {
 	return;
@@ -1574,6 +1574,7 @@ REPT (firstdigit)
   long val;
   unsigned long cmd;
   int number;
+  int save_quote_type = quote_type;
 
   hop_flag = 0;
   if (firstdigit >= '0' && firstdigit <= '9') {
@@ -1621,6 +1622,7 @@ REPT (firstdigit)
 	return;
   }
 
+  quote_type = 0;	/* temporarily disable smart input substitutions */
   count = number;
   while (count -- > 0 && quit == False) {
 	char save_keyshift = keyshift;
@@ -1634,6 +1636,7 @@ REPT (firstdigit)
 	flush ();
   }
   reset_smart_replacement ();
+  quote_type = save_quote_type;
 
   if (quit) {		/* Abort has been given */
 	error ("Repeat aborted");
@@ -1649,7 +1652,7 @@ REPT (firstdigit)
 void
 toggle_tab_expansion ()
 {
-  expand_tabs = ! expand_tabs;
+  negate (expand_tabs);
 }
 
 /*

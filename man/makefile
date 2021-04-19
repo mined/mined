@@ -21,7 +21,7 @@ footer.uterm=uterm
 
 man:	mined.1 uterm.1
 
-%.1:	../doc/%.html $(HTMLtoMAN) dehtml.sed entities.sh *.add makefile
+%.1:	../doc/%.html $(HTMLtoMAN) dehtml.sed entities.sh note1.add makefile
 	LC_ALL=C sed -e '/<span id=frames>/,/<\/span id=frames>/ d' -e 's,\\,\\\\,g' -e 's,^\([	 ]*\.\),\\ .,' -f dehtml.sed $< > $*
 	LC_ALL=C $(callHTMLtoMAN) $* $*-0 1
 	./entities.sh $< $@

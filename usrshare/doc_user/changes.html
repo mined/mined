@@ -46,9 +46,26 @@ li {list-style-position: inside;}
 
 <dl>
 
-<p><dd><a href=#2015.25>mined 2015.25</a>
+<p><dd><a href=#2021.26>mined 2021.26</a>
 	<b>highlights:</b>
 <ul class=latest>
+	<p><dt><b>Character information:</b>
+	<li>Updated to Unicode 13.0.
+	<li>Support for emoji width handling.
+
+	<p><dt><b>Editing:</b>
+	<li>Search and replacement patterns can contain substitution references 
+	like \1 to matching sub-expressions like \(...\) (can be nested).
+
+	<p><dt><b>Bug fixes:</b>
+	<li>Tweaked smart undentation (on Backspace) of auto-numbering.
+	<li>Fixed line split of long lines read from file.
+	<li>Tweaked menu background colour handling.
+</ul>
+
+<p><dd><a href=#2015.25>mined 2015.25</a>
+	<b>highlights:</b>
+<ul>
 	<p><dt><b>Editing:</b>
 	<li>Transparent editing of encrypted files.
 	Using filters configurable by file type (configured in $HOME/.minedrc).
@@ -60,7 +77,6 @@ li {list-style-position: inside;}
 	<li>Configurable appearance of menu background (in $HOME/.minedrc).
 	<li>Enhanced double-click and focus-then-click handling.
 	<li>CUPS printer selection.
-
 
 	<p><dt><b>Character handling support:</b>
 	<li>Configurable character information in status line ($HOME/.minedrc).
@@ -899,6 +915,101 @@ li {list-style-position: inside;}
 
 <div class=latest>
 
+<a name=2021.26 onMouseOver="release (this);">
+=============================================================================
+Changes from mined 2015.25 -> mined 2021.26 (May 2021)
+===========================================
+
+Features:
+---------
+Backup function added (to File menu, command script "bu" must exist in path).
+
+Trying to trigger auto-remount if file access failed.
+
+
+Editing:
+--------
+Substitution references to matching sub-expressions: Like sed, mined 
+search expressions support marked sub-expressions \(...\) which the 
+substitution expression can refer to with numbered references \1 through \9.
+Sub-expressions can be nested.
+
+Tweaked auto-bullet list handling, no auto-bullet after empty line.
+Added ° (degree sign) to item bullet category.
+
+Added configuration option "Bidi mode" to Options and Justification menus.
+
+
+Interaction:
+------------
+Right mouse-click on file tab area opens the file switcher menu.
+Control-mouse wheel scroll switches to next/previous file tab.
+
+Enhanced feedback on read errors or empty buffer when pasting.
+
+
+Character information and encoding support:
+-------------------------------------------
+Updated to Unicode 13.0.
+
+Support for emoji width handling.
+
+ISO 6937 support.
+
+Supporting mintty options WideIndic and WideExtra.
+
+New mnemonics:
+* "^V est " or "^V estim " for U+2259 ESTIMATES
+* "^V info " for U+2139 INFORMATION SOURCE
+
+VGA character set (CP437 plus graphics in the control range) can be selected 
+with -E:VG or -E=VGA.
+
+
+Configuration:
+--------------
+EBCDIC auto-detection can be enabled by including the letter 
+"E" in the environment variable MINEDDETECT.
+
+
+Bug fixes:
+----------
+Tweaked smart undentation (on Backspace) of auto-numbering.
+
+Fixed line split of long lines read from file.
+
+Tweaked menu background colour handling.
+
+If opening in explicit (not auto-detected) UTF-8 encoding (-u), 
+fixed misinterpretation of 0x85 byte as Next Line character.
+
+Fixed missing character decompositions for Unicode 7.0 character information.
+
+Fixed handling of keypad-+ if mapped to keypad-comma (xterm VT220 mode).
+Keypad-comma now scrolls forward (while keypad-minus scrolls backward).
+
+Fixed repeat command (ESC nn ...) to not apply smart substitution initially.
+
+Fixed character encoding of some auxiliary file-related messages.
+
+Fixed mnemonic for ¾.
+
+Preventing encoding switching when editing EBCDIC file (like UTF-16).
+
+Fixed loop when trying to justify paragraph if file is locked or view-only.
+
+Fixed sample font configuration for xterm and rxvt-unicode in 
+Xdefaults.mined in the Mined runtime support library.
+
+Tweaked screen handling in tmux on cygwin, fixed display, width, colour bugs.
+
+Fixed attribute layout of ^X/^K/^O command prompts in emacs/WordStar modes.
+
+Fixed detection of cygwin version for multi-byte console bug workaround.
+
+</div>
+
+
 <a name=2015.25 onMouseOver="release (this);">
 =============================================================================
 Changes from mined 2014.24.2 -> mined 2015.25 (March 2015)
@@ -1403,8 +1514,6 @@ which could render the line unreadable in dark terminals.
 
 Avoiding cygwin postinstall error by disabling deprecated commands 
 (the postinstall script was implicitly re-enabled when switching to cygport).
-
-</div>
 
 
 <a name=2013.23.4 onMouseOver="release (this);">

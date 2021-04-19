@@ -89,6 +89,7 @@ local int
 	menuitemtype * item;
 	int i;
 {
+	/*(void) item; (void) i;*/
 	return streq (item->hopitemname, get_text_encoding ());
 }
 
@@ -114,6 +115,7 @@ local int
 	int i;
 {
 	int k;
+	/*(void) item; (void) i;*/
 	for (k = 0; k < arrlen (submenu_$submenu); k ++) {
 		if (streq (submenu_$submenu [k].hopitemname, get_text_encoding ())) {
 			return 1;
@@ -129,6 +131,7 @@ local void
 {
 	int column = last_popup_column + utf8_col_count (label_$submenu) + 2;
 	int line = last_popup_line + i;
+	/*(void) menu;*/
 	(void) popup_menu (submenu_$submenu, arrlen (submenu_$submenu), column, line, title_$submenu, True, False, NIL_PTR);
 }
 

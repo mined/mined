@@ -46,7 +46,7 @@ DEBUG	=
 # compilation setup
 
 # Collection of compilation parameters:
-CFLAGS	= $(SYSFLAGS) $(NOPROTOFLAG) $(OPT) $(DEBUG) ${CCFLAGS}
+CFLAGS	= $(SYSFLAGS) $(NOPROTOFLAG) $(DEBUG) ${CCFLAGS}
 
 
 #############################################################################

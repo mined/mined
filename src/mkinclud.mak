@@ -12,11 +12,11 @@ PROGOBJS = \
 	$(OBJDIR)/mousemen.o \
 	$(OBJDIR)/edit.o $(OBJDIR)/pastebuf.o $(OBJDIR)/textbuf.o \
 	$(OBJDIR)/justify.o $(OBJDIR)/search.o $(OBJDIR)/charprop.o \
-	$(OBJDIR)/output.o $(OBJDIR)/prompt.o $(OBJDIR)/compose.o \
+	$(OBJDIR)/output.o $(OBJDIR)/prompt.o \
 	$(OBJDIR)/charcode.o \
 	$(OBJDIR)/keymaps.o $(OBJDIR)/keydefs.o $(OBJDIR)/dispatch.o \
 	$(OBJDIR)/termprop.o $(OBJDIR)/width.o $(OBJDIR)/encoding.o \
-	$(OBJDIR)/handescr.o
+	$(OBJDIR)/handescr.o $(OBJDIR)/compose.o
 ALLPROGOBJS = $(PROGOBJS) $(OBJDIR)/timestmp.o
 #OBJS = $(PROGOBJS) $(CHARMAPS)
 
@@ -36,8 +36,8 @@ MOUSELIB=
 #############################################################################
 # commands
 
-#WGET=curl -R -O --connect-timeout 55
-WGET=wget -N -t 1 --timeout=55
+#WGET=wget -N -t 1 --timeout=55
+WGET=curl -R -O --connect-timeout 55 -z $@
 
 SH=sh
 #SH=${SHELL}
@@ -59,27 +59,27 @@ DOC=../usrshare/doc_user
 # Unicode data tables:
 
 # With Unicode 7.0, there is no UCD.zip anymore, so downloaded separately
-#UCD.zip:
-#	echo Trying to retrieve Unicode data file via Internet
-#	$(WGET) http://unicode.org/Public/UNIDATA/UCD.zip
-#UnicodeData.txt:	UCD.zip
-#	unzip UCD UnicodeData.txt
-#Scripts.txt:	UCD.zip
-#	unzip UCD Scripts.txt
-#Blocks.txt:	UCD.zip
-#	unzip UCD Blocks.txt
-#SpecialCasing.txt:	UCD.zip
-#	unzip UCD SpecialCasing.txt
-#PropList.txt:	UCD.zip
-#	unzip UCD PropList.txt
-#EastAsianWidth.txt:	UCD.zip
-#	unzip UCD EastAsianWidth.txt
-#PropertyValueAliases.txt:	UCD.zip
-#	unzip UCD PropertyValueAliases.txt
-#DerivedBidiClass.txt:	UCD.zip
-#	unzip -j UCD extracted/DerivedBidiClass.txt
-#NameAliases.txt:	UCD.zip
-#	unzip UCD NameAliases.txt
+UCD.zip:
+	echo Trying to retrieve Unicode data file via Internet
+	$(WGET) http://unicode.org/Public/UNIDATA/UCD.zip
+UnicodeData.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+Scripts.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+Blocks.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+SpecialCasing.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+PropList.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+EastAsianWidth.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+PropertyValueAliases.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+NameAliases.txt:	UCD.zip
+	unzip -o UCD $@; touch -r UCD.zip $@
+DerivedBidiClass.txt:	UCD.zip
+	unzip -o -j UCD extracted/$@; touch -r UCD.zip $@
 
 %.txt:
 	$(WGET) http://unicode.org/Public/UNIDATA/$@
@@ -96,7 +96,7 @@ check_ccc:
 	grep "^ccc; *230;.*; *Above$$" PropertyValueAliases.txt
 
 clean_unidata:	UnicodeData.txt SpecialCasing.txt Scripts.txt PropList.txt PropertyValueAliases.txt check_ccc
-	rm -f casetabl.t casespec.t softdot.t combin.t
+	rm -f casetabl.t casespec.t softdot.t combin.t decompos.t
 	rm -f scripts.t scriptdf.t charname.t charseqs.t categors.sed categors.t
 	rm -f UniWITH
 
@@ -120,8 +120,24 @@ WIDTH-A:	EastAsianWidth.txt
 	$(SH) ./mkwidthA
 
 
-udata:	udata_combining.t udata_spacingcombining.t udata_ambiguous.t udata_assigned.t
-	cat udata_combining.t udata_spacingcombining.t udata_assigned.t > width.t.add
+udata:	UnicodeData.txt Blocks.txt WIDTH-A udata-gen
+
+widtha:	# EastAsianWidth.txt
+	sed -e "s,^\([^;]*\);A,\1," -e t -e d EastAsianWidth.txt > width-a-new
+	rm -f WIDTH-A
+	echo "# UAX #11: East Asian Ambiguous" > WIDTH-A
+	uniset +width-a-new compact >> WIDTH-A
+	rm -f width-a-new
+
+widthw:	# EastAsianWidth.txt
+	sed -e "s,^\([^;]*\);[FW],\1," -e t -e d EastAsianWidth.txt > width-w-new
+	rm -f WIDTH-W
+	uniset +width-w-new compact > WIDTH-W
+	rm -f width-w-new
+
+# for manual analysis of Unicode version data
+udata-gen:	widtha widthw udata_emojiwide.t udata_combining.t udata_spacingcombining.t udata_ambiguous.t udata_assigned.t
+	cat udata_combining.t udata_spacingcombining.t udata_assigned.t udata_emojiwide.t > width.t.add
 
 univer = `sed -e '/^\# Blocks-/ s,[^0-9],,g' -e t -e d Blocks.txt`
 univer_prev = `sed -e '/^\# Blocks-/ s,[^0-9],,g' -e t -e d unicode-previous/Blocks.txt`
@@ -131,20 +147,28 @@ univer_prev = `sed -e '/^\# Blocks-/ s,[^0-9],,g' -e t -e d unicode-previous/Blo
 # Hangul JUNGSEONG and JONGSEONG combining characters:
 #Unicode < 5.2: extracomb=+1160-11FF
 extracomb=+1160-11FF +D7B0-D7C6 +D7CB-D7FB
+# wide blocks pre-checked before emoji-wide checking:
+skipemojiwide=-1100-115f -2329-232a -2e80-a4cf -ac00-d7a3 -f900-faff -fe10-fe19 -fe30-fe6f -ff00-ff60 -ffe0-ffe6 -a960-a97f -1b000-1b0ff -1f200-1f2ff -20000-3ffff
 
-udata_combining.t:	UnicodeData.txt Blocks.txt
+udata_emojiwide.t:	# UnicodeData.txt Blocks.txt WIDTH-W
+	echo > udata_emojiwide.t
+	echo "static struct interval" >> udata_emojiwide.t
+	echo "emojiwide_$(univer) [] =" >> udata_emojiwide.t
+	uniset +WIDTH-W $(skipemojiwide) c >> udata_emojiwide.t
+
+udata_combining.t:	# UnicodeData.txt Blocks.txt
 	echo > udata_combining.t
 	echo "static struct interval" >> udata_combining.t
 	echo "combining_$(univer) [] =" >> udata_combining.t
 	uniset +cat=Me +cat=Mn +cat=Cf -00AD $(extracomb) +200B c >> udata_combining.t
 
-udata_ambiguous.t:	UnicodeData.txt Blocks.txt WIDTH-A
+udata_ambiguous.t:	# UnicodeData.txt Blocks.txt WIDTH-A
 	echo > udata_ambiguous.t
 	echo "static struct interval" >> udata_ambiguous.t
 	echo "ambiguous_$(univer) [] =" >> udata_ambiguous.t
 	uniset +WIDTH-A -cat=Me -cat=Mn -cat=Cf c >> udata_ambiguous.t
 
-udata_spacingcombining.t:	UnicodeData.txt Blocks.txt
+udata_spacingcombining.t:	# UnicodeData.txt Blocks.txt
 	echo > udata_spacingcombining.t
 	echo "static struct interval" >> udata_spacingcombining.t
 	echo "spacing_combining_$(univer) [] =" >> udata_spacingcombining.t
@@ -152,7 +176,7 @@ udata_spacingcombining.t:	UnicodeData.txt Blocks.txt
 
 # not strictly needed for current Unicode version; 
 # same range of characters as listed in scripts.t
-udata_assigned.t:	UnicodeData.txt Blocks.txt
+udata_assigned.t:	# UnicodeData.txt Blocks.txt
 	echo > udata_assigned.t
 	echo "static struct interval" >> udata_assigned.t
 	echo "assigned_$(univer) [] =" >> udata_assigned.t
@@ -275,15 +299,15 @@ unihan:	handescr.t radical_stroke
 # Unihan character description table:
 handescr.t:	# handescr/mkdescriptions handescr/descriptions.sed handescr/descriptions.uni # Unihan.zip
 	cd handescr && $(MAKE) descriptions.h
-	ln handescr/descriptions.h handescr.t || cp handescr/descriptions.h handescr.t
-	ln handescr/Radical_Stroke.h keymaps0/ || cp handescr/Radical_Stroke.h keymaps0/
+	rm -f handescr.t; ln handescr/descriptions.h handescr.t || cp handescr/descriptions.h handescr.t
+	rm -f keymaps0/Radical_Stroke.h; ln handescr/Radical_Stroke.h keymaps0/ || cp handescr/Radical_Stroke.h keymaps0/
 
 # Radical/Stroke input method table:
 radical_stroke:	keymaps/Radical_Stroke.h
 
 keymaps/Radical_Stroke.h:	# Unihan.zip
 	cd handescr && $(MAKE) Radical_Stroke.h
-	ln handescr/Radical_Stroke.h keymaps/ || cp handescr/Radical_Stroke.h keymaps/
+	rm -f keymaps/Radical_Stroke.h; ln handescr/Radical_Stroke.h keymaps/ || cp handescr/Radical_Stroke.h keymaps/
 
 # Radical/Stroke input method table:
 cangjie:	keymaps/Cangjie.h
@@ -439,7 +463,7 @@ keymaps1/makefile:	keymaps.cfg
 
 # KEYMAPS is extracted list of configured keyboard mappings from keymaps.cfg:
 # (note, this does not work on Ultrix: test -d keymaps || mkdir keymaps)
-keymaps.t:	$(KEYMAPS) keymaps.cfg mkkmincl # keymaps1/makefile
+keymaps.t:	$(KEYMAPS) keymaps.cfg mkkmincl mkkmlist # keymaps1/makefile
 	#$(MAKE) -f keymaps1/makefile keymapsc
 	if [ ! -d keymaps ]; then mkdir keymaps; fi
 	CC=$(CC) $(SH) ./mkkmincl $(KEYMAPS) > keymaps.t
@@ -501,62 +525,62 @@ DHELP=-DRUNDIR=\"$(rundir)\" -DLRUNDIR=\"$(lrundir)\"
 # Source compilation:
 
 $(OBJDIR)/mined1.o:	version.h mined1.c textfile.h encoding.h locales.t quotes.t mined.h io.h termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) $(DHELP) -c mined1.c -o $(OBJDIR)/mined1.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) $(DHELP) -c mined1.c -o $(OBJDIR)/mined1.o
 $(OBJDIR)/minedaux.o:	version.h minedaux.c mined.h io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) $(DHELP) -c minedaux.c -o $(OBJDIR)/minedaux.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) $(DHELP) -c minedaux.c -o $(OBJDIR)/minedaux.o
 $(OBJDIR)/textfile.o:	textfile.c textfile.h mined.h charprop.h termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c textfile.c -o $(OBJDIR)/textfile.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c textfile.c -o $(OBJDIR)/textfile.o
 $(OBJDIR)/textbuf.o:	textbuf.c mined.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c textbuf.c -o $(OBJDIR)/textbuf.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c textbuf.c -o $(OBJDIR)/textbuf.o
 $(OBJDIR)/justify.o:	justify.c mined.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c justify.c -o $(OBJDIR)/justify.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c justify.c -o $(OBJDIR)/justify.o
 $(OBJDIR)/edit.o:	edit.c mined.h io.h charprop.h termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c edit.c -o $(OBJDIR)/edit.o
-$(OBJDIR)/charprop.o:	charprop.c charprop.h casespec.t casetabl.t softdot.t combin.t wide.t charname.t charseqs.t scripts.t scriptdf.t # mined.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c charprop.c -o $(OBJDIR)/charprop.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c edit.c -o $(OBJDIR)/edit.o
+$(OBJDIR)/charprop.o:	charprop.c charprop.h casespec.t casetabl.t softdot.t combin.t wide.t charname.t charseqs.t decompos.t scripts.t scriptdf.t # mined.h
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c charprop.c -o $(OBJDIR)/charprop.o
 $(OBJDIR)/pastebuf.o:	pastebuf.c mined.h charprop.h io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c pastebuf.c -o $(OBJDIR)/pastebuf.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c pastebuf.c -o $(OBJDIR)/pastebuf.o
 $(OBJDIR)/legacy.o:	legacy.c
-	$(CC) $(CFLAGS) -c legacy.c -o $(OBJDIR)/legacy.o
+	$(CC) $(CFLAGS) $(OPT) -c legacy.c -o $(OBJDIR)/legacy.o
 $(OBJDIR)/search.o:	search.c mined.h io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c search.c -o $(OBJDIR)/search.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c search.c -o $(OBJDIR)/search.o
 $(OBJDIR)/mousemen.o:	mousemen.c mined.h io.h charcode.h keymapsm.t charemen.t charesub.t termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c mousemen.c -o $(OBJDIR)/mousemen.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c mousemen.c -o $(OBJDIR)/mousemen.o
 $(OBJDIR)/output.o:	output.c colours.t mined.h io.h termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c output.c -o $(OBJDIR)/output.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c output.c -o $(OBJDIR)/output.o
 $(OBJDIR)/prompt.o:	prompt.c mined.h io.h termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c prompt.c -o $(OBJDIR)/prompt.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c prompt.c -o $(OBJDIR)/prompt.o
 $(OBJDIR)/charcode.o:	charcode.c charcode.h charmaps.t charmaps.h typoprop.t termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c charcode.c -o $(OBJDIR)/charcode.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c charcode.c -o $(OBJDIR)/charcode.o
 $(OBJDIR)/handescr.o:	handescr.c handescr.t # mined.h for type only
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c handescr.c -o $(OBJDIR)/handescr.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c handescr.c -o $(OBJDIR)/handescr.o
 $(OBJDIR)/compose.o:	compose.c mined.h mnemos.t io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c compose.c -o $(OBJDIR)/compose.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c compose.c -o $(OBJDIR)/compose.o
 $(OBJDIR)/keymaps.o:	keymaps.c keymapsk.t $(KEYMAPSDEP)
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -Duse_concatenated_keymaps $(KEYMAPSFLAGS) -c keymaps.c -o $(OBJDIR)/keymaps.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -Duse_concatenated_keymaps $(KEYMAPSFLAGS) -c keymaps.c -o $(OBJDIR)/keymaps.o
 #$(OBJDIR)/keymaps.o:	keymaps.c keymapsk.t keymaps1/makefile keymapsc.h
 #	$(MAKE) -f keymaps1/makefile keymapsc
-#	$(CC) $(CFLAGS) $(PROTOFLAGS) -Ikeymaps1 $(KEYMAPSFLAGS) -c keymaps.c -o $(OBJDIR)/keymaps.o
+#	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -Ikeymaps1 $(KEYMAPSFLAGS) -c keymaps.c -o $(OBJDIR)/keymaps.o
 $(OBJDIR)/keydefs.o:	keydefs.c mined.h io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c keydefs.c -o $(OBJDIR)/keydefs.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c keydefs.c -o $(OBJDIR)/keydefs.o
 $(OBJDIR)/dispatch.o:	dispatch.c mined.h charprop.h io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c dispatch.c -o $(OBJDIR)/dispatch.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c dispatch.c -o $(OBJDIR)/dispatch.o
 $(OBJDIR)/encoding.o:	encoding.c encoding.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c encoding.c -o $(OBJDIR)/encoding.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c encoding.c -o $(OBJDIR)/encoding.o
 $(OBJDIR)/termprop.o:	termprop.c termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c termprop.c -o $(OBJDIR)/termprop.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c termprop.c -o $(OBJDIR)/termprop.o
 $(OBJDIR)/width.o:	width.c width.t termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c width.c -o $(OBJDIR)/width.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c width.c -o $(OBJDIR)/width.o
 $(OBJDIR)/keyboard.o:	keyboard.c mined.h termprop.h io.h
 	$(CC) $(CFLAGS) $(PROTOFLAGS) -c keyboard.c -o $(OBJDIR)/keyboard.o
 $(OBJDIR)/keycurs.o:	keyboard.c mined.h termprop.h
 	$(CC) $(CFLAGS) -DCURSES $(PROTOFLAGS) -c keyboard.c $(ICURSES) -o $(OBJDIR)/keycurs.o
 $(OBJDIR)/io.o:	io.c io.h mined.h $(MOUSELIB) dosvideo.t termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c io.c -o $(OBJDIR)/io.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c io.c -o $(OBJDIR)/io.o
 $(OBJDIR)/ioansi.o:	io.c io.h mined.h $(MOUSELIB) dosvideo.t termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -DANSI -c io.c -o $(OBJDIR)/ioansi.o
+	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -DANSI -c io.c -o $(OBJDIR)/ioansi.o
 $(OBJDIR)/iocurses.o:	io.c io.h mined.h termprop.h
-	$(CC) $(CFLAGS) -DCURSES -DSETLOCALE $(PROTOFLAGS) -c io.c $(ICURSES) -o $(OBJDIR)/iocurses.o
+	$(CC) $(CFLAGS) $(OPT) -DCURSES -DSETLOCALE $(PROTOFLAGS) -c io.c $(ICURSES) -o $(OBJDIR)/iocurses.o
 
 #$(OBJDIR)/timestmp.o:
 #	$(CC) -c timestmp.c -o $(OBJDIR)/timestmp.o
@@ -581,7 +605,8 @@ $(OBJDIR)/charmaps:
 	mkdir -p $(OBJDIR)/charmaps
 
 $(OBJDIR)/charmaps.a:	$(CHARDEPS)
-	ar ruv $(OBJDIR)/charmaps.a $(CHAROBJS)
+	ar ruvs $(OBJDIR)/charmaps.a $(CHAROBJS)
+	#ranlib $(OBJDIR)/charmaps.a	# needed on Ultrix? ar s = ranlib
 
 #CHARDEPEND=$(CHARDEPS)
 #CHARLIB=$(CHAROBJS)
@@ -858,6 +883,9 @@ checksrc:
 checklint:
 	if splint *.c 2> /dev/null | grep -a Fall; then false; fi
 
+checkmnemos:
+	$(SH) ./mkmnemocheck
+
 checkhelp:
 	if egrep -a -e "&" help/*; then false; fi
 
@@ -883,6 +911,13 @@ checkdirs:
 checkmaps:
 	echo MAKEMAPS:	$(MAKEMAPS)
 	echo CHARMAPS:	$(CHARMAPS)
+
+checkkeymaps:
+	echo KEYMAPS: $(KEYMAPS)
+	echo KEYMAPSDEP: $(KEYMAPSDEP)
+	echo KEYMAPSFLAGS: $(KEYMAPSFLAGS)
+
+checkobjs:
 	echo OBJDIR:	$(OBJDIR)
 	echo CHARDEPS:	$(CHARDEPS)
 	echo SCREENOBJ:	$(SCREENOBJ)

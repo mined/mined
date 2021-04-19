@@ -88,7 +88,7 @@ unihan () {
 	if [ ! -f Unihan_OtherMappings.txt ]
 	then
 		if make Unihan.zip >&2
-		then	unzip Unihan.zip Unihan_OtherMappings.txt
+		then	unzip -o Unihan.zip Unihan_OtherMappings.txt
 		else	echo Could not acquire Unicode database Unihan.zip >&2
 			exit 1
 		fi

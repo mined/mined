@@ -28,6 +28,7 @@ $! Alternatives:
 $! call make keymaps /define=NOSTRINGTABLES/include_dir=[.keymaps0]
 $! call make keymaps /define=use_concatenated_keymaps/include_dir=[.keymaps]
 $! call make keymaps /include_dir=[.keymaps1]
+$ del [.'arch']timestmp.obj;*
 $! BEGIN sources
 $ call make io
 $ call make keyboard

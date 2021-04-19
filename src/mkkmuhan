@@ -3,7 +3,7 @@
 if [ -f Unihan_DictionaryLikeData.txt -a -f Unihan_OtherMappings.txt -a -f Unihan_Readings.txt ]
 then	true
 else	if make Unihan.zip
-	then	unzip Unihan.zip Unihan_DictionaryLikeData.txt Unihan_OtherMappings.txt Unihan_Readings.txt
+	then	unzip -o Unihan.zip Unihan_DictionaryLikeData.txt Unihan_OtherMappings.txt Unihan_Readings.txt
 	else	echo Could not acquire Unicode database
 		exit 1
 	fi

@@ -73,6 +73,19 @@ static FLAG lastmethod = NOT_VALID;	/* FORWARD, REVERSE */
 static char prevexpr [maxPROMPTlen];	/* Buffer for previous expr. */
 static FLAG prevmethod = NOT_VALID;	/* FORWARD, REVERSE */
 
+/* Search/replace references \(...\) \1...\9 */
+#define referimax	9
+
+/*static int referi = 0; if we would maintain global reference count while matching*/
+
+static struct {
+	LINE * from_line;
+	char * from_text;
+	LINE * to_line;
+	char * to_text;
+	FLAG status;
+} referrers [referimax];
+
 
 /*======================================================================*\
 |*			Search commands					*|
@@ -503,8 +516,6 @@ substitute (line, line_poi,
   register char * textp = text_buffer;
   register char * subp = replacement;
   char * linep = line->text;
-  char * amp;
-  LINE * ampl;
   char * newtext;
   char * repl_start;
   char * repl_end;
@@ -523,12 +534,36 @@ substitute (line, line_poi,
  * replaced by the original match. A \ escapes the next character.
  */
   while (* subp != '\0' && textp < & text_buffer [maxLINElen]) {
-	if (* subp == '&') {		/* Replace the original match */
-		amp = program->start_ptr;
-		ampl = program->start_line;
+	if (* subp == '&'		/* Replace the original match */
+	    || (* subp == '\\' && * (subp + 1) >= '0' && * (subp + 1) <= '9')
+	) {
+		LINE * ampl;
+		char * amp;
+		LINE * ampendl;
+		char * ampend;
+		if (* subp == '&') {
+			ampl = program->start_line;
+			amp = program->start_ptr;
+			ampendl = program->end_line;
+			ampend = program->end_ptr;
+		} else {
+			int refi = * ++ subp - '1';
+			if (refi < 0) {
+				refi = 0;
+			}
+			if (referrers [refi].status == VALID) {
+				ampl = referrers [refi].from_line;
+				amp = referrers [refi].from_text;
+				ampendl = referrers [refi].to_line;
+				ampend = referrers [refi].to_text;
+			} else {
+				error2 ("Invalid substitution reference \\", dec_out (* subp - '0'));
+				return NIL_PTR;
+			}
+		}
 		/* Do not report an error here if aborting */
 		while (textp < & text_buffer [maxLINElen] &&
-			(ampl != program->end_line || amp < program->end_ptr)
+			(ampl != ampendl || amp < ampend)
 		) {
 			if (* amp == '\n') {
 				/* include original newline */
@@ -1010,11 +1045,13 @@ do_search (program, method)
 /* Opcodes for characters */
 #define NORMAL		0x0200
 #define DOT		0x0400
+#define REFER		(NORMAL | DOT)
+/* special flags, don't combine: */
+#define BRACKET		0x2000
+#define DONE		0x1000
 #define ENDOFLN		0x0800
 #define STAR		0x8000
 #define NEGATE		0x4000
-#define BRACKET		0x2000
-#define DONE		0x1000
 
 /* Mask for opcodes and characters */
 #define LOW_BYTE	0x00FF
@@ -1091,12 +1128,17 @@ print_expression (expr)
 
   while (ei < MAX_EXP_SIZE) {
 	s [0] = '\0';
-	if (* expr & NORMAL)	strcat (s, "=");
 	if (* expr & NEGATE)	strcat (s, "!");
-	if (* expr & DOT)	strcat (s, ".");
+	if (* expr & REFER) {
+		if (* expr & 0x80)	strcat (s, ")");
+		else			strcat (s, "(");
+	} else {
+		if (* expr & NORMAL)	strcat (s, "=");
+		if (* expr & DOT)	strcat (s, ".");
+	}
 	if (* expr & ENDOFLN)	strcat (s, "\\n");
-	if (* expr & STAR)	strcat (s, "*");
 	if (* expr & BRACKET)	strcat (s, "[");
+	if (* expr & STAR)	strcat (s, "*");
 	if (* expr & DONE)	strcat (s, "DONE");
 	printf ("%s%04X ", s, * expr);
 
@@ -1137,7 +1179,7 @@ compile (pat_start, program, case_ignore)
   character * pattern = pat_start;
   int * prev_char;		/* Pointer to previous compiled atom */
   int * acct_field = NIL_INT;	/* Pointer to last BRACKET start */
-  FLAG negate;			/* Negate flag for BRACKET */
+  FLAG negate_bracket;		/* Negate flag for BRACKET */
   character c;
 
   unsigned long low_char;
@@ -1145,6 +1187,8 @@ compile (pat_start, program, case_ignore)
   int charlen;
   character utfbuf [7];
   character * utfpoi;
+  int refi = 0;
+  FLAG refs [referimax];
 
   trace_search (("compiling\n"));
 
@@ -1176,7 +1220,7 @@ compile (pat_start, program, case_ignore)
 			* expression ++ = ENDOFLN | DONE;
 			program->status |= END_LINE;
 			trace_expression ((exp_buffer));
-			return finished (program, expression);
+			goto finish;
 		} else {
 			* expression ++ = NORMAL + '$';
 		}
@@ -1184,7 +1228,7 @@ compile (pat_start, program, case_ignore)
 	case '\0' :
 		* expression ++ = DONE;
 		trace_expression ((exp_buffer));
-		return finished (program, expression);
+		goto finish;
 	case '\n' :
 		* expression ++ = (NORMAL | ENDOFLN) + '\n';
 		break;
@@ -1203,6 +1247,28 @@ compile (pat_start, program, case_ignore)
 			} else if (c == '0') {
 				/* NUL is represented as pseudo-line-end */
 				* expression ++ = (NORMAL | ENDOFLN) + '\0';
+			} else if (c == '(') {
+				if (refi < referimax) {
+					refs [refi] = OPEN;
+					* expression ++ = REFER + refi ++;
+				} else {
+					/* too many reference points */
+					reg_error ("Too many \\(");
+					return FINE;
+				}
+			} else if (c == ')') {
+				int ref = refi - 1;
+				while (ref >= 0 && refs [ref] == VALID) {
+					ref --;
+				}
+				if (ref >= 0) {
+					refs [ref] = VALID;
+					* expression ++ = REFER + 0x80 + ref;
+				} else {
+					/* underflow # reference points */
+					reg_error ("Unmatched \\)");
+					return FINE;
+				}
 			} else {
 				* expression ++ = NORMAL + c;
 			}
@@ -1233,9 +1299,9 @@ compile (pat_start, program, case_ignore)
 		acct_field = expression ++;
 		if (* pattern == '^') {	/* List must be negated */
 			pattern ++;
-			negate = True;
+			negate_bracket = True;
 		} else {
-			negate = False;
+			negate_bracket = False;
 		}
 		while (* pattern != ']') {
 		    if (* pattern == '\0') {
@@ -1310,7 +1376,7 @@ compile (pat_start, program, case_ignore)
 		}
 		/* Assign negate and bracket field */
 		* acct_field |= BRACKET;
-		if (negate) {
+		if (negate_bracket) {
 			* acct_field |= NEGATE;
 		}
 		/*
@@ -1330,7 +1396,8 @@ compile (pat_start, program, case_ignore)
 		  /* trigger case-insensitive search on small letter */
 		  letter = unicodevalue (pattern);
 		  upper = case_convert (letter, 1);
-		  do_case_ignore = case_ignore && ! no_char (upper) && upper != letter;
+		  do_case_ignore = (FLAG)
+			(case_ignore && ! no_char (upper) && upper != letter);
 
 		  if (do_case_ignore || ((utf8_text || cjk_text) && multichar (c))) {
 			int charcount;
@@ -1406,6 +1473,16 @@ compile (pat_start, program, case_ignore)
 	}
   }
   /* NOTREACHED */
+
+finish:
+  while (-- refi >= 0 && refs [refi] == VALID) {
+  }
+  if (refi >= 0) {
+	reg_error ("Unmatched \\(");
+	return FINE;
+  }
+
+  return finished (program, expression);
 }
 
 
@@ -1496,6 +1573,12 @@ line_check (program, string, from_line, method)
   FLAG method;
 {
   char * textp = string;
+  int refi;
+
+  /*referi = 0;	if we would maintain global reference count while matching*/
+  for (refi = 0; refi < referimax; refi ++) {
+	referrers [refi].status = NOT_VALID;
+  }
 
   trace_search (("line_check [%d] %s", string - from_line->text, string));
   trace_indent ();
@@ -1651,6 +1734,19 @@ check_string (program, string, from_line, expression)
 	    }
 	} else
 	switch (opcode & ~ENDOFLN) {
+	case REFER :
+		if (patternchar & 0x80) {	/* closing \) */
+			int ref = patternchar & 0x7F;
+			referrers [ref].to_line = from_line;
+			referrers [ref].to_text = string;
+			referrers [ref].status = VALID;
+		} else {			/* opening \( */
+			int ref = patternchar & 0x7F;
+			referrers [ref].from_line = from_line;
+			referrers [ref].from_text = string;
+			referrers [ref].status = OPEN;
+		}
+		break;
 	case NORMAL :
 		/* this case only applies to single-byte characters 
 		   as multi-byte characters in the search pattern are 

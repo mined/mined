@@ -1162,6 +1162,7 @@ set_file_type_flags ()
 		|| strcaseeq (suffix, "mhtml")
 		|| strcaseeq (suffix, "sgml")
 		|| strcaseeq (suffix, "xml")
+		|| strcaseeq (suffix, "eml")
 		|| strcaseeq (suffix, "xul")
 		|| strcaseeq (suffix, "xsd")
 		|| strcaseeq (suffix, "xsl")
@@ -1357,17 +1358,10 @@ clear_UTF16_transform ()
 #define dont_debug_auto_detect
 #define dont_debug_read
 
-/**
-   if preparing for text file reading,
-   make sure utf16_file is adjusted afterwards,
-   e.g. by calling set_text_encoding (default_text_encoding)
- */
+static
 void
-reset_get_line (from_text_file)
-  FLAG from_text_file;	/* consider UTF-16/EBCDIC transformation ? */
+reset_count_statistics ()
 {
-  set_error (NIL_PTR);
-
   count_good_utf = 0;
   count_bad_utf = 0;
   count_utf_bytes = 0;
@@ -1400,9 +1394,22 @@ reset_get_line (from_text_file)
   count_lineend_CRLF = 0;
   count_lineend_CR = 0;
   count_lineend_NL = 0;
+}
+
+/**
+   if preparing for text file reading,
+   make sure utf16_file is adjusted afterwards,
+   e.g. by calling set_text_encoding (default_text_encoding)
+ */
+void
+reset_get_line (from_text_file)
+  FLAG from_text_file;	/* consider UTF-16/EBCDIC transformation ? */
+{
+  set_error (NIL_PTR);
 
   count_1read_op = 0;
 
+  reset_count_statistics ();
   reset_quote_statistics ();
 
   BOM = False;
@@ -1440,7 +1447,11 @@ show_get_l_errors ()
 {
   if (! only_detect_text_encoding && get_line_error != NIL_PTR) {
 	ring_bell ();
-	status_fmt2 (get_line_error, " - Loading failed!");
+	if (loading) {
+		status_fmt2 (get_line_error, " - Loading failed!");
+	} else {
+		status_fmt2 (get_line_error, " - Inserting failed!");
+	}
 /*
 	while (readcharacter () != ' ' && quit == False) {
 		ring_bell ();
@@ -1620,6 +1631,25 @@ static signed char good_ebcdic [0x100] = {
 /*F0*/	cl, cl, cl, cl, cl, cl, cl, cl, cl, cl, cc, cc, cc, cc, cc, cc,
 };
 
+static signed char ebcdic_vs_iso [0x100] = {
+/*00*/	0, 0, 0, 0, 0, cc, 0, 0, 0, -cc, -cl, 0, 0, -cc, 0, 0,
+/*10*/	0, 0, 0, 0, 0, cl, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*20*/	-cl, -cc, -cc, -cc, -cc, 0, -cc, -cc, -cc, -cc, -cc, -cc, -cc, -cc, -cc, -cc,
+/*30*/	-cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cc, -cc, -cc, -cc, -cc, -cc,
+/*40*/	cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl,
+/*50*/	-cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, 0, 0, 0, 0, 0,
+/*60*/	cc, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl,
+/*70*/	-cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, -cl, 0, 0, 0, 0, cc,
+/*80*/	0, cl, cl, cl, cl, cl, cl, cl, cl, cl, -cc, 0, 0, cc, 0, 0,
+/*90*/	0, cl, cl, cl, cl, cl, cl, cl, cl, cl, -cc, 0, 0, 0, 0, -cc,
+/*A0*/	0, cc, cl, cl, cl, cl, cl, cl, cl, cl, 0, 0, cc, cc, cc, 0,
+/*B0*/	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, cc, 0, 0, cc, 0, 0,
+/*C0*/	cc, cl, cl, cl, cl, cl, cl, cl, cl, cl, -cc, 0, 0, 0, 0, 0,
+/*D0*/	cc, cl, cl, cl, cl, cl, cl, cl, cl, cl, -cc, 0, 0, 0, 0, 0,
+/*E0*/	cc, 0, cl, cl, cl, cl, cl, cl, cl, cl, -cc, 0, 0, 0, 0, 0,
+/*F0*/	cl, cl, cl, cl, cl, cl, cl, cl, cl, cl, -cc, 0, 0, 0, 0, -cc,
+};
+
 static
 void auto_detect_byte (curbyte, do_auto_detect)
   character curbyte;
@@ -1755,7 +1785,7 @@ void auto_detect_byte (curbyte, do_auto_detect)
 	  }
 
 	  /* detect specific CJK encoding */
-	  if (do_auto_detect && ! utf16_file) {
+	  if (do_auto_detect && ! utf16_file && ! ebcdic_file) {
 
 		/* CJK character set ranges
 		GB	GBK		81-FE	40-7E, 80-FE
@@ -1934,7 +1964,15 @@ void auto_detect_byte (curbyte, do_auto_detect)
 	/* end character encoding auto-detection */
 }
 
+
 #define dont_debug_read_error
+#define dont_debug_paste_error
+
+#if defined (debug_read_error) || defined (debug_paste_error)
+#define trace_get_line(args)	printf args
+#else
+#define trace_get_line(args)	
+#endif
 
 int
 get_line (fd, buffer, len, do_auto_detect)
@@ -1956,6 +1994,7 @@ get_line (fd, buffer, len, do_auto_detect)
   fini = (char *) (buffer + 20) /* debug overlong line input */;
 #endif
 
+  trace_get_line (("get_line\n"));
   /* read one line */
   do {	/* read one byte */
 	if (cur_pos == last_bufpos) {
@@ -1990,7 +2029,7 @@ get_line (fd, buffer, len, do_auto_detect)
 				/* already transformed UTF-8 BOM */
 				BOM = True;
 			}
-			count_1read_op = 1;
+			count_1read_op = 1;	/* prevent double transform */
 		    }
 		} else {
 		    do {
@@ -1999,6 +2038,16 @@ get_line (fd, buffer, len, do_auto_detect)
 #ifdef debug_read_error
 			read_chars = -1;
 			errno = EIO;
+#endif
+#ifdef debug_paste_error
+			if (! loading) {
+				static int cnt = 0;
+				if (++ cnt >= 1) {
+					read_chars = -1;
+					errno = EIO;
+					set_error ("Read error");
+				}
+			}
 #endif
 /*			if (read_chars > 0) {
 				file_position += read_chars;
@@ -2023,6 +2072,7 @@ get_line (fd, buffer, len, do_auto_detect)
 				epoi ++;
 			}
 			mapped_text = False;
+			count_1read_op = 1; /* prevent double transform...*/
 		    }
 		}
 		last_bufpos = & filebuf [read_chars];
@@ -2047,7 +2097,10 @@ get_line (fd, buffer, len, do_auto_detect)
 				BOM = True;
 				/* strip converted UTF-8 BOM from text */
 				cur_pos += 3;
-			} else if (utf8_text && utf16_file) { /* UTF-16 pre-selection */
+			} else if (utf8_text && utf16_file) {
+				/* UTF-16 pre-selection */
+			} else if (ebcdic_file) {
+				/* EBCDIC pre-selection */
 			} else if (do_auto_detect) {
 				/* UTF-16 auto-detection */
 				char * sp = filebuf;
@@ -2062,7 +2115,7 @@ get_line (fd, buffer, len, do_auto_detect)
 							even_0 ++;
 						}
 					}
-					odd = ! odd;
+					negate (odd);
 				}
 				if (even_0 > read_chars / 133
 				    && even_0 > 2 * (odd_0 + 1)) {
@@ -2073,10 +2126,46 @@ get_line (fd, buffer, len, do_auto_detect)
 					/* little-endian UTF-16 */
 					(void) set_text_encoding (":61", ' ', "detect 61");
 				}
+#define auto_detect_ebcdic
+#ifdef auto_detect_ebcdic
+				if (! utf16_file && strpbrk (detect_encodings, "E")) {
+					int good_e = 0;
+					int bad_e = 0;
+					sp = filebuf;
+					while (sp < last_bufpos) {
+						character c = * sp ++;
+						int e = ebcdic_vs_iso [c];
+						if (e > 0) {
+							good_e += e;
+						} else {
+							bad_e -= e;
+						}
+						/* cross-check UTF-8 */
+						auto_detect_byte (c, True);
+					}
+/*printf ("E %d -%d U %d -%d\n", good_e, bad_e, count_good_utf, count_bad_utf);*/
+
+					if (good_e > bad_e &&
+					    (count_bad_utf > 0 ||
+					     (good_e - bad_e) > 6 * count_good_utf
+					    )
+					   ) {
+						(void) set_text_encoding ("CP1047", ' ', "detect EBCDIC");
+					}
+
+					reset_count_statistics ();
+				}
+#endif
 			}
 
 			if (utf16_file) {
-				/* do_auto_detect = False; */
+				/* double transform prevented 
+				   by setting count_1read_op = 1; above
+				*/
+
+				/* Should auto_detect be disabled for this file?
+				   But then it would need to be prefmov'd!
+				*/
 
 				/* move UTF-16 input to UTF-16 buffer */
 				if (alloc_UTF16buf () == ERRORS) {
@@ -2090,6 +2179,25 @@ get_line (fd, buffer, len, do_auto_detect)
 				/* transform to UTF-8 */
 				read_chars = UTF16_transform (utf16_little_endian, filebuf, filebuflen, & next_byte, fini_byte);
 				last_bufpos = & filebuf [read_chars];
+#ifdef auto_detect_ebcdic
+			} else if (ebcdic_file) {
+				/* double transform prevented 
+				   by setting count_1read_op = 1; above
+				*/
+
+				/* Should auto_detect be disabled for this file?
+				   But then it would need to be prefmov'd!
+				*/
+
+				character * epoi = filebuf;
+				int i;
+				mapped_text = True;	/* enable lookup_encodedchar */
+				for (i = 0; i < read_chars; i ++) {
+					* epoi = lookup_encodedchar (* epoi);
+					epoi ++;
+				}
+				mapped_text = False;
+#endif
 			}
 			count_1read_op = 1;
 		}
@@ -2202,10 +2310,11 @@ get_line (fd, buffer, len, do_auto_detect)
 	}
 
 	/* handle NL */
-	if (((! do_auto_detect && loading) || pasting_encoded)
+	if (((loading && (! do_auto_detect || ebcdic_file)) || pasting_encoded)
 	    && (
 		(ebcdic_file && curbyte == 0x85)
-		|| (! ebcdic_file && ! utf16_file && ! no_char (code_NL) && curbyte == code_NL)
+		|| (! ebcdic_file && ! utf16_file && ! utf8_text
+		    && ! no_char (code_NL) && curbyte == code_NL)
 	       )
 	   ) {
 		* buffer ++ = '\n';
@@ -2220,14 +2329,15 @@ get_line (fd, buffer, len, do_auto_detect)
 
 
 	/* handle if line buffer full */
-	if (buffer > fini - 6 && * cur_pos != '\n') {
+	if (buffer > fini - 6 && curbyte != '\n') {
 	    /* try not to split within a multi-byte character sequence */
 	    if (buffer == fini ||	/* last chance to split! */
 		(cjk_text && (! do_auto_detect || pasting)
 		? charbegin (begin, buffer) == buffer
-		: (* cur_pos & 0xC0) != 0x80
+		: (curbyte & 0xC0) != 0x80
 		))
 	    {
+		cur_pos --;
 		* buffer ++ = '\n';
 		got_lineend = lineend_NONE;
 		ret = SPLIT_LINE;
@@ -2246,9 +2356,11 @@ get_line (fd, buffer, len, do_auto_detect)
 
   /* handle errors and EOF */
   if (read_chars < 0) {
+	trace_get_line ((" get_line < 0\n"));
 	return ERRORS;
   } else if (read_chars == 0) {
     if (buffer == begin) {
+	trace_get_line ((" get_line NO_INPUT\n"));
 	return NO_INPUT;
     } else {
 	/* consider incomplete UTF-8 sequence for auto-detection */
@@ -2280,6 +2392,7 @@ get_line (fd, buffer, len, do_auto_detect)
 
   * buffer = '\0';
   * len = (int) (buffer - begin);
+  trace_get_line ((" get_line %d\n", ret));
   return ret;
 }
 
@@ -3231,6 +3344,7 @@ unlock_file ()
   if (file_locked == True) {
 	char * lf = get_lockfile_name (file_name);
 	char target [maxFILENAMElen];
+	status_file ("Unlocking ", file_name);
 	if (getsymboliclink (lf, target, sizeof (target)) >= 0) {
 		char mylocktext [maxFILENAMElen];
 		setlocktarget (mylocktext);
@@ -3871,7 +3985,7 @@ load_file_position (file, aux, from_pipe, with_display, to_open_linum, to_open_p
   } else {
 	update_file_name (file, False, ! aux);
 	restore_cmd_options = True;
-	status_line ("Accessing ", file);
+	status_file ("Accessing ", file);
 
 	if (! from_pipe) {
 		/* Determine file type and properties */
@@ -3911,7 +4025,7 @@ load_file_position (file, aux, from_pipe, with_display, to_open_linum, to_open_p
 		viewonly_err = True;
 		empty = True;
 	} else if (access (file, F_OK) < 0) {	/* Cannot access file */
-		status_line ("New file ", file);
+		status_file ("New file ", file);
 		overwriteOK = False;
 		empty = True;
 #ifndef vms
@@ -3928,7 +4042,7 @@ load_file_position (file, aux, from_pipe, with_display, to_open_linum, to_open_p
 		wlock.l_start = 0;
 		wlock.l_len = 0;
 		if (fcntl (fd, F_SETLK, & wlock) < 0) {
-			status_line ("Other program claims lock on ", file);
+			status_file ("Other program claims lock on ", file);
 			sleep (2) /* give time to see warning */;
 		} else {
 			fcntl_locked = True;
@@ -4109,9 +4223,9 @@ load_file_position (file, aux, from_pipe, with_display, to_open_linum, to_open_p
 #endif
     {
 	if (file_name [0] != '\0') {
-		status_line ("Reading ", file_name);
+		status_file ("Reading ", file_name);
 	} else {
-		status_line ("Reading ", file);
+		status_file ("Reading ", file);
 	}
 
 	line = read_file (fd, & ret, do_auto_detect);
@@ -4120,7 +4234,7 @@ load_file_position (file, aux, from_pipe, with_display, to_open_linum, to_open_p
     }
 
 
-    if (utf16_file) {
+    if (utf16_file || ebcdic_file) {
 	/* workaround: skip following restore;
 	   in this case, set_text_encoding has been called 
 	   within the save/restore pair
@@ -4219,7 +4333,7 @@ load_file_position (file, aux, from_pipe, with_display, to_open_linum, to_open_p
 		if (nr_of_bytes > 0) {
 			status_fmt ("Reading failed (buffer incomplete): ", serror ());
 		} else {
-			status_fmt ("Reading failed (could not read): ", serror ());
+			status_fmt ("Reading failed (could not load): ", serror ());
 		}
 		errshown = True;
 		overwriteOK = False;
@@ -4378,7 +4492,7 @@ checkoverwrite (name)
 #endif
   char * ov_prompt = ": OK to overwrite? (y/n/ESC)";
 
-  status_line ("Checking ", name);
+  status_file ("Checking ", name);
   if (access (name, F_OK) < 0) {	/* Cannot access file */
 	return NOT_VALID;	/* no danger of unwanted damage */
   }
@@ -4789,7 +4903,7 @@ write_line (fd, text, return_type, handle_utf16)
 			\--------> EXMINED ----/
 	ESC t -------------------> Stag ------/
 */
-long write_count;	/* number of bytes written */
+long bytes_written;	/* number of bytes written */
 long chars_written;	/* number of chars written */
 
 /*
@@ -4797,14 +4911,15 @@ long chars_written;	/* number of chars written */
  */
 static
 void
-write_file (fd)
+write_file (fd, fn)
   int fd;
+  char * fn;
 {
   register LINE * line;
   int ret = FINE;
   static FLAG handle_utf16 = True;
 
-  write_count = 0L;
+  bytes_written = 0L;
   chars_written = 0L;
   clear_filebuf ();
 
@@ -4814,11 +4929,11 @@ write_file (fd)
 		ret = write_line (fd, "﻿", lineend_NONE, handle_utf16);
 		if (ret == ERRORS) {
 			msg_write_error ("Write");
-			write_count = -1L;
+			bytes_written = -1L;
 			chars_written = -1L;
 		} else {
 			ret = FINE;
-			write_count = 2;
+			bytes_written = 2;
 			chars_written = 1;
 		}
 	}
@@ -4829,11 +4944,11 @@ write_file (fd)
 	ret = write_line (fd, line->text, line->return_type, handle_utf16);
 	if (ret == ERRORS) {
 		msg_write_error ("Write");
-		write_count = -1L;
+		bytes_written = -1L;
 		chars_written = -1L;
 		break;
 	}
-	write_count += (long) ret;
+	bytes_written += (long) ret;
 	chars_written += (long) char_count (line->text);
 	if (line->return_type == lineend_NONE) {
 		chars_written --;
@@ -4841,15 +4956,23 @@ write_file (fd)
     }
   }
 
-  if (write_count > 0L && flush_filebuf (fd) == ERRORS) {
-	if (ret != ERRORS) {
-		msg_write_error ("Write");
-		ret = ERRORS;
+  if (bytes_written > 0L) {
+	if (fn) {
+		status_file ("Flushing ", fn);
 	}
-	write_count = -1L;
-	chars_written = -1L;
+	if (flush_filebuf (fd) == ERRORS) {
+		if (ret != ERRORS) {
+			msg_write_error ("Write");
+			ret = ERRORS;
+		}
+		bytes_written = -1L;
+		chars_written = -1L;
+	}
   }
 
+  if (fn) {
+	status_file ("Closing ", fn);
+  }
   if (close (fd) == -1) {
 #ifdef debug_writefile
 	printf ("close: %s\n", serror ());
@@ -4858,7 +4981,7 @@ write_file (fd)
 		msg_write_error ("Close");
 		ret = ERRORS;
 	}
-	write_count = -1L;
+	bytes_written = -1L;
 	chars_written = -1L;
   }
 }
@@ -4871,7 +4994,7 @@ write_recovery ()
   int fd;
 
   fd = open (recovery_fn, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, bufprot);
-  write_file (fd);
+  write_file (fd, 0);
 }
 
 int
@@ -4880,11 +5003,11 @@ panicwrite ()
   int fd;
 
   fd = open (panic_file, O_CREAT | O_TRUNC | O_WRONLY | O_BINARY, bufprot);
-  write_file (fd);
+  write_file (fd, 0);
 
   write_recovery ();
 
-  if (write_count == -1L) {
+  if (bytes_written == -1L) {
 	return ERRORS;
   } else {
 	return FINE;
@@ -4913,7 +5036,7 @@ do_backup (fn)
   FLAG backup_ok = False;
   char * backup_name = get_backup_name (fn);
   if (backup_name) {
-	status_line ("Copying to backup file ", backup_name);
+	status_file ("Copying to backup file ", backup_name);
 	backup_ok = copyfile (fn, backup_name);
   }
   if (backup_ok == False) {
@@ -5007,7 +5130,7 @@ write_text_pos (force_write, force_savepos, keep_screenmode)
     set_cursor (0, YMAX);
     flush ();
 
-    write_file (fd);
+    write_file (fd, 0);
 
     if (keep_screenmode) {
 	raw_mode (True);
@@ -5139,7 +5262,7 @@ write_text_pos (force_write, force_savepos, keep_screenmode)
 	}
     }
 
-    status_line ("Opening to write ", file_name);
+    status_file ("Opening to write ", file_name);
     if (filtering_write) {
 	/* let the filter truncate the file so the content is not lost 
 	   if the filter fails to start */
@@ -5157,18 +5280,55 @@ write_text_pos (force_write, force_savepos, keep_screenmode)
 	}
     }
 #endif
+#ifdef unix
+    if (fd < 0 && geterrno () == EACCES) {
+	int open_errno = geterrno ();
+	/* try to make dir available / activate dropped mount ... */
+	char dir_name [maxFILENAMElen];
+	char * bn;
+	strcpy (dir_name, file_name);
+	bn = getbasename (dir_name);
+	if (bn == dir_name) {
+		strcpy (dir_name, ".");
+	} else {
+		* bn = '\0';
+	}
+
+	if (access (dir_name, F_OK) < 0) {
+		char sys_cmd [3 + maxFILENAMElen];
+		int sysres;
+
+		strcpy (sys_cmd, "cd ");
+		strappend (sys_cmd, dir_name, maxFILENAMElen);
+		strappend (sys_cmd, " 2>/dev/null", maxFILENAMElen);
+
+		sleep (1);
+		error2 ("Trying to enable directory access after: ", serrorof (open_errno));
+		sleep (2);
+		sysres = system (sys_cmd);
+
+		if (sysres) {
+			error2 ("Failed (cd ...): ", dec_out (sysres));
+			sleep (2);
+		}
+
+		fd = open (file_name, O_CREAT | o_trunc | O_WRONLY | O_BINARY, fprot1 | ((fprot1 >> 2) & xprot));
+	}
+    }
+#endif
     if (fd < 0) {	/* Opening for write failed */
+	int open_errno = geterrno ();
 	if (loaded_from_filename) {
 		if (access (file_name, F_OK) < 0) {
-			status_fmt ("File not accessible (retry or Save As...): ", serror ());
+			status_fmt ("File not accessible (retry or Save As...): ", serrorof (open_errno));
 		} else {
-			status_fmt ("File not writable (retry or Save As...): ", serror ());
+			status_fmt ("File not writable (retry or Save As...): ", serrorof (open_errno));
 		}
 	} else {
-		status_fmt ("Cannot create or write (try Save As...): ", serror ());
+		status_fmt ("Cannot create or write (try Save As...): ", serrorof (open_errno));
 	}
 	/* don't set writable = False as there might be a 
-	   temporary network problem */
+	   temporary network problem (though tried remedy above already) */
 	return ERRORS;
     } else {
 	writable = True;
@@ -5236,7 +5396,7 @@ write_text_pos (force_write, force_savepos, keep_screenmode)
 	} else {	/* pid > 0: parent */
 		(void) close (pfds [0]);
 		/* write file contents to pipe */
-		write_file (pfds [1]);
+		write_file (pfds [1], 0);
 		/* wait for filter to terminate */
 		do {
 			w = wait (& status);
@@ -5256,25 +5416,26 @@ write_text_pos (force_write, force_savepos, keep_screenmode)
 	/* check child process errors */
 	if (w == -1) {
 		status_fmt ("Filter wait error: ", serrorof (waiterr));
-		write_count = -1L;	/* indicate error */
+		bytes_written = -1L;	/* indicate error */
 	} else if ((status >> 8) == 127) {	/* child could not exec filter */
 		status_fmt2 (filter_write, ": Failed to start filter");
-		write_count = -1L;	/* indicate error */
+		bytes_written = -1L;	/* indicate error */
 	} else if ((status & 0x80) != 0) {	/* filter dumped */
 		status_fmt ("Filter dumped: ", dec_out (status & 0x7F));
-		write_count = -1L;	/* indicate error */
+		bytes_written = -1L;	/* indicate error */
 	} else if ((status & 0xFF) != 0) {	/* filter aborted */
 		status_fmt ("Filter aborted: ", dec_out (status & 0x7F));
-		write_count = -1L;	/* indicate error */
+		bytes_written = -1L;	/* indicate error */
 	} else if ((status >> 8) != 0) {	/* filter reported error */
 		status_fmt ("Filter error: ", serrorof (status >> 8));
-		write_count = -1L;	/* indicate error */
+		bytes_written = -1L;	/* indicate error */
 	}
     } else
 #endif
     {
-	status_line ("Writing ", file_name);
-	write_file (fd);
+	status_file ("Writing ", file_name);
+	write_file (fd, file_name);
+	status_file ("Written ", file_name);
     }
 
 #ifndef VAXC
@@ -5285,7 +5446,7 @@ write_text_pos (force_write, force_savepos, keep_screenmode)
 #endif
   }
 
-  if (write_count == -1L) {
+  if (bytes_written == -1L) {
 	return ERRORS;
   }
 
@@ -5299,7 +5460,7 @@ write_text_pos (force_write, force_savepos, keep_screenmode)
   reading_pipe = False;	/* File name is now assigned */
 
 /* Display how many chars (and lines) were written */
-  fstatus ("Wrote", write_count, chars_written);
+  fstatus ("Wrote", bytes_written, chars_written);
 /*  fstatus ("Wrote", -1L); */
   (void) save_open_pos (file_name, hop_flag || ! groom_info_files);
   return FINE;
@@ -6250,36 +6411,43 @@ Stag ()
 \*======================================================================*/
 
 /*
+ * External file command.
+ */
+static void
+file_command (char * cmd, char * err)
+{
+  char syscommand [maxCMDlen];	/* Buffer for full system command */
+  int sysres;
+
+  if (modified) {
+	if (write_text () != FINE) {
+		return;
+	}
+  }
+
+  /* try to check out */
+  build_string (syscommand, "%s %s", cmd, file_name);
+  sysres = systemcall (NIL_PTR, syscommand, 1);
+  RDwin ();
+  if (sysres != 0) {
+	error (err);
+  }
+}
+
+/*
  * Checkout (from version managing system).
  */
 void
 checkout ()
 {
-  int save_cur_pos;
-  int save_cur_line;
-  char syscommand [maxCMDlen];	/* Buffer for full system command */
-  int sysres;
+  /* save current position */
+  int save_cur_line = line_number;
+  int save_cur_pos = get_cur_pos ();
 
-	if (modified) {
-		if (write_text () != FINE) {
-			return;
-		}
-	}
+  file_command ("co", "Checkout failed");
 
-	/* save current position */
-	save_cur_line = line_number;
-	save_cur_pos = get_cur_pos ();
-
-	/* try to check out */
-	build_string (syscommand, "co %s", file_name);
-	sysres = systemcall (NIL_PTR, syscommand, 1);
-	RDwin ();
-	if (sysres != 0) {
-		error ("Checkout failed");
-	}
-
-	/* reload file */
-	(void) load_file_position (file_name, True, False, True, save_cur_line, save_cur_pos);
+  /* reload file */
+  (void) load_file_position (file_name, True, False, True, save_cur_line, save_cur_pos);
 }
 
 /*
@@ -6288,22 +6456,16 @@ checkout ()
 void
 checkin ()
 {
-  char syscommand [maxCMDlen];	/* Buffer for full system command */
-  int sysres;
+  file_command ("ci", "Checkin failed");
+}
 
-	if (modified) {
-		if (write_text () != FINE) {
-			return;
-		}
-	}
-
-	/* try to check in */
-	build_string (syscommand, "ci %s", file_name);
-	sysres = systemcall (NIL_PTR, syscommand, 1);
-	RDwin ();
-	if (sysres != 0) {
-		error ("Checkin failed");
-	}
+/*
+ * Backup.
+ */
+void
+backup ()
+{
+  file_command ("bu", "Backup failed");
 }
 
 

@@ -89,10 +89,10 @@ extern int iscombining_above _((unsigned long unichar));
 extern char * script _((unsigned long ucs));
 extern unsigned long decomposition_base _((unsigned long ucs));
 extern char * category _((unsigned long ucs));
-extern FLAG isLetter _((unsigned long ucs));
-extern FLAG is_wideunichar _((unsigned long ucs));
-extern FLAG iscombining_unichar _((unsigned long ucs));
-extern FLAG isspacingcombining_unichar _((unsigned long ucs));
+extern int isLetter _((unsigned long ucs));
+extern int is_wideunichar _((unsigned long ucs));
+extern int iscombining_unichar _((unsigned long ucs));
+extern int isspacingcombining_unichar _((unsigned long ucs));
 
 
 /* Character decomposition information */
@@ -122,21 +122,21 @@ extern int utfencode _((unsigned long, character *));
 extern int cjkencode _((unsigned long, character *));
 extern int cjkencode_char _((FLAG term, unsigned long, character *));
 extern char * encode_char _((unsigned long));
-extern FLAG valid_cjk _((unsigned long cjkchar, /* opt */ character * cjkbytes));
-extern FLAG valid_cjkchar _((FLAG term, unsigned long cjkchar, /* opt */ character * cjkbytes));
+extern int valid_cjk _((unsigned long cjkchar, /* opt */ character * cjkbytes));
+extern int valid_cjkchar _((FLAG term, unsigned long cjkchar, /* opt */ character * cjkbytes));
 extern unsigned long isolated_alef _((unsigned long));
 extern unsigned long ligature_lam_alef _((unsigned long));
-extern FLAG no_char _((unsigned long c));
-extern FLAG no_unichar _((unsigned long u));
+extern int no_char _((unsigned long c));
+extern int no_unichar _((unsigned long u));
 
 extern unsigned long mappedtermchar _((unsigned long));
 extern unsigned long lookup_mappedtermchar _((unsigned long));
-extern FLAG remapping_chars _((void));
+extern int remapping_chars _((void));
 extern unsigned long encodedchar _((unsigned long));
 extern unsigned long encodedchar2 _((unsigned long, unsigned long));
 extern unsigned long lookup_encodedchar _((unsigned long));
 extern unsigned long max_char_value _((void));
-extern FLAG encoding_has_combining _((void));
+extern int encoding_has_combining _((void));
 extern char * get_text_encoding _((void));
 extern char * get_term_encoding _((void));
 extern FLAG set_text_encoding _((char * charmap, char tag, char * debug_tag));

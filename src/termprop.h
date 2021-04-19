@@ -52,7 +52,8 @@ typedef enum {
 	U400, U410,
 	U500, U510, U520,
 	U600, U620, U630,
-	U700,
+	U700, U800, U900,
+	U1000, U1100, U1210, U1300,
 	WIDTH_DATA_MAX
 } width_data_type;
 
@@ -67,6 +68,8 @@ extern int combining_data_version;
 /* special modes */
 extern int cjk_width_data_version;	/* xterm CJK legacy width mode -cjk_width */
 extern FLAG hangul_jamo_extended;	/* U+D7B0... combining Jamo ? */
+extern FLAG wide_indic;		/* Indic scripts handled wide? */
+extern FLAG wide_extra;		/* Some long Unicode chars handled wide? */
 
 /* specific behaviour of specific terminals */
 extern FLAG unassigned_single_width;	/* rxvt */
@@ -81,11 +84,14 @@ extern int xterm_version;
 extern int gnome_terminal_version;
 extern int rxvt_version;
 extern int konsole_version;
+extern int cygwin_version;
 extern int mintty_version;
 extern int mlterm_version;
 extern int poderosa_version;
 extern int screen_version;
 extern int tmux_version;
+
+extern FLAG vt220_keyboard;
 
 /* terminal features with respect to non-BMP characters (>= 0x10000) */
 extern int nonbmp_width_data;

@@ -6,11 +6,15 @@
 #include "mined.h"
 
 #include "charprop.h"
+#include "textfile.h"	/* dont_modify () */
 
 
 int first_left_margin = 0;
 int next_left_margin = 0;
 int right_margin = 71;
+
+static char * prefix = NIL_PTR;
+static char prefixbuf [maxLINElen];
 
 
 /*======================================================================*\
@@ -29,6 +33,13 @@ int right_margin = 71;
 #define trace_justi(params)	printf params
 #else
 #define trace_justi(params)	
+#endif
+
+#define dont_debug_prefix
+#ifdef debug_prefix
+#define trace_prefix(params)	printf params
+#else
+#define trace_prefix(params)	
 #endif
 
 #ifdef debug_justi
@@ -71,7 +82,7 @@ trcstr (text, poi)
  */
 static
 int
-nonblank_line_follows ()
+nonblank_line_follows_prefix_matches ()
 {
   LINE * next_line = cur_line->next;
   char * next_char;
@@ -84,7 +95,12 @@ nonblank_line_follows ()
   while (white_space (* next_char)) {
 	next_char ++;
   }
-  return * next_char != '\n';
+
+  if (prefix) {
+	return strisprefix (prefix, next_char);
+  } else {
+	return * next_char != '\n';
+  }
 }
 
 /*
@@ -107,6 +123,7 @@ justi_line (left_margin, jushop, first_line, justi_tabs, space_entered, auto_jus
 
   poi = cur_line->text;
   column = 0;
+  trace_prefix (("J %s", poi));
 /*
 old:
   while (column < left_margin && (poi < cur_text || white_space (* poi)))
@@ -125,8 +142,40 @@ try:
 	advance_char_scr (& poi, & column, cur_line->text);
   }
   trace_justi (("justi (%d, %d) advanced to %d («%s»)\n", left_margin, jushop, column, trcstr (cur_line->text, poi)));
+
+  move_address (poi, y);
+  if (prefix && ! first_line) {
+	char * p = prefix;
+	/* move_address (poi, y); but don't move_address again below! */
+	/* indent */
+	while (column < first_left_margin) {
+		if (justi_tabs && tab (column) <= first_left_margin) {
+			S0 ('\t');
+			column = tab (column);
+		} else {
+			S0 (' ');
+			column ++;
+		}
+	}
+	/* skip prefix if already here */
+	if (strisprefix (prefix, cur_text)) {
+		move_address (cur_text + strlen (prefix), y);
+		trace_prefix (("ws? %s", cur_text));
+		while (white_space (* cur_text)) {	/* remove separator */
+			trace_prefix (("DEL\n"));
+			DCC0 ();
+		}
+	} else
+	while (* p) {
+		trace_prefix (("(%s): (%s) %04lX @%d (%d)\n", prefix, p, charvalue (p), column, left_margin));
+		Scharacter (charvalue (p));
+		trace_prefix (("->%s", cur_line->text));
+		advance_char_scr (& p, & column, prefix);
+	}
+	poi = cur_line->text;	/* old text pointer may be invalid */
+  }
   if (column < left_margin) {
-	move_address (poi, y);
+	/* move_address (poi, y); */
 	while (column < left_margin) {
 		if (justi_tabs && tab (column) <= left_margin) {
 			S0 ('\t');
@@ -140,6 +189,7 @@ try:
 	column = 0;		/* so start again */
   }
   trace_justi ((" -> advanced to %d («%s»)\n", column, trcstr (cur_line->text, poi)));
+
   last_blank = NIL_PTR;
   very_last_blank = NIL_PTR;
   while (column < right_margin && * poi != '\n') {
@@ -190,7 +240,7 @@ try:
 		}
 	}
   } else if (poi - last_blank == 1 ||
-	   (jushop > 0 && nonblank_line_follows ()))
+	   (jushop > 0 && nonblank_line_follows_prefix_matches ()))
   {
   /* continue with next line */
 	move_address (poi, y);
@@ -201,11 +251,24 @@ try:
 	trace_justi ((" concatenating lines\n"));
 	/* concatenate lines */
 	if (cur_line->next != tail) {
+		trace_prefix ((" concatenating line: %s checking prefix (%s)\n", cur_line->next->text, prefix));
 		DCC0 ();
 	}
-	while (white_space (* cur_text)) {
-		/* remove leading space */
+	while (white_space (* cur_text)) {	/* remove leading space */
 		DCC0 ();
+	}
+	if (prefix) {
+		if (strisprefix (prefix, cur_text)) {
+			char * p = prefix;
+			do {
+				DCC0 ();
+				advance_char (& p);
+			} while (* p);
+		}
+		trace_prefix ((" skipped prefix: %s @ %s", cur_line->text, cur_text));
+		while (white_space (* cur_text)) {	/* remove separator */
+			DCC0 ();
+		}
 	}
 
 	if (* cur_text != '\n') {
@@ -237,6 +300,10 @@ justi (left_margin, jushop, justi_tabs, space_entered, auto_jus)
   int space_entered;	/* was last appended character a space? */
   int auto_jus;		/* is this a case of justify while typing? */
 {
+  if (dont_modify ()) {
+	return;
+  }
+
   justi_line (left_margin, jushop, True, justi_tabs, space_entered, auto_jus);
 }
 
@@ -297,6 +364,7 @@ JUSclever ()
 		}
 	}
   }
+#warning check mode (JUSmode XOR hop, jushop) and prefix (below)
   if (lastc != ' ') {
 	/* current line begins a paragraph */
 	FLAG is_itemchar = False;
@@ -314,6 +382,19 @@ JUSclever ()
 	   )
 	{
 		javadoc = True;
+	} else if (strisprefix ("//", poi)) {
+		javadoc = True;
+		strcpy (prefixbuf, "//");
+		prefix = prefixbuf;
+	} else if (* poi == '>' || * poi == '|') {
+		char * pp = poi;
+		strcpy (prefixbuf, "");
+		prefix = prefixbuf;
+		while (* pp == '>' || * pp == '|' || * pp == ' ') {
+			* prefix ++ = * pp ++;
+		}
+		* prefix = '\0';
+		prefix = prefixbuf;
 	}
 
 	while (! is_itemchar &&
@@ -362,6 +443,7 @@ JUSclever ()
 
   justify (justi_tabs);
 
+  prefix = NIL_PTR;
   first_left_margin = save_first_left;
   next_left_margin = save_next_left;
   right_margin = save_right;

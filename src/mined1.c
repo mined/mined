@@ -117,10 +117,6 @@ character quit_char = '\034';	/* ^\/^G character to cancel command */
 
 int YMAX, XMAX;
 
-long chars_saved;		/* # of chars in paste buffer */
-long bytes_saved;		/* # of bytes in paste buffer */
-int lines_saved;		/* # of lines in paste buffer */
-
 char text_buffer [maxLINElen];	/* for get_line, modifications, get_tagline, build_string */
 
 /**
@@ -162,6 +158,7 @@ FLAG darkness_detected = False;	/* could background colour be queried ? */
 FLAG fg_yellowish = False;	/* foreground colour near yellow ? */
 FLAG bright_term = False;	/* need to improved contrast ? */
 FLAG bw_term = False;		/* black/white terminal ? */
+FLAG csi_term = True;		/* terminal supports CSI control sequences */
 FLAG suppress_colour = False;	/* don't use ANSI color settings */
 static FLAG cygwin_console = False;
 static FLAG can_report_props = True;
@@ -493,7 +490,23 @@ MOUSEfunction ()
 
   if (mouse_ypos < -1) {
 	/* click in filename tab label area */
-	if (use_file_tabs) {
+	if (mouse_button == rightbutton) {
+		if (mouse_shift & (control_button | alt_button)) {
+			EDIT ();
+		} else {
+			SELECTFILE ();
+		}
+	} else if (mouse_button == wheelup || mouse_button == wheeldown) {
+		if (mouse_shift & (control_button | alt_button)) {
+			if (mouse_button == wheelup) {
+				PRVFILE ();
+			} else {
+				NXTFILE ();
+			}
+		} else {
+			SELECTFILE ();
+		}
+	} else if (use_file_tabs) {
 		char * fn = filelist_search (mouse_ypos + MENU, mouse_xpos);
 		if (fn) {
 			if (! streq (fn, file_name)) {
@@ -2726,7 +2739,7 @@ install_console_pipe ()
 		}
 	}
 
-	if (cygwin_version_major < 1007 || cygwin_version_minor < 10) {
+	if (cygwin_version_major < 1007 || (cygwin_version_major == 1007 && cygwin_version_minor < 10)) {
 		/* no bug yet */
 	} else if (pipe (pfds) < 0) {
 		/* don't fork, accept deficiencies */
@@ -2999,6 +3012,12 @@ static screen_width utf8_widths [] = {
 	{".؄.ꙴ"},	/* U620 */
 	{".؜.؜"},	/* U630 */
 	{".᪰.ᷮ"},	/* U700 */
+	{".ࣣ.ꚞ"},	/* U800 */
+	{".᷻.ᢅ"},	/* U900 */
+	{".ഀ.᷸"},	/* U1000 */
+	{".ఄ.৾"},	/* U1100 */
+	{".຺.ꦽ"},	/* U1210 */
+	{".ᪿ.୕"},	/* U1300 */
 	{"ᄀힰᄀퟋ"},	/* Hangul Jamo Extended-B */
 
 	/* detecting xterm -cjk_width: */
@@ -3305,6 +3324,7 @@ detect_terminal_type ()
 			konsole_version = terminal_version;
 		} else if (terminal_version == 10) {	/* VT220 */
 			decterm_version = 220;
+			vt220_keyboard = True;
 		} else if (terminal_version == 2) {	/* Openwin xterm */
 			xterm_version = terminal_version;
 		} else if (terminal_version <= 20) {	/* ? */
@@ -3316,6 +3336,9 @@ detect_terminal_type ()
 		} else {
 			xterm_version = terminal_version;
 		}
+		set_fkeymap ("xterm");
+	} else if (terminal_type == 'C') {	/* cygwin console */
+		cygwin_version = terminal_version;
 		set_fkeymap ("xterm");
 	} else if (terminal_type == 'M') {	/* mintty */
 		mintty_version = terminal_version;
@@ -3339,6 +3362,8 @@ detect_terminal_type ()
 		decterm_version = 320;
 	} else if (terminal_type == 28) {	/* DECterm window */
 		decterm_version = 1;
+	} else if (terminal_type == 32) {	/* VT382 */
+		decterm_version = 382;
 	} else if (terminal_type == 41) {	/* VT420 */
 		decterm_version = 420;
 	} else if (terminal_type == 61) {	/* VT510 */
@@ -3386,7 +3411,7 @@ detect_terminal_type ()
 	mlterm_version = 1;
   }
   if (mlterm_version) {
-	char * mlterm= envvar ("MLTERM");
+	char * mlterm = envvar ("MLTERM");
 	int v1, v2, v3;
 	int ret = sscanf (mlterm, "%d.%d.%d", & v1, & v2, & v3);
 	if (ret == 3) {
@@ -3600,6 +3625,8 @@ splash_logo ()
   if (splash_level > 1 &&
       ((xterm_version >= 298 && dec_features & (1 << 4))
        || mlterm_version >= 319 /* actually since 3.1.9 */
+       || mintty_version >= 20600
+       || decterm_version >= 340
       )
      ) {
 	set_cursor (XMAX / 2 - 5, splashpos);
@@ -3932,7 +3959,19 @@ terminal_configure_init ()
 
 		/* Add new test strings to array utf8_widths
 		   (section detecting combining_data_version) */
-		if (get_screen_width (".᪰.ᷮ", utf8_widths, arrlen (utf8_widths)) == 2) {
+		if (get_screen_width (".ᪿ.୕", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U1300;
+		} else if (get_screen_width (".຺.ꦽ", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U1210;
+		} else if (get_screen_width (".ఄ.৾", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U1100;
+		} else if (get_screen_width (".ഀ.᷸", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U1000;
+		} else if (get_screen_width (".᷻.ᢅ", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U900;
+		} else if (get_screen_width (".ࣣ.ꚞ", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U800;
+		} else if (get_screen_width (".᪰.ᷮ", utf8_widths, arrlen (utf8_widths)) == 2) {
 			combining_data_version = U700;
 		} else if (get_screen_width (".؜.؜", utf8_widths, arrlen (utf8_widths)) == 2) {
 			combining_data_version = U630;
@@ -3957,6 +3996,9 @@ terminal_configure_init ()
 		} else {
 			combining_data_version = U300beta;
 		}
+		if (combining_data_version > U600) {
+			width_data_version = combining_data_version;
+		}
 		if (combining_data_version >= U520) {
 			if (get_screen_width ("ᄀힰᄀퟋ", utf8_widths, arrlen (utf8_widths)) == 4) {
 				hangul_jamo_extended = True;
@@ -3965,6 +4007,14 @@ terminal_configure_init ()
 		trace_width_data_version ("comb");
 
 		check_cjk_width ();
+		if (mintty_version > 20400) {
+			if (get_screen_width ("ஔண", utf8_widths, arrlen (utf8_widths)) > 2) {
+				wide_indic = True;
+			}
+			if (get_screen_width (" —", utf8_widths, arrlen (utf8_widths)) > 2) {
+				wide_extra = True;
+			}
+		}
 
 		/* check non-BMP width properties */
 		nonbmp_width_data = get_screen_width ("𠀁𠀁𠀁𠀁a𝆪a𝆪a󠀠", utf8_widths, arrlen (utf8_widths)) - 7;
@@ -6695,7 +6745,7 @@ do_prefmov (varpoi, varsize)
 #define prefmov(var)	do_prefmov (& var, sizeof (var), #var)
 #else
 /* stringification (#var) not supported on various systems (e.g. HPUX) */
-#define prefmov(var)	do_prefmov (& var, sizeof (var))
+#define prefmov(var)	do_prefmov ((void *) & var, sizeof (var))
 #endif
 
 static
@@ -7284,7 +7334,11 @@ main (argc, argv)
 	if (! explicit_scrollbar_style) {
 		fine_scrollbar = False;
 	}
+#  if CYGWIN_VERSION_DLL_MAJOR < 2003
 	use_vga_block_graphics = True;
+#  else
+	use_vt100_block_graphics = True;
+#  endif
 
 	/* workaround for unusual keypad assignments */
 	if (mined_keypad) {
@@ -7628,6 +7682,7 @@ main (argc, argv)
    || strcontains (TERM, "-vt52")
      ) {
 	set_fkeymap ("52");
+	csi_term = False;
 	(void) set_term_encoding ("ASCII", ' ');
 	use_ascii_graphics = True;
 	menu_border_style = 'r';

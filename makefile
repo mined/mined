@@ -186,7 +186,8 @@ archive:
 #############################################################################
 # specific distribution packages
 
-TARUSER=--owner=mined --group=cygwin
+#TARUSER=--owner=mined --group=cygwin
+TARUSER=--owner=root --group=root
 
 packages:	cygwin
 
@@ -278,8 +279,9 @@ $(cygport):	description.medium makefile
 	echo 'HOMEPAGE="http://mined.sf.net/"' >> $(cygport)
 	echo 'SRC_URI="http://towo.net/mined/download/mined-$${PV}.tar.gz"' >> $(cygport)
 	echo '' >> $(cygport)
+	echo 'DEPEND="gcc-core make"' >> $(cygport)
 	echo '#DEPEND="libncurses-devel"	# does not depend technically' >> $(cygport)
-	echo '#DEPEND="libncurses-devel zip subversion gettext" # to build stand-alone version' >> $(cygport)
+	echo '#DEPEND="libncurses-devel wget zip gettext" # to build stand-alone version' >> $(cygport)
 	echo '' >> $(cygport)
 	echo 'src_compile() {' >> $(cygport)
 	echo '  lndirs' >> $(cygport)
@@ -303,7 +305,7 @@ $(LSM):	DESCR makefile # release/mined-$(VER).tar.gz
 	echo "Begin4" > $(LSM)
 	echo "Title:		mined" >> $(LSM)
 	echo "Version:	$(VER)" >> $(LSM)
-	echo "Entered-date:	`date +%Y-%m-%d`" >> $(LSM)
+	echo "Entered-date:	`LC_ALL=C date +%Y-%m-%d`" >> $(LSM)
 	echo "Description:	$(SUMMARY)" >> $(LSM)
 	sed -e "s,^,	," -e "s,:,;,g" DESCR >> $(LSM)
 	echo "Keywords:	text editor, Unicode editor, UTF-8 editor, CJK editor" >> $(LSM)
@@ -325,11 +327,11 @@ bin:	win dos
 
 win:	release/MinEd-$(VER)-install.exe
 
-dos:	src/dj/mined.exe release/mined-$(VER)-dos.zip
+dos:	bin/DOS/MINED.EXE release/mined-$(VER)-dos.zip
 
-src/dj/mined.exe:
-	mkdir src/dj || true
-	cp src/MINED.EXE src/dj/mined.exe
+bin/DOS/MINED.EXE:
+	# DOS version should be built in DOSBox
+	cd src; PATH=`dirname "$DJGPP"`/bin:"$PATH" make -f makefile.dos
 
 vms:	src/vms/vax/mined.exe src/vms/alpha/mined.exe src/vms/ia64/mined.exe release/MINED-$(VMSVER)-VMS.ZIP
 
@@ -358,6 +360,8 @@ release/MinEd-$(VER)-install.exe:	release/mined-$(VER)-windows.zip
 winbin:
 	cd src; $(MAKE) win
 
+winzip:	release/mined-$(VER)-windows.zip
+
 release/mined-$(VER)-windows.zip:	winbin usrshare/help/mined.hlp README.windows
 	mkdir -p release
 	cd bin/win; chmod +x *.exe *.dll
@@ -371,11 +375,11 @@ release/mined-$(VER)-windows.zip:	winbin usrshare/help/mined.hlp README.windows
 	cd release; zip mined-$(VER)-windows.zip README.txt locale.alias
 	cd release; rm -f README.txt locale.alias
 
-release/mined-$(VER)-dos.zip:	src/dj/mined.exe usrshare/help/mined.hlp README.dos
+release/mined-$(VER)-dos.zip:	bin/DOS/MINED.EXE usrshare/help/mined.hlp README.dos
 	mkdir -p release
-	cd src/dj; chmod +x mined.exe
-	cd src/dj; zip mined-$(VER)-dos.zip mined.exe
-	mv -f src/dj/mined-$(VER)-dos.zip release/
+	cd bin/DOS; chmod +x MINED.EXE
+	cd bin/DOS; zip mined-$(VER)-dos.zip MINED.EXE
+	mv -f bin/DOS/mined-$(VER)-dos.zip release/
 	cd usrshare/help; zip ../../release/mined-$(VER)-dos.zip mined.hlp
 	cp -fp README.dos release/mined.txt
 	cd release; zip mined-$(VER)-dos.zip mined.txt

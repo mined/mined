@@ -171,9 +171,6 @@ local void that_menu _((menuitemtype * menu));
 local void handleInfomenu _((void));
 local void handleBuffermenu _((void));
 local void handleJustifymenu _((void));
-#ifdef unused
-local void handleParagraphmodemenu _((void));
-#endif
 #ifdef more_menu_handlers
 local void handleCombiningmenu _((void));
 local void handleTextmenu _((void));
@@ -699,6 +696,20 @@ local int
 	Fi
 }
 
+local void
+	toggle_bidi ()
+{
+	negate (poormansbidi);
+}
+
+local int
+	bidion (item, ii)
+		menuitemtype * item;
+		int ii;
+{
+	return poormansbidi;
+}
+
 
 local char * prev_text_encoding = "";
 
@@ -723,6 +734,11 @@ global void
 
 	If utf8_text && utf16_file
 	Then	error ("Text encoding not switchable when editing UTF-16 file");
+			ring_bell ();
+			return;
+	Fi
+	If ebcdic_text || ebcdic_file
+	Then	error ("Text encoding not switchable when editing EBCDIC file");
 			ring_bell ();
 			return;
 	Fi
@@ -793,6 +809,11 @@ local void
 	Then	error ("Text encoding not switchable when editing UTF-16 file");
 		ring_bell ();
 		return;
+	Fi
+	If ebcdic_text || ebcdic_file
+	Then	error ("Text encoding not switchable when editing EBCDIC file");
+			ring_bell ();
+			return;
 	Fi
 
 	If set_text_encoding (item->hopitemname, ' ', "men: select_encoding")
@@ -874,7 +895,7 @@ local void
 		menuitemtype * item;
 		int ii;
 {
-	sort_dirs_first = ! sort_dirs_first;
+	negate (sort_dirs_first);
 }
 
 local int
@@ -1024,7 +1045,7 @@ local void
 local void
 	toggle_password_hiding ()
 {
-	hide_passwords = ! hide_passwords;
+	negate (hide_passwords);
 	RD ();
 }
 
@@ -1032,7 +1053,7 @@ local void
 local void
 	toggle_vt100_graphics ()
 {
-	show_vt100_graph = ! show_vt100_graph;
+	negate (show_vt100_graph);
 	If show_vt100_graph
 	Then	status_uni ("Displaying small letters as VT100 graphics/line drawing - ESC . to cancel");
 	Fi
@@ -1173,7 +1194,7 @@ local void
 local void
 	select_script ()
 {
-	disp_scriptname = ! disp_scriptname;
+	negate (disp_scriptname);
 
 	If disp_scriptname
 	Then	always_disp_code = True;
@@ -1183,7 +1204,7 @@ local void
 local void
 	select_charname ()
 {
-	disp_charname = ! disp_charname;
+	negate (disp_charname);
 
 	If disp_charname
 	Then	always_disp_code = True;
@@ -1196,7 +1217,7 @@ local void
 local void
 	select_namedseq ()
 {
-	disp_charseqname = ! disp_charseqname;
+	negate (disp_charseqname);
 
 	If disp_charseqname
 	Then	always_disp_code = True;
@@ -1206,7 +1227,7 @@ local void
 local void
 	select_decomposition ()
 {
-	disp_decomposition = ! disp_decomposition;
+	negate (disp_decomposition);
 
 	If disp_decomposition
 	Then	always_disp_code = True;
@@ -1218,7 +1239,7 @@ local void
 local void
 	select_mnemos ()
 {
-	disp_mnemos = ! disp_mnemos;
+	negate (disp_mnemos);
 
 	If disp_mnemos
 	Then	always_disp_code = True;
@@ -1230,7 +1251,7 @@ local void
 local void
 	select_Han_info ()
 {
-	always_disp_Han = ! always_disp_Han;
+	negate (always_disp_Han);
 
 	if (always_disp_Han && ! disp_Han_full) {
 		always_disp_fstat = False;
@@ -1241,7 +1262,7 @@ local void
 local void
 	toggle_Mandarin ()
 {
-	disp_Han_Mandarin = ! disp_Han_Mandarin;
+	negate (disp_Han_Mandarin);
 	If disp_Han_Mandarin
 	Then	always_disp_Han = True;
 	Fi
@@ -1250,7 +1271,7 @@ local void
 local void
 	toggle_Cantonese ()
 {
-	disp_Han_Cantonese = ! disp_Han_Cantonese;
+	negate (disp_Han_Cantonese);
 	If disp_Han_Cantonese
 	Then	always_disp_Han = True;
 	Fi
@@ -1259,7 +1280,7 @@ local void
 local void
 	toggle_Japanese ()
 {
-	disp_Han_Japanese = ! disp_Han_Japanese;
+	negate (disp_Han_Japanese);
 	If disp_Han_Japanese
 	Then	always_disp_Han = True;
 	Fi
@@ -1268,7 +1289,7 @@ local void
 local void
 	toggle_Sino_Japanese ()
 {
-	disp_Han_Sino_Japanese = ! disp_Han_Sino_Japanese;
+	negate (disp_Han_Sino_Japanese);
 	If disp_Han_Sino_Japanese
 	Then	always_disp_Han = True;
 	Fi
@@ -1277,7 +1298,7 @@ local void
 local void
 	toggle_Hangul ()
 {
-	disp_Han_Hangul = ! disp_Han_Hangul;
+	negate (disp_Han_Hangul);
 	If disp_Han_Hangul
 	Then	always_disp_Han = True;
 	Fi
@@ -1286,7 +1307,7 @@ local void
 local void
 	toggle_Korean ()
 {
-	disp_Han_Korean = ! disp_Han_Korean;
+	negate (disp_Han_Korean);
 	If disp_Han_Korean
 	Then	always_disp_Han = True;
 	Fi
@@ -1295,7 +1316,7 @@ local void
 local void
 	toggle_Vietnamese ()
 {
-	disp_Han_Vietnamese = ! disp_Han_Vietnamese;
+	negate (disp_Han_Vietnamese);
 	If disp_Han_Vietnamese
 	Then	always_disp_Han = True;
 	Fi
@@ -1304,7 +1325,7 @@ local void
 local void
 	toggle_HanyuPinlu ()
 {
-	disp_Han_HanyuPinlu = ! disp_Han_HanyuPinlu;
+	negate (disp_Han_HanyuPinlu);
 	If disp_Han_HanyuPinlu
 	Then	always_disp_Han = True;
 	Fi
@@ -1313,7 +1334,7 @@ local void
 local void
 	toggle_HanyuPinyin ()
 {
-	disp_Han_HanyuPinyin = ! disp_Han_HanyuPinyin;
+	negate (disp_Han_HanyuPinyin);
 	If disp_Han_HanyuPinyin
 	Then	always_disp_Han = True;
 	Fi
@@ -1322,7 +1343,7 @@ local void
 local void
 	toggle_XHCHanyuPinyin ()
 {
-	disp_Han_XHCHanyuPinyin = ! disp_Han_XHCHanyuPinyin;
+	negate (disp_Han_XHCHanyuPinyin);
 	If disp_Han_XHCHanyuPinyin
 	Then	always_disp_Han = True;
 	Fi
@@ -1331,7 +1352,7 @@ local void
 local void
 	toggle_Tang ()
 {
-	disp_Han_Tang = ! disp_Han_Tang;
+	negate (disp_Han_Tang);
 	If disp_Han_Tang
 	Then	always_disp_Han = True;
 	Fi
@@ -1342,7 +1363,7 @@ local void
 {
 	If always_disp_Han && disp_Han_full
 	Then	disp_Han_full = False;
-	Else	always_disp_Han = ! always_disp_Han;
+	Else	negate (always_disp_Han);
 		disp_Han_full = False;
 	Fi
 
@@ -1357,7 +1378,7 @@ local void
 {
 	If always_disp_Han && ! disp_Han_full
 	Then	disp_Han_full = True;
-	Else	always_disp_Han = ! always_disp_Han;
+	Else	negate (always_disp_Han);
 		disp_Han_full = True;
 	Fi
 
@@ -1565,6 +1586,7 @@ local menuitemtype Filemenu [] = {
 #ifndef msdos
 	{"Unlock file", handleUnlockmenu, "", 0, "▶"},
 #endif
+	{"Backup", backup, ""},
 	{"Check Out", checkout, ""},
 	{"Check In", checkin, ""},
 
@@ -1653,7 +1675,8 @@ local menuitemtype Optionsmenu [] = {
 	{"Toggle TAB expansion", toggle_tab_expansion, "", tabexpansionon},
 	{"Toggle auto indent", toggle_autoindent, "", autoindenton},
 	{"Word wrap mode...", handleJustifymenu, "", 0, "▶"},
-	{"Paragraph end...", handleJustifymenu /*handleParagraphmodemenu*/, "", 0, "▶"},
+	{"Paragraph end...", handleJustifymenu, "", 0, "▶"},
+	{"Bidi mode...", handleJustifymenu, "", 0, "▶"},
 	{"Edit/View only", toggle_VIEWmode, ""},
 	{"Paste buffer mode...", handleBuffermenu, "", 0, "▶"},
 
@@ -1928,14 +1951,10 @@ local menuitemtype justifymenu [] = {
 	{"Paragraph ends at", separator, ""},
 	{"non-blank line-end", select_paragraph, "'... «... «...«'", paragraphmodeon},
 	{"empty line", select_paragraph, "'...«...««'", paragraphmodeon},
-};
 
-#ifdef unused
-local menuitemtype paragraphmodemenu [] = {
-	{"non-blank line-end", select_paragraph, "'... «... «...«'", paragraphmodeon},
-	{"empty line", select_paragraph, "'...«...««'", paragraphmodeon},
+	{"Bidi mode", separator, ""},
+	{"poor man's bidi", toggle_bidi, "zyx...cba", bidion},
 };
-#endif
 
 
 /***********************************************************************\
@@ -2270,30 +2289,40 @@ local void
 local void
 	menubg_on ()
 {
+	FLAG dark_fg = dark_term;
+
 	If redefined_ansi2
 	Then	putescape ("\033[42m");
+		dark_fg = False;
 	Elsif ! bw_term
 	Then	If dark_term
 		Then	/* moderately dark shading background */
 			If colours_256 || colours_88
 			Then	putescape ("\033[100;48;5;81;48;5;238m");
 			Elsif ! is_char_menu
-			Then	putescape ("\033[44;100m");
+			Then	putescape ("\033[44m");
+				dark_fg = True;
 			Fi
 		Else	/* moderately light shading background */
 			If colours_256 || colours_88
 			Then	/*putescape ("\033[43;48;5;57;48;5;227m");*/
 				putescape ("\033[43;48;5;77;48;5;230m");
+				dark_fg = False;
 			Elsif ! is_char_menu
 			Then	putescape ("\033[43m");
+				dark_fg = False;
 			Fi
 		Fi
 		If (bright_term && ! darkness_detected)
 		|| (! dark_term && screen_version)
 		|| ! (colours_256 || colours_88 || is_char_menu)
-		Then	If dark_term
+		Then	If dark_fg
 			Then	putescape ("\033[33m");
 			Else	putescape ("\033[34m");
+			Fi
+		Else
+			If ! dark_fg
+			Then	putescape ("\033[34m");
 			Fi
 		Fi
 	Fi
@@ -3692,7 +3721,7 @@ local void
 	menuitemtype * item;
 	FLAG show_info = False;
 	char * show_char = NIL_PTR;	/* (avoid -Wmaybe-uninitialized) */
-	FLAG coloured = index < 0;
+	FLAG coloured = (FLAG) (index < 0);
 	int unicode_menubar_mode = use_unicode_menubar ();
 
 	/* save sub-menu reference */
@@ -4200,8 +4229,8 @@ global int
 		FLAG disp_only;	/* Han info menu */
 		char * select_keys;	/* pick list */
 {
-	FLAG is_file_chooser = select_keys && * select_keys == '*';
-	FLAG is_file_selector = column <= 1;
+	FLAG is_file_chooser = (FLAG) (select_keys && * select_keys == '*');
+	FLAG is_file_selector = (FLAG) (column <= 1);
 	menuitemtype * fullmenu = menu;
 	int fullmenulen = menulen;
 	int scrolloffset = 0;
@@ -4228,7 +4257,7 @@ global int
 	int menu_YMAX = YMAX;
 	int menu_XMAX = XMAX;
 
-	is_char_menu = disp_only || (select_keys && * select_keys == '1');
+	is_char_menu = (FLAG) (disp_only || (select_keys && * select_keys == '1'));
 
 	keyshift = 0;
 
@@ -5345,14 +5374,6 @@ local void
 {
 	that_menu (justifymenu);
 }
-
-#ifdef unused
-local void
-	handleParagraphmodemenu ()
-{
-	that_menu (paragraphmodemenu);
-}
-#endif
 
 
 local void

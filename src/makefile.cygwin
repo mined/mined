@@ -172,16 +172,19 @@ $(WINBIN)mined.exe:	$(PROGOBJS) $(SCREENOBJ)
 
 mintty:	$(WINBIN)mintty.exe
 
-/usr/src/mintty-read-only:
-	cd /usr/src; svn checkout http://mintty.googlecode.com/svn/trunk/ mintty-read-only
+#MINTTY_SRC=$(shell ls -dp /usr/src/mintty* | grep "/$" | sed -e "$ p" -e d)
+MINTTY_SRC=/usr/src/mintty-master/src
 
-/usr/src/mintty-read-only/mintty.exe:	/usr/src/mintty-read-only
-	#cd /usr/src/mintty-read-only; rm -f mintty.exe; make cc=gcc-3
-	cd /usr/src/mintty-read-only; rm -f mintty.exe; make cc="gcc -static-libgcc -static"
-
-$(WINBIN)mintty.exe:	/usr/src/mintty-read-only/mintty.exe
-	cp /usr/src/mintty-read-only/mintty.exe $(WINBIN)mintty.exe
+$(WINBIN)mintty.exe:	$(MINTTY_SRC)/mintty.exe
+	cp $(MINTTY_SRC)/mintty.exe $(WINBIN)mintty.exe
 	#strip $(WINBIN)mintty.exe	# "is not a valid Win32 application"
+
+$(MINTTY_SRC)/mintty.exe:	$(MINTTY_SRC)
+	cd $(MINTTY_SRC)/src; rm -f mintty.exe; make cc="gcc -static-libgcc -static"
+
+$(MINTTY_SRC):
+#	cd /usr/src; svn checkout http://mintty.googlecode.com/svn/trunk/ mintty-read-only
+	cd /usr/src; wget https://github.com/mintty/mintty/archive/master.zip; unzip mintty-master.zip
 
 
 #############################################################################

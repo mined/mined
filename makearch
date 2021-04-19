@@ -5,7 +5,8 @@
 version=`sed -e "s,^[^0-9]*\([0-9][0-9]*\)[^0-9]*\([0-9][0-9.]*\).*$,\1.\2," -e t -e d VERSION`
 majorversion=`sed -e "s,^[^0-9]*\([0-9][0-9]*\)[^0-9]*\([0-9][0-9]*\).*$,\1.\2," -e t -e d VERSION`
 
-TARUSER="--owner=mined --group=cygwin"
+#TARUSER="--owner=mined --group=cygwin"
+TARUSER="--owner=root --group=root"
 
 good="[30;42m"
 error="[41;37m"
@@ -14,8 +15,11 @@ normal="[0m"
 
 echo "$good version $version $normal"
 
+exit=exit
 case "$1" in
--)	archive=mined-$version-beta;;
+-)	archive=mined-$version-beta
+	exit=false	# don't exit on inconsistencies
+	;;
 *)	archive=mined-$version;;
 esac
 
@@ -28,7 +32,7 @@ then
 	true
     else
 	echo "$error wrong VERSION information in help section 'introduction' $normal" >&2
-	exit 9
+	$exit 9
     fi
 
     fullrelease=`sed -e "/[Mm]in[Ee]d *[0-9]*/ b" -e d VERSION`
@@ -37,22 +41,22 @@ then
 	true
     else
 	echo "$error wrong VERSION information in doc/header.html $normal" >&2
-	exit 9
+	$exit 9
     fi
 
-    if grep "$version (`date +%B\ %Y`)" doc/changes.html > /dev/null
+    if grep "$version (`LC_ALL=C date +%B\ %Y`)" doc/changes.html > /dev/null
     then
 	true
     else
 	echo "$error wrong or missing version date in doc/changes.html $normal" >&2
-	exit 9
+	$exit 9
     fi
     if grep "<a href=#$version>mined $version" doc/changes.html > /dev/null
     then
 	true
     else
 	echo "$error wrong or missing version link in doc/changes.html highlights $normal" >&2
-	exit 9
+	$exit 9
     fi
 
     sed -e "1,/<span summary>/ d" -e "/<\/span summary>/ q" doc/overview.html > ov.ov
@@ -63,13 +67,13 @@ then
     else
 	echo "$error update overview in mined.html from overview.html $normal" >&2
 	diff ov.ov ov.mi
-	exit 9
+	$exit 9
     fi
 
     if sed -e '/personal preferences/,/^####/ b pp' -e d -e ': pp' -e '/^[#[]/ d' usrshare/conf_user/minedrc | grep .
     then
 	echo "$error personal preferences remaining in .minedrc $normal" >&2
-	exit 9
+	$exit 9
     fi
 
 fi

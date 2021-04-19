@@ -144,16 +144,16 @@ Use these compilation defines (via the make variable OPT)
 to disable certain large tables:
 
 OPT=-DnoCJKcharmaps to disable CJK character encodings
-	(affects charcode.c and mousemen.c (charcode.h and charemen.t))
+	(affects charcode.c and mousemen.c (via charcode.h and charemen.t))
 OPT=-DnoCJKkeymaps to disable CJK input methods
 	(affects keymaps.c)
 OPT=-DnoHANinfo to disable character information from the Unihan database
 	(affects handescr.c)
 OPT=-DNOCJK to disable all of the above
 OPT=-DNOCHARNAMES to disable Unicode character names
-	(affects edit.c)
+	(affects charprop.c)
 OPT=-DNODECOMPOSE to disable Unicode decompositions
-	(affects edit.c)
+	(affects charprop.c)
 
 
 -----------------------------------------------------------------------------

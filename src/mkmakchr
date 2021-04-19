@@ -28,7 +28,7 @@ echo
 for map in charmaps/*.map
 do	mapname=`basename $map .map`
 	echo charmaps/$mapname.c: $map charcode.h mkchrtab
-	echo "	CC=\$(CC) OPT=\"\$(OPT)\" $(SH) ./mkchrtab -S $map"
+	echo '	CC=$(CC) OPT="$(OPT)" $(SH) ./mkchrtab -S' "$map"
 	echo
 	echo "\$(OBJDIR)/charmaps/$mapname.o: charmaps/$mapname.c"
 	echo "	mkdir -p \$(OBJDIR)/charmaps"

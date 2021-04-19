@@ -8,10 +8,17 @@ pronunciations=Cantonese|HanyuPinlu|HanyuPinyin|JapaneseKun|JapaneseOn|Hangul|Ko
 
 # Unihan database
 ../Unihan_Readings.txt:	../Unihan.zip
-	cd ..; unzip Unihan.zip Unihan_Readings.txt
+	cd ..; unzip -o Unihan.zip Unihan_Readings.txt
 
 ../Unihan_RadicalStrokeCounts.txt:	../Unihan.zip
-	cd ..; unzip Unihan.zip Unihan_RadicalStrokeCounts.txt
+	cd ..; unzip -o Unihan.zip Unihan_RadicalStrokeCounts.txt
+
+../Unihan_IRGSources.txt:	../Unihan.zip
+	cd ..; unzip -o Unihan.zip Unihan_IRGSources.txt
+
+#kRS=../Unihan_RadicalStrokeCounts.txt	# before Unicode 7.0
+#kRS=../Unihan_IRGSources.txt		# since Unicode 7.0
+kRS=../Unihan_RadicalStrokeCounts.txt ../Unihan_IRGSources.txt
 
 ../Unihan.zip:
 	cd ..; make -f mkinclud.mak Unihan.zip
@@ -22,8 +29,8 @@ pronunciations=Cantonese|HanyuPinlu|HanyuPinyin|JapaneseKun|JapaneseOn|Hangul|Ko
 unihan.defrad:	../Unihan_Readings.txt
 	egrep "kDefinition.*[Rr]adical" ../Unihan_Readings.txt > unihan.defrad
 
-unihan.rsunicode:	../Unihan_RadicalStrokeCounts.txt seprs.sed
-	egrep "^[^#].*kRSUnicode" ../Unihan_RadicalStrokeCounts.txt | LC_CTYPE=C sed -f seprs.sed > unihan.rsunicode
+unihan.rsunicode:	$(kRS) seprs.sed
+	cat $(kRS) | egrep "^[^#].*kRSUnicode" | LC_CTYPE=C sed -f seprs.sed > unihan.rsunicode
 
 unihan.radicals-by-def:	unihan.defrad
 	sed -e "s,\(.*\)[Rr]adical[number ]*\([0-9][0-9]*\),\2	\1radical \2," -e t -e "s,^,	," unihan.defrad | sort -n > unihan.radicals-by-def

@@ -13,7 +13,7 @@ extern char * buildstamp _((void));
 #define __USE_XOPEN_EXTENDED
 /* declare fchmod ... */
 # ifndef _XOPEN_SOURCE
-# define _XOPEN_SOURCE
+# define _XOPEN_SOURCE 500
 # endif
 # ifndef _XOPEN_SOURCE_EXTENDED
 # define _XOPEN_SOURCE_EXTENDED 1
@@ -773,11 +773,7 @@ void
 FS ()
 {
   if (hop_flag > 0) {
-	if (always_disp_fstat) {
-		always_disp_fstat = False;
-	} else {
-		always_disp_fstat = True;
-	}
+	negate (always_disp_fstat);
   } else {
 	FSTATUS ();
   }
@@ -988,7 +984,8 @@ ABOUT ()
   } else {
 	strcat (about, ") - http://mined.sourceforge.net/");
   }
-  show_timestamp = ! show_timestamp;
+
+  negate (show_timestamp);
 
   status_uni (about);
 }
@@ -1384,7 +1381,7 @@ PRINT ()
 #ifdef pc
   /* on PC, try printing with notepad */
   if (sysres != 0) {
-#ifdef __CYGWIN__
+#if defined (__CYGWIN__) && CYGWIN_VERSION_API_MINOR >= 74
 	char * winf = cygwin_create_path (CCP_POSIX_TO_WIN_A, print_file);
 	sysres = progcallpp ("Printing with notepad ...", 1, (char * *) 0,
 		print_dir,
@@ -1959,7 +1956,7 @@ copyfile (from_file, to_file)
   int from_fd;
   int to_fd;
   int cnt;	/* count check for read/write */
-  int ret = True;
+  FLAG res = True;
 #ifdef VAXC
   PROT copyprot = bufprot;
 #else
@@ -2011,19 +2008,19 @@ copyfile (from_file, to_file)
 
   while ((cnt = read (from_fd, copybuf, sizeof (copybuf))) > 0) {
 	if (write (to_fd, copybuf, (unsigned int) cnt) != cnt) {
-		ret = False;
+		res = False;
 		break;
 	}
   }
   if (cnt < 0) {
-	ret = False;
+	res = False;
   }
 
   (void) close (from_fd);
   if (close (to_fd) < 0) {
-	ret = False;
+	res = False;
   }
-  return ret;
+  return res;
 }
 
 

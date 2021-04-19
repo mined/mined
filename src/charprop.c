@@ -60,7 +60,7 @@ static struct charseqentry {
 	unsigned long u [4];
 } charseqtable [] = {
 #ifdef NOCHARNAMES
-	{"", 0},
+	{"", {0}},
 #else
 #include "charseqs.t"
 #endif
@@ -69,8 +69,8 @@ static struct charseqentry {
 
 typedef enum {
 	decomp_canonical,
-	decomp_circle,
 	decomp_compat,
+	decomp_circle,
 	decomp_final,
 	decomp_font,
 	decomp_fraction,
@@ -86,6 +86,8 @@ typedef enum {
 	decomp_vertical,
 	decomp_wide
 } decomposetype;
+#define decomp_none decomp_canonical
+
 struct decomposeentry {
 	unsigned long u;
 	decomposetype decomposition_type;
@@ -93,8 +95,8 @@ struct decomposeentry {
 };
 static char * decomposition_type [] = {
 	/* decomp_canonical */	"",
-	/* decomp_circle */	" <encircled>",
 	/* decomp_compat */	" <compatibility>",
+	/* decomp_circle */	" <encircled>",
 	/* decomp_final */	" <final form>",
 	/* decomp_font */	" <font variant>",
 	/* decomp_fraction */	" <fraction>",
@@ -112,7 +114,7 @@ static char * decomposition_type [] = {
 };
 static struct decomposeentry decomposetable [] = {
 #ifdef NODECOMPOSE
-	{0, 0, 0},
+	{0, 0, {0}},
 #else
 #include "decompos.t"
 #endif
@@ -143,14 +145,14 @@ decomposition_lookup (ucs, typepoi)
       max = mid - 1;
     } else {
 	decomposetype t = decomposetable [mid].decomposition_type;
-	if (t >= arrlen (decomposition_type)
-#ifndef __clang__
-	/* clang would whine about 'tautological-compare' here 
-	   but that is not true for all C compilers (e.g. Sun Studio), 
-	   so let's be defensive */
-	   || t < 0
+#ifdef __clang__
+	/* cast to (unsigned int) to leave out a defensive || t < 0
+	   which would make clang and others complain about 
+	   'tautological-compare' (which is not true for all C compilers, 
+	   e.g. Sun Studio)
+	 */
 #endif
-	   ) {
+	if ((unsigned int) t >= arrlen (decomposition_type)) {
 		return 0;
 	} else {
 		* typepoi = t;
@@ -439,6 +441,9 @@ is_bullet_or_dash (unich)
   if (unich == 0xB7) {	/* MIDDLE DOT */
 	return True;
   }
+  if (unich == 0xB0) {	/* DEGREE SIGN */
+	return True;
+  }
   if (unich == 0x2015) {	/* HORIZONTAL BAR / QUOTATION DASH */
 	return True;
   }
@@ -494,7 +499,7 @@ lookup (ucs, table, len)
 }
 
 
-FLAG
+int
 isLetter (unichar)
   unsigned long unichar;
 {
@@ -505,7 +510,7 @@ isLetter (unichar)
 /* struct interval list_wide [] */
 #include "wide.t"
 
-FLAG
+int
 is_wideunichar (ucs)
   unsigned long ucs;
 {
@@ -575,7 +580,7 @@ combining_class (ucs)
   return -1;
 }
 
-FLAG
+int
 iscombining_unichar (ucs)
   unsigned long ucs;
 {
@@ -586,7 +591,7 @@ iscombining_unichar (ucs)
 #endif
 }
 
-FLAG
+int
 isspacingcombining_unichar (ucs)
   unsigned long ucs;
 {

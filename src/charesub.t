@@ -7,6 +7,7 @@ local int
 	menuitemtype * item;
 	int i;
 {
+	/*(void) item; (void) i;*/
 	return streq (item->hopitemname, get_text_encoding ());
 }
 
@@ -28,6 +29,7 @@ local int
 	int i;
 {
 	int k;
+	/*(void) item; (void) i;*/
 	for (k = 0; k < arrlen (submenu_more_NE_Eurasian); k ++) {
 		if (streq (submenu_more_NE_Eurasian [k].hopitemname, get_text_encoding ())) {
 			return 1;
@@ -43,6 +45,7 @@ local void
 {
 	int column = last_popup_column + utf8_col_count (label_more_NE_Eurasian) + 2;
 	int line = last_popup_line + i;
+	/*(void) menu;*/
 	(void) popup_menu (submenu_more_NE_Eurasian, arrlen (submenu_more_NE_Eurasian), column, line, title_more_NE_Eurasian, True, False, NIL_PTR);
 }
 
@@ -55,6 +58,7 @@ local int
 	menuitemtype * item;
 	int i;
 {
+	/*(void) item; (void) i;*/
 	return streq (item->hopitemname, get_text_encoding ());
 }
 
@@ -73,6 +77,7 @@ local int
 	int i;
 {
 	int k;
+	/*(void) item; (void) i;*/
 	for (k = 0; k < arrlen (submenu_Greek_Semitic); k ++) {
 		if (streq (submenu_Greek_Semitic [k].hopitemname, get_text_encoding ())) {
 			return 1;
@@ -88,6 +93,7 @@ local void
 {
 	int column = last_popup_column + utf8_col_count (label_Greek_Semitic) + 2;
 	int line = last_popup_line + i;
+	/*(void) menu;*/
 	(void) popup_menu (submenu_Greek_Semitic, arrlen (submenu_Greek_Semitic), column, line, title_Greek_Semitic, True, False, NIL_PTR);
 }
 
@@ -100,6 +106,7 @@ local int
 	menuitemtype * item;
 	int i;
 {
+	/*(void) item; (void) i;*/
 	return streq (item->hopitemname, get_text_encoding ());
 }
 
@@ -126,6 +133,7 @@ local int
 	int i;
 {
 	int k;
+	/*(void) item; (void) i;*/
 	for (k = 0; k < arrlen (submenu_more_Latin); k ++) {
 		if (streq (submenu_more_Latin [k].hopitemname, get_text_encoding ())) {
 			return 1;
@@ -141,6 +149,7 @@ local void
 {
 	int column = last_popup_column + utf8_col_count (label_more_Latin) + 2;
 	int line = last_popup_line + i;
+	/*(void) menu;*/
 	(void) popup_menu (submenu_more_Latin, arrlen (submenu_more_Latin), column, line, title_more_Latin, True, False, NIL_PTR);
 }
 

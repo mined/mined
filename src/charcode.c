@@ -23,14 +23,14 @@ unsigned long code_NL = CHAR_INVALID;
 |*			Character properties				*|
 \*======================================================================*/
 
-FLAG
+int
 no_char (c)
   unsigned long c;
 {
   return c == CHAR_UNKNOWN || c == CHAR_INVALID;
 }
 
-FLAG
+int
 no_unichar (u)
   unsigned long u;
 {
@@ -402,7 +402,7 @@ encode_char (c)
    (not necessarily in the assigned ranges)
    of the currently active text encoding.
  */
-FLAG
+int
 valid_cjk (cjkchar, cjkbytes)
   unsigned long cjkchar;
   character * cjkbytes;
@@ -415,7 +415,7 @@ valid_cjk (cjkchar, cjkbytes)
    (not necessarily in the assigned ranges)
    of the currently active terminal or text encoding.
  */
-FLAG
+int
 valid_cjkchar (term, cjkchar, cjkbytes)
   FLAG term;
   unsigned long cjkchar;
@@ -531,6 +531,9 @@ valid_cjkchar (term, cjkchar, cjkbytes)
 			 (cjkbytes [1] >= 0x81 && cjkbytes [1] <= 0xFE)
 			)
 			&& cjkbytes [2] == 0;
+    case 'i':	return (cjkbytes [0] & 0xF0) == 0xC0
+			? cjkbytes [1] && cjkbytes [1] < 0x80 && cjkbytes [2] == 0
+			: cjkbytes [1] == 0;
     default:	return False;
   }
 }
@@ -674,7 +677,7 @@ static unsigned int text_table_len = 0;
 /**
    Are mapped text and terminal encodings different?
  */
-FLAG
+int
 remapping_chars ()
 {
   return text_table != terminal_table;
@@ -746,7 +749,7 @@ static FLAG combined_text;
 /**
    Return True if active encoding has combining characters.
  */
-FLAG
+int
 encoding_has_combining ()
 {
   return utf8_text
@@ -860,9 +863,10 @@ setup_mapping (term, map_table, map_table_len, tag1, tag2)
 	if (multi_byte) {
 		cjk_text = True;
 		mapped_text = False;
-		combined_text = text_encoding_tag == 'G'
-				|| text_encoding_tag == 'X'
-				|| text_encoding_tag == 'x';
+		combined_text = (FLAG)
+				(text_encoding_tag == 'G'
+				 || text_encoding_tag == 'X'
+				 || text_encoding_tag == 'x');
 	} else {
 		mapped_text = True;
 		cjk_text = False;
@@ -1073,10 +1077,6 @@ set_text_encoding (charmap, tag, debug_tag)
 {
   FLAG ret = set_char_encoding (False, charmap, tag);
 
-#ifdef debug_set_text_encoding
-  printf ("set_text_encoding [%s] %s [%c] -> %d: <%s>\n", debug_tag, charmap, tag, ret, get_text_encoding ());
-#endif
-
   /* EBCDIC kludge */
   code_SPACE = encodedchar (' ');
   code_TAB = encodedchar ('\t');
@@ -1086,12 +1086,16 @@ set_text_encoding (charmap, tag, debug_tag)
 	ebcdic_text = False;
 	ebcdic_file = False;
   } else {
-	ebcdic_text = True;
-	/* or rather transform than map: */
+	/*ebcdic_text = True;	obsolete */
+	/* rather transform than map: */
 	ebcdic_text = False;
 	ebcdic_file = True;
 	mapped_text = False;
   }
+
+#ifdef debug_set_text_encoding
+  printf ("set_text_encoding [%s] %s [%c] -> %d: <%s> utf %d cjk %d map %d ebc %d cmb %d\n", debug_tag, charmap, tag, ret, get_text_encoding (), utf8_text, cjk_text, mapped_text, ebcdic_text, combined_text);
+#endif
 
   return ret;
 }
@@ -1193,6 +1197,8 @@ map_char (cjk, map_table, map_table_len)
 |*		Conversion functions					*|
 \*======================================================================*/
 
+#ifdef use_CJKcharmaps
+
 /**
    GB18030 algorithmic mapping part
  */
@@ -1238,6 +1244,8 @@ unicode_to_gb (uc)
 
 	return (a << 24) | (b << 16) | (c << 8) | d;
 }
+
+#endif
 
 
 /*

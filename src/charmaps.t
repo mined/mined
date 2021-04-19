@@ -29,6 +29,8 @@
 	{cp862_table, & cp862_table_len, "CP862", "62"},
 	{m_roman_table, & m_roman_table_len, "MacRoman", "MR", 'M'},
 	{cp437_table, & cp437_table_len, "CP437", "PC", 'p'},
+	{vga_table, & vga_table_len, "VGA", "VG"},
+	{iso_6937_table, & iso_6937_table_len, "ISO-6937", "I9", 'i'},
 	{cp850_table, & cp850_table_len, "CP850", "PL", 'P'},
 	{latin_2_table, & latin_2_table_len, "ISO 8859-2", "L2", '2'},
 	{latin_3_table, & latin_3_table_len, "ISO 8859-3", "L3", '3'},

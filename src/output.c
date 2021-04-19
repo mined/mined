@@ -655,7 +655,9 @@ static struct {
 	{0x2713, 'V', False},	/* ✓ */
 	{0x2717, 'X', False},	/* ✗ */
 	{0x21AF, 'Z', False},	/* ↯ */
+#ifdef subst_pretty_P
 	{0x2118, 'P', False},	/* ℘ */
+#endif
 	{0x02BB, '\'', False},	/* glottal stop ʻokina */
 };
 
@@ -666,7 +668,7 @@ disp_subst (unichar, check_glyph)
   FLAG check_glyph;
 {
   if (check_glyph && ! glyphs_checked) {
-	glyphs_available = isglyph_uni (0);
+	glyphs_available = (FLAG) isglyph_uni (0);
 	glyphs_checked = True;
   }
   if (glyphs_available || ! check_glyph) {
@@ -967,7 +969,7 @@ putshiftmark (marker, utfmarker)
   endmarkmode ();
 }
 
-FLAG
+int
 marker_defined (marker, utfmarker)
   character marker;
   char * utfmarker;
@@ -1111,7 +1113,7 @@ static unsigned short prev_cjkchar = 0L;
    (i.e. considering the auto-detected Unicode version of the terminal)
  */
 static
-FLAG
+int
 no_validunichar (u)
   unsigned long u;
 {

@@ -99,7 +99,7 @@ idfchar (cpoi)
 	return True;
   } else {
 	char * cat = category (unichar);
-	return streq (cat, "Letter") || streq (cat, "Mark");
+	return (FLAG) (streq (cat, "Letter") || streq (cat, "Mark"));
   }
 }
 
@@ -135,7 +135,7 @@ isitemchar (unich)
 
 
 /**
-   Check whether strings starts with a numbering 1.2.3.
+   Check whether string starts with a numbering 1.2.3.
  */
 
 static char * lastsubnumberpoi;
@@ -233,6 +233,8 @@ paragraphending (l, le)
 	}
   } else {
 	if (strstr (l->text, " \n")) {
+		return False;
+	} else if (* (l->text) == '\n') {
 		return False;
 	} else {
 		return True;
@@ -2342,7 +2344,13 @@ DPC ()
 			  )
 			 )
 			)
-		      ) {
+		      )
+		{
+			if (white_space (* cp)) {
+				/* cancel smart numbering detection */
+				numberlen = 0;
+				stop_col = column;
+			}
 			if (numberlen > 0) {
 				cp += numberlen;
 				column += numberlen;
@@ -3115,6 +3123,20 @@ SNLindent (do_autonumber)
   }
 }
 
+static FLAG bracketed_paste_mode = False;
+
+void
+BEGIN_BRACKETED_PASTE ()
+{
+  bracketed_paste_mode = True;
+}
+
+void
+END_BRACKETED_PASTE ()
+{
+  bracketed_paste_mode = False;
+}
+
 /*
  * Insert new line at current location. Triggered by Enter key / CR.
  */
@@ -3142,7 +3164,7 @@ SNL ()
 	}
   }
 
-  if (autoindent == False 
+  if (autoindent == False || bracketed_paste_mode
       || last_delta_readchar < 10 || average_delta_readchar < 10) {
 	if (suppress_pasting_double_LF) {
 		/* try to compensate an Exceed bug pasting LF twice */
@@ -3351,7 +3373,7 @@ SSPACE ()
 void
 Underline ()
 {
-  FLAG at_end = * cur_text == '\n';
+  FLAG at_end = (FLAG) (* cur_text == '\n');
   int cols;
 
   hop_flag = 0;
@@ -3724,10 +3746,11 @@ Squote (doublequote)
 		}
 	} else {
 		/* ! quote_open [doublequote] */
-		insert_left = opensquote (prevchar)
+		insert_left = (FLAG)
+			(opensquote (prevchar)
 			|| prevchar == quote_mark_value (qt, LEFTDOUBLE)
 			|| prevchar == quote_mark_value (qt, LEFTSINGLE)
-			;
+			);
 		if (insert_left) {
 			quote_open [doublequote] = OPEN;
 		} else {
@@ -4801,45 +4824,64 @@ display_the_code ()
   hexbufpoi = hexbuf;
 
   if (c == '\n') {
+	char * le16 = "";
 	switch (cur_line->return_type) {
 	    case lineend_NONE:	textpoi = "no line end / split line";
 				break;
 	    case lineend_NUL:	appendbyte ('\0');
+				le16 = "0000";
 				textpoi = "U+00 NUL";
 				break;
 	    case lineend_LF:	appendbyte (code_LF);
+				le16 = "000A";
 				textpoi = "U+0A (Unix) LINE FEED";
 				break;
 	    case lineend_CRLF:	appendbyte ('\r');
 				appendbyte (code_LF);
+				le16 = "000D000A";
 				textpoi = "U+0D U+0A (DOS) CRLF";
 				break;
 	    case lineend_CR:	appendbyte ('\r');
+				le16 = "000D";
 				textpoi = "U+0D (Mac) CARRIAGE RETURN";
 				break;
 	    case lineend_NL1:	appendbyte (code_NL);
+				le16 = "0085";
 				textpoi = "U+85 (ISO 8859) NEXT LINE";
 				break;
 	    case lineend_NL2:	appendbyte ('\302');
 				appendbyte ('\205');
+				le16 = "0085";
 				textpoi = "U+85 NEXT LINE";
 				break;
 	    case lineend_LS:	appendbyte ('\342');
 				appendbyte ('\200');
 				appendbyte ('\250');
+				le16 = "2028";
 				textpoi = "U+2028 LINE SEPARATOR";
 				break;
 	    case lineend_PS:	appendbyte ('\342');
 				appendbyte ('\200');
 				appendbyte ('\251');
+				le16 = "2029";
 				textpoi = "U+2029 PARAGRAPH SEPARATOR";
 				break;
-	    default:		appendbyte (code_LF);
+	    default:		/*appendbyte (code_LF);*/
 				textpoi = "unknown line end";
 				break;
 	}
 	* hexbufpoi = '\0';
-	build_string (text_buffer, "Line end: %s - %s", hexbuf, textpoi);
+	if (utf16_file) {
+		char * tp = strchr (textpoi, ' ');
+		if (tp) {
+			tp ++;
+		} else {
+			tp = textpoi;
+		}
+		build_string (text_buffer, "Line end: %s - %s", le16, tp);
+	} else {
+		build_string (text_buffer, "Line end: %s - %s", hexbuf, textpoi);
+	}
 	status_uni (text_buffer);
   } else if (utf8_text) {
 	int utf_utf_len;
@@ -5558,11 +5600,13 @@ search_wrong_enc ()
 
 	/* check for wrongly encoded character */
 	if ((* cpoi & 0x80) != 0) {
-		FLAG isutf;
+		FLAG isutf = False;
 		if ((* cpoi & 0xC0) == 0xC0) {
 			utf8_info (cpoi, & utfcount, & unichar);
-			isutf = UTF8_len (* cpoi) == utfcount
-				&& (* cpoi & 0xFE) != 0xFE;
+			if (UTF8_len (* cpoi) == utfcount
+			    && (* cpoi & 0xFE) != 0xFE) {
+				isutf = True;
+			}
 		} else {
 			isutf = False;
 		}
@@ -5681,23 +5725,23 @@ UML (lang)
 	/* HTTP replacement back-conversion, e.g. %40 -> @ */
 	char * chpoi = cpoi;
 	int codelen = 2;
-	int bytecount = 0;
+	int bytecnt = 0;
 	unsigned int bytecode;
 	char allbytes [7];
 	char * bytepoi = allbytes;
 	unsigned long code = 0;
-	while (bytecount < codelen && sscanf (chpoi, "%%%02X", & bytecode) > 0) {
+	while (bytecnt < codelen && sscanf (chpoi, "%%%02X", & bytecode) > 0) {
 		code = (code << 8) + bytecode;
 		* bytepoi ++ = bytecode;
 		* bytepoi = 0;
-		bytecount ++;
+		bytecnt ++;
 		chpoi += 3;
 		if (utf8_text) {
-			if (bytecount == 1) {
+			if (bytecnt == 1) {
 				codelen = UTF8_len (bytecode);
 			}
 		} else if (cjk_text) {
-			if (bytecount == 2) {
+			if (bytecnt == 2) {
 				codelen = CJK_len (allbytes);
 			}
 		} else {
@@ -5705,7 +5749,7 @@ UML (lang)
 		}
 	}
 
-	if (bytecount == codelen) {
+	if (bytecnt == codelen) {
 		int offset = cur_text - cur_line->text;
 		(void) delete_text (cur_line, cpoi, cur_line, chpoi);
 		(void) insert_text (cur_line, cur_text, allbytes);
@@ -6373,8 +6417,12 @@ LOWCAPWORD ()
 		FLAG issmall = False;
 		int tabix = lookup_caseconv (uc);
 		if (tabix >= 0) {
-			iscapital = caseconv_table [tabix].tolower != 0;
-			issmall = caseconv_table [tabix].toupper != 0;
+			if (caseconv_table [tabix].tolower != 0) {
+				iscapital = True;
+			}
+			if (caseconv_table [tabix].toupper != 0) {
+				issmall = True;
+			}
 		}
 
 		if (first_alpha == NIL_PTR) {
@@ -6382,7 +6430,9 @@ LOWCAPWORD ()
 			if (iscapital) {
 				first_cap = True;
 			}
-			first_title = caseconv_table [tabix].title == uc;
+			if (caseconv_table [tabix].title == uc) {
+				first_title = True;
+			}
 		} else {
 			if (iscapital) {
 				subseq_cap = True;

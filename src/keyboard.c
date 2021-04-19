@@ -3,6 +3,10 @@
 |*		keyboard input						*|
 \*======================================================================*/
 
+/* WARNING: gcc 5.4.0 (x86_64-pc-cygwin):
+   this must be compiled without -O or get_digits will fail!
+ */
+
 #include "mined.h"
 #include "charprop.h"
 #include "io.h"
@@ -185,8 +189,15 @@ int
 get_digits (result)
   int * result;
 {
-  register int byte1;
-  register int value;
+/* WARNING: gcc 5.4.0 and earlier bug (x86_64-pc-cygwin, not i686-pc-cygwin):
+   if this is compiled with register attribute, *or* with -O, 
+   `value` will be cleared during read1byte();
+   this does not happen if value is made static, *or* (most weirdly) 
+   if value is actually used (via a int * ref) during read1byte(),
+   *and* some debug printf is added here...
+ */
+  int byte1;
+  int value;
 
   byte1 = read1byte ();
   * result = -1;
@@ -1396,7 +1407,7 @@ curs_readchar ()
 	case KEY_RESIZE:
 		printf ("curses resize key received \n"); sleep (1);
 		keyproc = showfkey;
-		return FUNcmd;
+		return (int) FUNcmd;
 #endif
 #ifdef KEY_SHIFT_L
 	case KEY_SHIFT_L:

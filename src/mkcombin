@@ -22,7 +22,7 @@ void
 flush ()
 {
 	if (range_high >= 0) {
-		printf ("	{0x%04X, 0x%04X, '%c', %d},\n", range_low, range_high, range_category [1], range_class);
+		printf ("	{0x%04lX, 0x%04lX, '%c', %d},\n", range_low, range_high, range_category [1], range_class);
 	}
 }
 

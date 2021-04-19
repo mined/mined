@@ -53,6 +53,10 @@ static FLAG alt_rectangular_mode = False;
 
 static int last_sel_x = 0;	/* Last selection mouse column */
 
+static long chars_saved;	/* # of chars in paste buffer */
+static long bytes_saved;	/* # of bytes in paste buffer */
+static int lines_saved;		/* # of lines in paste buffer */
+
 
 /*======================================================================*\
 |*			Marker stack					*|
@@ -271,7 +275,7 @@ Popmark ()
 	error ("Stacked position not valid");
 	return;
   }
-  switch_files = ! streq (mark_stack [mark_stack_poi].file, file_name);
+  switch_files = (FLAG) ! streq (mark_stack [mark_stack_poi].file, file_name);
   if (switch_files ||
 	checkmark (mark_stack [mark_stack_poi].line, 
 		mark_stack [mark_stack_poi].text) == NOT_VALID)
@@ -560,7 +564,7 @@ text_at (line, colpoi, targcol)
    and in the right order.
  */
 static
-FLAG
+int
 yank_text (fd, buf_status, 
 	start_line, start_textp, end_line, end_textp, 
 	do_remove, appending, do_rectangular_paste, start_end_reversed)
@@ -1064,7 +1068,7 @@ insert_file (fd, stay_old_pos, from_text_file)
   int len;
   lineend_type return_type;
   /* copy rectangular option; this working flag will be reset at end-of-file */
-  FLAG do_rectangular_paste = rectangular_paste_mode;
+  FLAG do_rectangular_paste = (FLAG) rectangular_paste_mode;
   int paste_col = get_cur_col ();	/* for rectangular paste */
 
   reset_get_line (from_text_file);
@@ -1076,9 +1080,13 @@ insert_file (fd, stay_old_pos, from_text_file)
   ret = get_pasteline (fd, line_buffer, & len);
   if (ret == NO_INPUT) {
 	/* empty file */
+	status_msg ("Nothing inserted");
 	return;
   } else if (ret == ERRORS) {
 	/* sleep; "0 lines" error message? - no, nothing inserted */
+/* todo: should call variation of show_get_l_errors (); instead */
+/*	status_msg ("Read error");*/
+	show_get_l_errors ();
 	return;
   }
 
@@ -1300,7 +1308,9 @@ insert_file (fd, stay_old_pos, from_text_file)
   if (ret == ERRORS /* || line == NIL_LINE*/) {
 	pasted_end_line = NIL_LINE;
 	/* show memory allocation error msg */
-	sleep (2);
+/* todo: should call variation of show_get_l_errors (); instead here? (cf below) */
+/*	sleep (2);*/
+	show_get_l_errors ();
   } else if (ret == NO_LINE && ! do_rectangular_paste) {
 	/* Last line read not ended by a '\n' */
 	if (line->next == tail) {	/* after do_rectangular_paste */
@@ -1430,7 +1440,7 @@ paste_buffer (old_pos, use_clipboard)
 #ifdef __CYGWIN__
   if (use_clipboard) {
 	if ((fd = open ("/dev/clipboard", O_RDONLY | O_BINARY, 0)) < 0) {
-		error ("Cannot access clipboard");
+		error ("Cannot access Windows clipboard");
 		return;
 	}
 	status_uni ("Pasting from Windows clipboard");
@@ -1449,7 +1459,7 @@ paste_buffer (old_pos, use_clipboard)
 	if ((fd = yankfile (READ, False)) == ERRORS) {
 		int e = geterrno ();
 		if (e == 0 || e == ENOENT /* cygwin */) {
-			status_uni ("Buffer is empty - type F1 k for help on copy/paste");
+			status_uni ("No paste buffer - type F1 k for help on copy/paste");
 		} else {
 			error2 ("Cannot read paste buffer: ", serror ());
 		}
@@ -1607,14 +1617,16 @@ PASTEEXT ()
 void
 PASTE ()
 {
-  FLAG use_clipboard = (keyshift & shift_mask) || (hop_flag && (keyshift & alt_mask));
+  FLAG use_clipboard = (FLAG)
+	((keyshift & shift_mask) || (hop_flag && (keyshift & alt_mask)));
   paste_buffer (paste_stay_left, use_clipboard);
 }
 
 void
 PASTEstay ()
 {
-  FLAG use_clipboard = (keyshift & shift_mask) || (hop_flag && (keyshift & alt_mask));
+  FLAG use_clipboard = (FLAG)
+	((keyshift & shift_mask) || (hop_flag && (keyshift & alt_mask)));
   paste_buffer (True, use_clipboard);
 }
 
@@ -1701,7 +1713,7 @@ INSFILE ()
   }
   clear_status ();
 
-  status_line ("Inserting ", name);
+  status_file ("Inserting ", name);
   if ((fd = open (name, O_RDONLY | O_BINARY, 0)) < 0) {
 	error2 ("Cannot open file: " /*, name */, serror ());
   } else {	/* Insert the file */
@@ -1749,7 +1761,7 @@ WB ()
 
 /* Create the new file or open previous file for appending */
   if (hop_flag > 0) {
-    status_line ("Opening ", wfile_name);
+    status_file ("Opening ", wfile_name);
     if ((new_fd = open (wfile_name, O_WRONLY | O_CREAT | O_APPEND | O_BINARY, fprot0)) < 0) {
 	error2 ("Cannot append to file: " /* , wfile_name */, serror ());
 	return;
@@ -1767,7 +1779,7 @@ WB ()
 #endif
 	}
 
-	status_line ("Opening ", wfile_name);
+	status_file ("Opening ", wfile_name);
 	if ((new_fd = open (wfile_name, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, fprot0)) < 0) {
 		error2 ("Cannot create file: " /* , wfile_name */, serror ());
 		return;
@@ -1777,7 +1789,7 @@ WB ()
     msg_done = "Wrote buffer to";
   }
 
-  status_line (msg_doing, wfile_name);
+  status_file (msg_doing, wfile_name);
   flush ();
 
 /* Copy buffer into file */

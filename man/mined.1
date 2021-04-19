@@ -40,7 +40,7 @@
 .ds 21 [U+FFFD]
 .if c\[uFFFD] \{.ds 21 \[uFFFD]
 '\}
-.TH mined 1 "March 2015" "mined 2015.25" "Unicode text editor"
+.TH mined 1 "April 2015" "mined 2015.25" "Unicode text editor"
 .SH NAME
 MinEd - powerful text editor with extensive Unicode and CJK support
 .PP
@@ -2291,8 +2291,7 @@ with the ^O command.
 	Auto indentation is automatically suppressed if text is entered 
 very fast (by heuristic detection of input speed) in order to 
 allow unmodified copy and paste using terminal mouse functions.
-.SS \(->NEW\(-> 
-Advanced list support (bullet and numbered lists)
+.SS \(->NEW\(-> Advanced list support (bullet and numbered lists)
 A new paragraph (according to the currently selected 
 paragraph end mode, or considering Unicode paragraph separators) 
 after a bullet or numbered item will clone the bullet or 
@@ -2343,8 +2342,18 @@ orientation in search operations.
 Search and replacement patterns can contain embedded newlines. 
 Enter a newline (linefeed character) in the search string with 
 ^V^J or \\n (or \\r to match CRLF newlines).
-(In some cases there are still display problems; then update 
-the screen with the ESC "." command.)
+.br
+\fINote:\fR If combining multi-line substitution with 
+substitution references (&, \\1, etc), lineend types are not 
+strictly preserved.
+.SS \(->NEW\(-> Substitution references
+Mined supports 10 substitution references (like sed), 
+a full match reference "&" and 
+\(->NEW\(-> 
+numbered references "\\1" through 
+"\\9" to refer to the corresponding 
+matching sub-expressions marked "\\(...\\)" 
+in the search pattern. Sub-expressions can be nested.
 .SS Header line underlining
 The command HOP "-" (e.g. Ctrl-G -) underlines the 
 header line before the cursor position with as many "-" 
@@ -2438,8 +2447,7 @@ ESC t places the current position on the position marker stack
 before going to the location of the identifier definition. The 
 command ESC Enter (Alt-Enter) moves back to that position, 
 also saving the current file if needed first.
-.SS \(->NEW\(-> 
-Encrypted files
+.SS \(->NEW\(-> Encrypted files
 Mined edits encrypted files transparently.
 .br
 For reading or writing an encrypted file, a respective filter is 
@@ -2627,8 +2635,7 @@ than the original file, use the environment variable
 AUTO_SAVE_DIRECTORY or AUTOSAVEDIR 
 or BACKUP_DIRECTORY or BACKUPDIR 
 as described for backup files above.
-.SS 	Overwriting files and \(->NEW\(-> 
-Change monitoring
+.SS 	Overwriting files and Change monitoring
 If any command is issued to write to a file not previously 
 read in (after change of file name or working directory, or 
 with a Copy to file command), mined prompts for confirmation.
@@ -2799,8 +2806,8 @@ this and provides feedback about delayed operation, retrieves
 directory information lazy by page being displayed, and flushes 
 display of the file chooser by line to provide visual feedback 
 about the file information being retrieved.
-.SS \(->NEW\(-> 
-File tabs
+.SS 
+\(->NEW\(-> File tabs
 Mined provides virtual file tabs above the header line, listing 
 file names as opened via command line or file chooser. By clicking 
 a file name in the file tabs panel, or hold-and-move the mouse 
@@ -5715,8 +5722,7 @@ Mined has built-in support for a large number of 8 bit encodings
 which appear to be in use or unique for a region. The Encoding 
 menu has been structured with submenus to provide a concise 
 menu selection feature.
-.SS \(->NEW\(-> 
-EBCDIC support
+.SS \(->NEW\(-> EBCDIC support
 Mined supports EBCDIC encoded files (transparently transforming 
 them for internal handling) in the "bracket" codepage CP1047 as 
 used by the UNIX System Services (USS) on IBM z/OS.
@@ -6535,6 +6541,7 @@ Scroll screen backward 1 line.
 Scroll backward half a screen.
 .TP
 ^Z \fIor\fR Ctrl-PgDn \fIor\fR keypad-Plus \fI(if supported by terminal)\fR
+\fIor\fR \(->NEW\(-> keypad-Comma (DEC)
 Scroll screen forward 1 line.
 .TP
 \fI... with HOP:\fR

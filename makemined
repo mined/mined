@@ -121,10 +121,12 @@ HP*)	# HP-UX
 CYG*)	# Cygwin
 	if gcc -v 2>&1 | grep djgpp
 	then	echo Cross-building for djgpp on Cygwin system
+		#makefile=makefile.dj
+		makefile=makefile.dos
 		# compiling with Cygwin make as djgpp make will often abort
-		/bin/make -f makefile.dj $1 $makevars
+		/bin/make -f $makefile $1 $makevars
 		# final step, linking: needs djgpp make
-		make -f makefile.dj
+		make -f $makefile
 	else	$MAKE makefile.cygwin $1 $makevars
 	fi;;
 Darwin*)	# Mac OS X

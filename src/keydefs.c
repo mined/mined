@@ -301,6 +301,8 @@ struct pc_fkeyentry pc_xkey_map [512] = {
 
 #ifndef msdos
 
+#define COMMAkey	SD
+
 /* mapping table: function key escape sequences -> mined functions */
 struct fkeyentry fkeymap [] = {
 	/* Alt-Letter sequences for manual menu activation */
@@ -346,8 +348,8 @@ struct fkeyentry fkeymap [] = {
 	{"\033[217z",	LFkey},	/* more cursor left	*/
 
 	/* Linux console, Cygwin console */
-	{"\033[1~",	smallHOMEkey},	/* Pos1, VT220: FIND (@0)	*/
-	{"\033[4~",	smallENDkey},	/* End, VT220: SELECT (*6)	*/
+	{"\033[1~",	smallHOMEkey},	/* Pos1; VT220: FIND (@0)	*/
+	{"\033[4~",	smallENDkey},	/* End; VT220: SELECT (*6)	*/
 	{"\033[[A",	F1},	/* F1	*/
 	{"\033[[B",	F2},	/* F2	*/
 	{"\033[[C",	F3},	/* F3	*/
@@ -362,18 +364,18 @@ struct fkeyentry fkeymap [] = {
 	{"\033OG",	HOP},	/* 5	*/
 
 	/* Linux X / xterm */
-	{"\033OP",	F1},	/* F1, VT100 PF1	*/
-	{"\033OQ",	F2},	/* F2, VT100 PF2	*/
-	{"\033OR",	F3},	/* F3, VT100 PF3	*/
-	{"\033OS",	F4},	/* F4, VT100 PF4	*/
+	{"\033OP",	F1},	/* F1; VT100 PF1	*/
+	{"\033OQ",	F2},	/* F2; VT100 PF2	*/
+	{"\033OR",	F3},	/* F3; VT100 PF3	*/
+	{"\033OS",	F4},	/* F4; VT100 PF4	*/
 	{"\033OH",	HOMEkey},	/* Pos1	*/
 	{"\033OF",	ENDkey},	/* End	*/
 	{"\033OE",	HOP},	/* 5	*/
 
 	/* non-application mode xterm */
-	{"\033[H",	smallHOMEkey},	/* Pos1, esp on left keypad	*/
-	{"\033[F",	smallENDkey},	/* End, esp on left keypad	*/
-	{"\033[E",	HOP},	/* 5, Begin, hanterm keypad 5	*/
+	{"\033[H",	smallHOMEkey},	/* Pos1; esp on left keypad	*/
+	{"\033[F",	smallENDkey},	/* End; esp on left keypad	*/
+	{"\033[E",	HOP},	/* 5; Begin; hanterm keypad 5	*/
 
 	/* xterm generic patterns for modified keypad keys */
 	{"\033[1H",	HOMEkey},	/* Pos1	*/
@@ -391,8 +393,8 @@ struct fkeyentry fkeymap [] = {
 	{"\033[1S",	F4},	/* F4	*/
 
 	/* xterm specials */
-	{"\033[200~",	I},	/* begin bracketed paste */
-	{"\033[201~",	I},	/* end bracketed paste */
+	{"\033[200~",	BEGIN_BRACKETED_PASTE},
+	{"\033[201~",	END_BRACKETED_PASTE},
 
 	/* Deprecated; mined keyboard add-ons: shifted digits etc*/
 	{"\033[00~",	key_0},
@@ -464,7 +466,7 @@ struct fkeyentry fkeymap [] = {
 	{"\033[25~",	F3, shift_mask},	/* F13	*/
 	{"\033[26~",	F4, shift_mask},	/* F14	*/
 	{"\033[28~",	F5, shift_mask},	/* VT220: HELP (%1) */
-	{"\033[29~",	HOP},		/* VT220: DO (%0 redo), xterm: Menu */
+	{"\033[29~",	HOP},		/* VT220: DO (%0 redo); xterm: Menu */
 	{"\033[31~",	F7, shift_mask},	/* F17	*/
 	{"\033[32~",	F8, shift_mask},	/* F18	*/
 	{"\033[33~",	F9, shift_mask},	/* F19	*/
@@ -502,56 +504,56 @@ struct fkeyentry fkeymap [] = {
 	{"\033[63~",	F12, ctrlshift_mask}, /* control-shift-F12 */
 
 	/* further VT100 keys - some have been disabled by linux sequences */
-	{"\033[6~",	PGDNkey},	/* Next Screen, xterm PgDn	*/
-	{"\033[5~",	PGUPkey},	/* Prev Screen, xterm PgUp	*/
-	{"\033[3~",	DELkey},	/* Remove, xterm Del	*/
-	{"\033[2~",	INSkey},	/* Insert Here, xterm Ins	*/
-	{"\033[@",	HOMEkey},	/* Pos1, PC-xterm	*/
-	{"\033[e",	ENDkey},	/* End, PC-xterm	*/
+	{"\033[6~",	PGDNkey},	/* Next Screen; xterm PgDn	*/
+	{"\033[5~",	PGUPkey},	/* Prev Screen; xterm PgUp	*/
+	{"\033[3~",	DELkey},	/* Remove; xterm Del	*/
+	{"\033[2~",	INSkey},	/* Insert Here; xterm Ins	*/
+	{"\033[@",	HOMEkey},	/* Pos1; PC-xterm	*/
+	{"\033[e",	ENDkey},	/* End; PC-xterm	*/
 
 	/* application cursor keys */
 	{"\033OA",	UPkey},	/* up	*/
 	{"\033OB",	DNkey},	/* dn	*/
 	{"\033OC",	RTkey},	/* rt	*/
 	{"\033OD",	LFkey},	/* lf	*/
-	{"\033O@",	HOMEkey},	/* Pos1, PC-xterm	*/
-	{"\033Oe",	ENDkey},	/* End, PC-xterm	*/
+	{"\033O@",	HOMEkey},	/* Pos1; PC-xterm	*/
+	{"\033Oe",	ENDkey},	/* End; PC-xterm	*/
 
 	/* application keypad */
-	{"\033O ",	HOP},	/* Space, also old hanterm keypad 5 ?	*/
+	{"\033O ",	HOP},	/* Space; also old hanterm keypad 5 ?	*/
 	{"\033OI",	HOP},	/* shift-Tab */
 	{"\033OM",	SNL},	/* Enter (@8) */
-	{"\033Oo",	FIND},	/* PF1, keypad /	*/
-	{"\033Oj",	GOHOP},	/* PF2, keypad *	*/
-	{"\033Om",	SU},	/* PF3, keypad -	*/
-	{"\033Ok",	SD},	/* PF4, keypad +	*/
+	{"\033Oo",	FIND},	/* PF1; keypad /	*/
+	{"\033Oj",	GOHOP},	/* PF2; keypad *	*/
+	{"\033Om",	SU},	/* PF3; keypad -	*/
+	{"\033Ok",	SD},	/* PF4; keypad +	*/
 
-	{"\033Op",	INSkey},	/* Ins (kI), keypad 0	*/
-	{"\033Oq",	ENDkey},	/* End (K4), keypad 1	*/
-	{"\033Or",	DNkey},		/* dn (kd), keypad 2	*/
-	{"\033Os",	PGDNkey},	/* PgDn (K5), keypad 3	*/
-	{"\033Ot",	LFkey},		/* lf (kl), keypad 4	*/
-	{"\033Ou",	HOP},		/* mid (K2), keypad 5	*/
-	{"\033Ov",	RTkey},		/* rt (kr), keypad 6	*/
-	{"\033Ow",	HOMEkey},	/* Pos1 (K1), keypad 7	*/
-	{"\033Ox",	UPkey},		/* up (ku), keypad 8	*/
-	{"\033Oy",	PGUPkey},	/* PgUp (K3), keypad 9	*/
-	{"\033On",	DELkey},	/* Del (kD), keypad .	*/
-	{"\033Ol",	DELkey},	/* Del, keypad ,	*/
+	{"\033Op",	INSkey},	/* Ins (kI); keypad 0	*/
+	{"\033Oq",	ENDkey},	/* End (K4); keypad 1	*/
+	{"\033Or",	DNkey},		/* dn (kd); keypad 2	*/
+	{"\033Os",	PGDNkey},	/* PgDn (K5); keypad 3	*/
+	{"\033Ot",	LFkey},		/* lf (kl); keypad 4	*/
+	{"\033Ou",	HOP},		/* mid (K2); keypad 5	*/
+	{"\033Ov",	RTkey},		/* rt (kr); keypad 6	*/
+	{"\033Ow",	HOMEkey},	/* Pos1 (K1); keypad 7	*/
+	{"\033Ox",	UPkey},		/* up (ku); keypad 8	*/
+	{"\033Oy",	PGUPkey},	/* PgUp (K3); keypad 9	*/
+	{"\033On",	DELkey},	/* Del (kD); keypad .	*/
+	{"\033Ol",	COMMAkey},	/* Del; keypad ,; xterm keypad + */
 
 	/* mintty generic patterns for modified application mode keys */
-	{"\033[1p",	INSkey},	/* Ins (kI), keypad 0	*/
-	{"\033[1q",	ENDkey},	/* End (K4), keypad 1	*/
-	{"\033[1r",	DNkey},		/* dn (kd), keypad 2	*/
-	{"\033[1s",	PGDNkey},	/* PgDn (K5), keypad 3	*/
-	{"\033[1t",	LFkey},		/* lf (kl), keypad 4	*/
-	{"\033[1u",	HOP},		/* mid (K2), keypad 5	*/
-	{"\033[1v",	RTkey},		/* rt (kr), keypad 6	*/
-	{"\033[1w",	HOMEkey},	/* Pos1 (K1), keypad 7	*/
-	{"\033[1x",	UPkey},		/* up (ku), keypad 8	*/
-	{"\033[1y",	PGUPkey},	/* PgUp (K3), keypad 9	*/
-	{"\033[1n",	DELkey},	/* Del (kD), keypad .	*/
-	{"\033[1l",	DELkey},	/* Del, keypad ,	*/
+	{"\033[1p",	INSkey},	/* Ins (kI); keypad 0	*/
+	{"\033[1q",	ENDkey},	/* End (K4); keypad 1	*/
+	{"\033[1r",	DNkey},		/* dn (kd); keypad 2	*/
+	{"\033[1s",	PGDNkey},	/* PgDn (K5); keypad 3	*/
+	{"\033[1t",	LFkey},		/* lf (kl); keypad 4	*/
+	{"\033[1u",	HOP},		/* mid (K2); keypad 5	*/
+	{"\033[1v",	RTkey},		/* rt (kr); keypad 6	*/
+	{"\033[1w",	HOMEkey},	/* Pos1 (K1); keypad 7	*/
+	{"\033[1x",	UPkey},		/* up (ku); keypad 8	*/
+	{"\033[1y",	PGUPkey},	/* PgUp (K3); keypad 9	*/
+	{"\033[1n",	DELkey},	/* Del (kD); keypad .	*/
+	{"\033[1l",	COMMAkey},	/* Del; keypad ,	*/
 	{"\033[1M",	SNL},		/* Enter (@8) */
 	{"\033[1o",	FIND},		/* keypad /	*/
 	{"\033[1j",	GOHOP},		/* keypad *	*/
@@ -562,17 +564,17 @@ struct fkeyentry fkeymap [] = {
 	{"\033[1Z",	STAB},	/* TAB	*/
 
 	/* mlterm generic patterns for modified application mode keys */
-	{"\033O0p",	INSkey},	/* Ins (kI), keypad 0	*/
-	{"\033O0q",	ENDkey},	/* End (K4), keypad 1	*/
-	{"\033O0r",	DNkey},		/* dn (kd), keypad 2	*/
-	{"\033O0s",	PGDNkey},	/* PgDn (K5), keypad 3	*/
-	{"\033O0t",	LFkey},		/* lf (kl), keypad 4	*/
-	{"\033O0u",	HOP},		/* mid (K2), keypad 5	*/
-	{"\033O0v",	RTkey},		/* rt (kr), keypad 6	*/
-	{"\033O0w",	HOMEkey},	/* Pos1 (K1), keypad 7	*/
-	{"\033O0x",	UPkey},		/* up (ku), keypad 8	*/
-	{"\033O0y",	PGUPkey},	/* PgUp (K3), keypad 9	*/
-	{"\033O0n",	DELkey},	/* Del (kD), keypad .	*/
+	{"\033O0p",	INSkey},	/* Ins (kI); keypad 0	*/
+	{"\033O0q",	ENDkey},	/* End (K4); keypad 1	*/
+	{"\033O0r",	DNkey},		/* dn (kd); keypad 2	*/
+	{"\033O0s",	PGDNkey},	/* PgDn (K5); keypad 3	*/
+	{"\033O0t",	LFkey},		/* lf (kl); keypad 4	*/
+	{"\033O0u",	HOP},		/* mid (K2); keypad 5	*/
+	{"\033O0v",	RTkey},		/* rt (kr); keypad 6	*/
+	{"\033O0w",	HOMEkey},	/* Pos1 (K1); keypad 7	*/
+	{"\033O0x",	UPkey},		/* up (ku); keypad 8	*/
+	{"\033O0y",	PGUPkey},	/* PgUp (K3); keypad 9	*/
+	{"\033O0n",	DELkey},	/* Del (kD); keypad .	*/
 	{"\033O0o",	FIND},		/* keypad /	*/
 	{"\033O0j",	GOHOP},		/* keypad *	*/
 	{"\033O0m",	KP_minus},	/* keypad -	*/
@@ -595,8 +597,8 @@ struct fkeyentry fkeymap [] = {
 	{"\033[250z",	COPY},	/* Enter */
 	{"\033[249z",	DELkey},	/* Del */
 	{"\033[247z",	INSkey, ctrl_mask},	/* Ins */
-	{"\033[1z",	HOMEkey},	/* Home/Pos1, non-appl */
-	{"\033[4z",	ENDkey},	/* End, non-appl */
+	{"\033[1z",	HOMEkey},	/* Home/Pos1; non-appl */
+	{"\033[4z",	ENDkey},	/* End; non-appl */
 	{"\033[2z",	INSkey},	/* Ins on VT100 block */
 	{"\033[3z",	DELkey},	/* Del (xterm/Sun) */
 	{"\033[5z",	PGUPkey},	/* PgUp on VT100 block */
@@ -611,7 +613,7 @@ struct fkeyentry fkeymap [] = {
 	{"\033[201z",	CUT},	/* Cut */
 	{"\033[196z",	HELP},	/* Help */
 
-	{"\033[224z",	F1},	/* F1, xterm "Sun Function-Keys" */
+	{"\033[224z",	F1},	/* F1; xterm "Sun Function-Keys" */
 	{"\033[225z",	F2},	/* F2 */
 	{"\033[226z",	F3},	/* F3 */
 	{"\033[227z",	F4},	/* F4 */
@@ -628,7 +630,7 @@ struct fkeyentry fkeymap [] = {
 	{"\033[209q",	HOMEkey},	/* Print Screen */
 	{"\033[213q",	ENDkey},	/* Scroll Lock */
 /*	{"\033[217q",	I},	*//* Pause */
-	{"\033[139q",	INSkey},	/* Insert, Ins */
+	{"\033[139q",	INSkey},	/* Insert; Ins */
 	{"\033[P",	DELkey},	/* Del */
 /*	{"\033[H",	smallHOMEkey},	*//* Home */
 	{"\033[150q",	PGUPkey},	/* PgUp */
@@ -722,7 +724,7 @@ struct fkeyentry fkeymap_vt52 [] = {
 	{"\033?w",	HOMEkey},	/* keypad 7 */
 	{"\033?x",	UPkey},	/* keypad 8 */
 	{"\033?y",	PGUPkey},	/* keypad 9 */
-	{"\033?l",	DELkey},	/* keypad , */
+	{"\033?l",	COMMAkey},	/* keypad , */
 	{"\033?m",	SU},	/* keypad - */
 	{"\033?n",	DELkey},	/* keypad . */
 	{"\033?M",	SNL},	/* keypad ENTER */
@@ -824,7 +826,7 @@ struct fkeyentry fkeymap_hp [] = {
 	{"\033OX",	RTkey},
 	{"\033OY",	DNkey},
 	{"\033OZ",	PGUPkey},	/* PgUp	*/
-	{"\033O?",	PGDNkey},	/* PgDn; End, Ins, Del?	*/
+	{"\033O?",	PGDNkey},	/* PgDn; End/Ins/Del?	*/
 #endif
 
 struct fkeyentry fkeymap_rxvt [] = {
@@ -834,8 +836,8 @@ struct fkeyentry fkeymap_rxvt [] = {
 	/* xterm */
 	{"\033[M",	DIRECTxterm},	/* direct cursor address */
 	/* Shift-function keys: shifted by 2 against older conventions */
-	{"\033[23~",	F11},	/* F11, shift-F1 */
-	{"\033[24~",	F12},	/* F12, shift-F2 */
+	{"\033[23~",	F11},	/* F11; shift-F1 */
+	{"\033[24~",	F12},	/* F12; shift-F2 */
 	{"\033[25~",	F3, shift_mask},
 	{"\033[26~",	F4, shift_mask},
 	{"\033[28~",	F5, shift_mask},
@@ -903,18 +905,18 @@ struct fkeyentry fkeymap_vt100 [] = {
 	{"\033OX",	HOP},	/* appl. mode =, conflict with older xterm F9 */
 
 	/* override wrong terminfo-derived settings */
-	{"\033Op",	INSkey},	/* Ins (kI), keypad 0	*/
-	{"\033Oq",	ENDkey},	/* End (K4), keypad 1	*/
-	{"\033Or",	DNkey},		/* dn (kd), keypad 2	*/
-	{"\033Os",	PGDNkey},	/* PgDn (K5), keypad 3	*/
-	{"\033Ot",	LFkey},		/* lf (kl), keypad 4	*/
-	{"\033Ou",	HOP},		/* mid (K2), keypad 5	*/
-	{"\033Ov",	RTkey},		/* rt (kr), keypad 6	*/
-	{"\033Ow",	HOMEkey},	/* Pos1 (K1), keypad 7	*/
-	{"\033Ox",	UPkey},		/* up (ku), keypad 8	*/
-	{"\033Oy",	PGUPkey},	/* PgUp (K3), keypad 9	*/
-	{"\033On",	DELkey},	/* Del (kD), keypad .	*/
-	{"\033Ol",	DELkey},	/* Del, keypad ,	*/
+	{"\033Op",	INSkey},	/* Ins (kI); keypad 0	*/
+	{"\033Oq",	ENDkey},	/* End (K4); keypad 1	*/
+	{"\033Or",	DNkey},		/* dn (kd); keypad 2	*/
+	{"\033Os",	PGDNkey},	/* PgDn (K5); keypad 3	*/
+	{"\033Ot",	LFkey},		/* lf (kl); keypad 4	*/
+	{"\033Ou",	HOP},		/* mid (K2); keypad 5	*/
+	{"\033Ov",	RTkey},		/* rt (kr); keypad 6	*/
+	{"\033Ow",	HOMEkey},	/* Pos1 (K1); keypad 7	*/
+	{"\033Ox",	UPkey},		/* up (ku); keypad 8	*/
+	{"\033Oy",	PGUPkey},	/* PgUp (K3); keypad 9	*/
+	{"\033On",	DELkey},	/* Del (kD); keypad .	*/
+	{"\033Ol",	COMMAkey},	/* Del; keypad ,; xterm keypad + */
 
 	/* BSD console */
 	{"\033[7~",	HOMEkey},	/* 	*/

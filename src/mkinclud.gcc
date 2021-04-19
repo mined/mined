@@ -81,7 +81,7 @@ DEBUG= # -ggdb -gstabs
 # compilation setup
 
 # Collection of compilation parameters:
-CFLAGS= $(SYSFLAGS) $(GFLAGS) $(OPT) $(DEBUG) ${CCFLAGS}
+CFLAGS= $(SYSFLAGS) $(GFLAGS) $(DEBUG) ${CCFLAGS}
 
 
 #############################################################################

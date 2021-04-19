@@ -36,12 +36,58 @@ INSTALLBIN = install
 
 
 #############################################################################
+# system environment adaption
+
+# for 64-bit systems, check whether /lib/64 or /lib64 exists
+#LIBARCH=$(shell uname -m | sed -e "s,.*_64,64," -e t -e d )
+#LIBDIR=$(shell ls -1d /lib /lib/$(LIBARCH) /lib$(LIBARCH) /lib 2> /dev/null | sed -e "$$ p" -e d )
+# derive /lib64 from uname -m ending on _64:
+#LIBDIR=$(shell if uname -m | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; else ls -d /lib; fi 2> /dev/null | sed -e "1 p" -e d )
+# also derive /lib64 from IRIX64 but not from CYGWIN_NT-6.1-WOW64:
+LIBDIR=$(shell if (uname | sed -e "s,^[^-]*64,_64," ; uname -m) | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; else ls -d /lib; fi 2> /dev/null | sed -e "1 p" -e d )
+
+# select user library directory
+USRLIBDIR	= /usr$(LIBDIR)
+# select root library directory
+ROOTLIBDIR	= $(LIBDIR)
+
+# find library with termcap API
+# prefer static linking (with ".a") rather than dynamic linking (with ".so")
+# this may yield a more portable program in a heterogeneous network
+liblist	= \
+	ls $(ROOTLIBDIR)/libtermcap.a	$(USRLIBDIR)/libtermcap.a; \
+	ls 				$(USRLIBDIR)/termcap/libtermcap.a; \
+	ls $(ROOTLIBDIR)/libncurses.a	$(USRLIBDIR)/libncurses.a; \
+	ls $(ROOTLIBDIR)/libcurses.a	$(USRLIBDIR)/libcurses.a; \
+	ls $(ROOTLIBDIR)/libtermcap.so*	$(USRLIBDIR)/libtermcap.so*; \
+	ls 				$(USRLIBDIR)/termcap/libtermcap.so*; \
+	ls $(ROOTLIBDIR)/libncurses.so*	$(USRLIBDIR)/libncurses.so*; \
+	ls $(ROOTLIBDIR)/libcurses.so*	$(USRLIBDIR)/libcurses.so*; \
+	ls /lib/*/libtermcap.so*; \
+	ls /lib/*/libncurses.so*; \
+	ls /lib/*/libcurses.so*; \
+
+# the /lib/*/ attempts are needed for newer Debian/Ubuntu which hides these 
+# libraries in something like /lib/i386-linux-gnu/ or /lib/x86_64-linux-gnu/, 
+# and neither in /lib nor /lib64
+
+# select first library found from list, replace with -l... if static
+firstlib = sed -e "1 p" -e d
+
+libargs = sed -e "s,\($(USRLIBDIR).*\)/lib\([^/]*\)\.a,-L\1 -l\2," -e t -e "s,\($(ROOTLIBDIR).*\)/lib\([^/]*\)\.a,-L\1 -l\2,"
+termcap = $(shell ( $(liblist) ) 2> /dev/null | $(libargs) | $(firstlib) )
+
+# libtest: target at bottom (must not be first target)
+
+
+#############################################################################
 # compilation target options
 
 # terminal handling mode 1: termio
 SCREEN	= -DTERMIO
 # link termcap functions:
-SLIB	= -ltermcap	# usual System V termcap library
+#SLIB	= -ltermcap	# usual System V termcap library
+SLIB	= $(termcap)
 #SLIB	= -L/usr/lib/termcap -ltermcap	# if deprecated (Linux)
 #SLIB	= -lcurses	# may work on System V Unix too (Solaris)
 #SLIB	= -lncurses	# includes termcap library (Linux)

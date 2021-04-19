@@ -44,6 +44,8 @@ int combining_data_version = U500;	/* Unicode 5.0 */
 /* special modes */
 int cjk_width_data_version = 0;	/* xterm CJK legacy width mode -cjk_width */
 FLAG hangul_jamo_extended = False;	/* U+D7B0... combining Jamo ? */
+FLAG wide_indic = False;	/* Indic scripts handled wide? */
+FLAG wide_extra = False;	/* Some long Unicode chars handled wide? */
 
 /* specific behaviour of specific terminals */
 FLAG unassigned_single_width = False;	/* unassigned chars displayed single width? */
@@ -57,11 +59,14 @@ int xterm_version = 0;
 int gnome_terminal_version = 0;
 int rxvt_version = 0;
 int konsole_version = 0;
+int cygwin_version = 0;
 int mintty_version = 0;
 int mlterm_version = 0;
 int poderosa_version = 0;
 int screen_version = 0;
 int tmux_version = 0;
+
+FLAG vt220_keyboard = False;
 
 /* terminal features with respect to non-BMP characters (>= 0x10000) */
 int nonbmp_width_data = 0x4;
@@ -88,6 +93,12 @@ static struct name_table {
 	{U620, "Unicode 6.1/6.2"},
 	{U630, "Unicode 6.3"},
 	{U700, "Unicode 7.0"},
+	{U800, "Unicode 8.0"},
+	{U900, "Unicode 9.0"},
+	{U1000, "Unicode 10.0"},
+	{U1100, "Unicode 11.0"},
+	{U1210, "Unicode 12.1"},
+	{U1300, "Unicode 13.0"},
 	{0, 0}
 };
 

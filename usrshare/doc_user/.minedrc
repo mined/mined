@@ -313,23 +313,13 @@ menu_background
 #############################################################################
 # Conditional options: file type specific
 
-#[*.*] conditional configuration on filename pattern
-
+# Conditional configuration on filename pattern
+#[*.*]
 
 # Redirection/Forward include: Files with option "<<" will further 
 # also be matched against the given pattern.
-[*.text]
-<< *.txt
-
-[*.txt]
-smart_quotes
-
-#[*.français]
-#smart_quotes fr
-
-#[*.suisse]
-#smart_quotes fr_CH
-#smart_quotes "«» ‹›"
+#[*.text]
+#<< *.txt
 
 
 # Options to enable file read/write filtering with a filter command;
@@ -389,6 +379,26 @@ filter_read	"openssl enc -des3 -pass file:$HOME/.pass -d -in"
 filter_write	"openssl enc -des3 -pass file:$HOME/.pass -out"
 
 
+# Plain text file settings
+[*.text]
+<< *.txt
+
+# 'doc' txt exports contain Mac lineends as table cell separators
+[*.doc.txt]
+display_mac
+<< *.txt
+
+[*.txt]
+smart_quotes
+
+#[*.français]
+#smart_quotes fr
+
+#[*.suisse]
+#smart_quotes fr_CH
+#smart_quotes "«» ‹›"
+
+
 [.*]
 # Option for hiding of passwords is actually the default for 
 # "hidden files" (beginning with "." by Unix convention)
@@ -421,13 +431,11 @@ tabexpand=2
 #############################################################################
 # Additional conditional personal preferences
 
-#...
-
-#[merk*]
-#smart_quotes de
-
 #[...]
 #...
+
+[merk*]
+smart_quotes de
 
 
 #############################################################################
