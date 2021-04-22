@@ -7,20 +7,40 @@
 #		{"szlig", 0x00DF /* ß */},
 #	<td class="code"><code>&amp;sbquo;</code> (ist korrekt, nicht &amp;bsquo;)</td>
 
-refpage=${1-zeichen.htm}
+refpage=${1-charref}
 
 htmlver=`sed -e '1 s,.*HTML \([0-9.]*\).*,\1,' -e t -e d $refpage`
 
 echo "	/* HTML $htmlver mnemos (named entities) */"
 
-cat $refpage | tr -d '\015' |
-sed -e '/class="code"/ b entry' -e d -e ': entry' -e N \
-    -e "s@[^&]*&amp;\([^;]*\);.*&amp;#\([^;]*\);.*@echo -n '	{\"\1\", 0x'; printf %04X \2; echo -n ' /* U+'; printf %04X \2; echo ' */},'@" |
+#<tr title="U+000A3 POUND SIGN"
+# data-block="C1 Controls and Latin-1 Supplement"
+# data-category="Sc"
+# data-set="xhtml1-lat1 9573-2003-isonum">
+#<td class="character"> &#x000A3;<td class="named"><code>&amp;pound;</code>
+#<td class="hex"><code>&amp;#x000A3;</code>
+#<td class="dec"><code>&amp;#163;</code><td class="desc">POUND SIGN
+
+#echo -n '	{"pound", 0x'; printf %04X 0x000A3; echo -n ' /* U+'; printf %04X 0x000A3; echo ' */},'
+
+cat $refpage |
+sed -e "s:^<tr.*<td class=\"named\"><code>&amp;\([^#][^;]*\).*<td class=\"hex\"><code>&amp;#x\([0-9A-Fa-f]*\).*:echo -n '	{\"\1\", 0x'; printf %04X 0x\2; echo -n ' /* U+'; printf %04X 0x\2; echo ' */},':" -e t -e d |
 sh | ./insutf8 | sed -e 's,U+[^ ]* ,,' |
 sed	-e 's,"not","\&not",' \
 	-e 's,"oslash","\&oslash",' \
 	-e 's,"circ","\&circ",' \
 	-e 's,"phi","\&phi",' \
-	-e 's,"asymp","\&asymp",'
+	-e 's,"asymp","\&asymp",' \
+	-e 's,"Or","\&Or",' \
+	-e 's,"Sc","\&Sc",' \
+	-e 's,"amalg","\&amalg",' \
+	-e 's,"ast","\&ast",' \
+	-e 's,"cdot","\&cdot",' \
+	-e 's,"jmath","\&jmath",' \
+	-e 's,"models","\&models",' \
+	-e 's,"num","\&num",' \
+	-e 's,"sc","\&sc",' \
+	-e 's,"star","\&star",' \
+	-e 's,"wcirc","\&wcirc",'
 
-echo "check uniqueness with ./mnemos.check" >&2
+echo "check uniqueness with ./mkmnemocheck" >&2

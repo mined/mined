@@ -387,8 +387,8 @@ localealiases:	/usr/share/locale/locale.alias locales.cfg
 	sed -e "/^#/ d" -e "/8859-1$$/ d" -e "s,\([^ 	]*\)[ 	][ 	]*\([^ 	]*\),\1	\2," -e "s,	[^.]*\.,	," -e "s,	euc,	EUC-," /usr/share/locale/locale.alias | fgrep -a -v -x -f locales.cfg
 
 # HTML character mnemonics:
-zeichen.htm:
-	$(WGET) http://de.selfhtml.org/html/referenz/zeichen.htm
+charref:
+	$(WGET) https://dev.w3.org/html5/html-author/charref
 
 mnemos.com:	mkaccent accents.cfg # UnicodeData.txt
 	CC=$(CC) $(SH) ./mkaccent -
@@ -408,8 +408,8 @@ mnemos.heb:	mkaccent accents.cfg # UnicodeData.txt
 mnemos.lat:	mkaccent accents.cfg # UnicodeData.txt
 	CC=$(CC) $(SH) ./mkaccent Latin
 
-mnemos.www:	mnemos.tex mkmnhtml # zeichen.htm
-	CC=$(CC) $(SH) ./mkmnhtml zeichen.htm | fgrep -v -x -f mnemos.tex > mnemos.www
+mnemos.www:	mnemos.tex mkmnhtml # charref
+	CC=$(CC) $(SH) ./mkmnhtml charref | fgrep -v -x -f mnemos.tex > mnemos.www
 	$(SH) ./mkmnemocheck
 
 mnemos.rof:
@@ -876,7 +876,7 @@ checksrc:
 	if egrep -a -e "^(printf|#define debug)" *.[hc]; then false; fi
 	# check for debug statements at line beginning:
 	#if sed -e "/^{/,/^}/ b" -e d *.c | grep -a "^[0-9a-zA-Z].*;"; then false; fi
-	if sed -e "/^{/,/^}/ b" -e d *.c | grep -a "^[^ 	/].*;"; then false; fi
+	if sed -e "/^{/,/^}/ b" -e d *.c | grep -a "^[^	 /}].*;"; then false; fi
 	# check for remaining test entries:
 	if sed -e "/-- test/,$$ b" -e d keymaps.cfg | egrep -a '^[^#]'; then false; else true; fi
 
