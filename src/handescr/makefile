@@ -1,9 +1,8 @@
 all:	descriptions.h Radical_Stroke.h
 
 
-# Han info pronunciations
-
-pronunciations=Cantonese|HanyuPinlu|HanyuPinyin|JapaneseKun|JapaneseOn|Hangul|Korean|Mandarin|Tang|Vietnamese|XHC1983
+# Han info pronunciations from Unihan_Readings.txt
+pronunciations=Cantonese|HanyuPinlu|HanyuPinyin|JapaneseKun|JapaneseOn|Hangul|Korean|Mandarin|Tang|Vietnamese|XHC1983|TGHZ2013
 
 
 # Unihan database
@@ -16,12 +15,18 @@ pronunciations=Cantonese|HanyuPinlu|HanyuPinyin|JapaneseKun|JapaneseOn|Hangul|Ko
 ../Unihan_IRGSources.txt:	../Unihan.zip
 	cd ..; unzip -o Unihan.zip Unihan_IRGSources.txt
 
+../NushuSources.txt:	../UCD.zip
+	cd ..; unzip -o UCD.zip NushuSources.txt
+
 #kRS=../Unihan_RadicalStrokeCounts.txt	# before Unicode 7.0
 #kRS=../Unihan_IRGSources.txt		# since Unicode 7.0
 kRS=../Unihan_RadicalStrokeCounts.txt ../Unihan_IRGSources.txt
 
 ../Unihan.zip:
 	cd ..; make -f mkinclud.mak Unihan.zip
+
+../UCD.zip:
+	cd ..; make -f mkinclud.mak UCD.zip
 
 
 # Radical/Stroke input method data
@@ -73,11 +78,14 @@ menus:	menu1 menu2
 
 # Han info pronunciation and description entries
 
+descriptions.add:	../NushuSources.txt
+	sed -e "s,kReading	,kNushu	," -e t -e d ../NushuSources.txt > descriptions.add
+
 descriptions.uni:	../Unihan_Readings.txt
 	egrep "^U.*k($(pronunciations)|Definition)" ../Unihan_Readings.txt > descriptions.uni
 
-descriptions.list:	descriptions.uni descriptions.sed
-	sed -f descriptions.sed descriptions.uni | sort > descriptions.list
+descriptions.list:	descriptions.uni descriptions.add descriptions.sed
+	sed -f descriptions.sed descriptions.uni descriptions.add | sort > descriptions.list
 
 descriptions.sh:	descriptions.list descriptions.sep descriptions.seq
 	sed -f descriptions.sep descriptions.list | sed -f descriptions.seq > descriptions.sh

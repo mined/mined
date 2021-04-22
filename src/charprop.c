@@ -422,7 +422,11 @@ lookup_handescr (unichar)
 		text += strlen (text) + 1;
 		han.XHCHanyuPinyin = text;
 		text += strlen (text) + 1;
+		han.TGHZ = text;
+		text += strlen (text) + 1;
 		han.Tang = text;
+		text += strlen (text) + 1;
+		han.Nushu = text;
 		text += strlen (text) + 1;
 		han.Definition = text;
 

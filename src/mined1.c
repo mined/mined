@@ -390,7 +390,9 @@ FLAG disp_Han_Vietnamese = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_HanyuPinlu = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_HanyuPinyin = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_XHCHanyuPinyin = False;	/* display this Han pronunciation ? */
+FLAG disp_Han_TGHZ = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_Tang = False;	/* display this Han pronunciation ? */
+FLAG disp_Han_Nushu = False;;	/* display this Han pronunciation ? */
 FLAG disp_Han_description = True;	/* display Han description ? */
 FLAG disp_Han_full = True;	/* display full popup Han description ? */
 
@@ -7824,8 +7826,14 @@ main (argc, argv)
 	if (strchr (env, 'X') != NIL_PTR) {
 		disp_Han_XHCHanyuPinyin = True;
 	}
+	if (strchr (env, 'G') != NIL_PTR) {
+		disp_Han_TGHZ = True;
+	}
 	if (strchr (env, 'T') != NIL_PTR) {
 		disp_Han_Tang = True;
+	}
+	if (strchr (env, 'N') != NIL_PTR) {
+		disp_Han_Nushu = True;
 	}
 	if (strchr (env, 'D') != NIL_PTR) {
 		disp_Han_description = True;

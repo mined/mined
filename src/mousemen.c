@@ -1350,10 +1350,28 @@ local void
 }
 
 local void
+	toggle_TGHZ ()
+{
+	negate (disp_Han_TGHZ);
+	If disp_Han_TGHZ
+	Then	always_disp_Han = True;
+	Fi
+}
+
+local void
 	toggle_Tang ()
 {
 	negate (disp_Han_Tang);
 	If disp_Han_Tang
+	Then	always_disp_Han = True;
+	Fi
+}
+
+local void
+	toggle_Nushu ()
+{
+	negate (disp_Han_Nushu);
+	If disp_Han_Nushu
 	Then	always_disp_Han = True;
 	Fi
 }
@@ -1533,11 +1551,27 @@ local int
 }
 
 local int
+	infoon_TGHZ (item, ii)
+		menuitemtype * item;
+		int ii;
+{
+	return stayinmenu (disp_Han_TGHZ);
+}
+
+local int
 	infoon_Tang (item, ii)
 		menuitemtype * item;
 		int ii;
 {
 	return stayinmenu (disp_Han_Tang);
+}
+
+local int
+	infoon_Nushu (item, ii)
+		menuitemtype * item;
+		int ii;
+{
+	return stayinmenu (disp_Han_Nushu);
 }
 
 local int
@@ -1902,7 +1936,9 @@ local menuitemtype infomenu [] = {
 	{"Hanyu Pinlu", toggle_HanyuPinlu, "", infoon_HanyuPinlu},
 	{"Hanyu Pinyin", toggle_HanyuPinyin, "", infoon_HanyuPinyin},
 	{"XHC Hànyǔ pīnyīn", toggle_XHCHanyuPinyin, "", infoon_XHCHanyuPinyin},
+	{"TGHZ 2013", toggle_TGHZ, "", infoon_TGHZ},
 	{"Tang", toggle_Tang, "", infoon_Tang},
+	{"Nushu", toggle_Nushu, "", infoon_Nushu},
 };
 
 local menuitemtype textmenu [] = {

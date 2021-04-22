@@ -946,7 +946,9 @@ extern FLAG disp_Han_Vietnamese;	/* display this Han pronunciation ? */
 extern FLAG disp_Han_HanyuPinlu;	/* display this Han pronunciation ? */
 extern FLAG disp_Han_HanyuPinyin;	/* display this Han pronunciation ? */
 extern FLAG disp_Han_XHCHanyuPinyin;	/* display this Han pronunciation ? */
+extern FLAG disp_Han_TGHZ;	/* display this Han pronunciation ? */
 extern FLAG disp_Han_Tang;	/* display this Han pronunciation ? */
+extern FLAG disp_Han_Nushu;	/* display this Han pronunciation ? */
 extern FLAG disp_Han_description;	/* display Han description ? */
 extern FLAG disp_Han_full;	/* display full popup Han description ? */
 

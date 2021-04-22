@@ -42,13 +42,16 @@
 #x="1407.050:yú 1413.010:yǔ 1415.110:yù"
 
 #code 04E09
+#g="320.010:sān"
+
+#code 04E09
 #t="*sɑm sɑm"
 
 #code 04E09
 #d="three"
 
 # into C data table entry:
-#	{0x04E09, "san1 san4", "saam1 saam3", "mitsu mitabi", "san", "삼", "sam", "tam", "san1", "sān", "*sɑm sɑm", "three"},
+#	{0x04E09, "san1 san4", "saam1 saam3", "mitsu mitabi", "san", "삼", "sam", "tam", "san1", "sān", "sān", "*sɑm sɑm", "", "three"},
 
 
 (
@@ -58,7 +61,7 @@ current=
 
 flush () {
 	#x="`echo "$x" | sed -e "s,[0-9.*:,]*,,g"`"
-	echo "	{0x$current, \"$m\", \"$c\", \"$j\", \"$s\", \"$h\", \"$k\", \"$v\", \"$p\", \"$y\", \"$x\", \"$t\", \"$d\"},"
+	echo "	{0x$current, \"$m\", \"$c\", \"$j\", \"$s\", \"$h\", \"$k\", \"$v\", \"$p\", \"$y\", \"$x\", \"$g\", \"$t\", \"$n\", \"$d\"},"
 }
 
 code () {
@@ -77,7 +80,9 @@ code () {
 		p=
 		y=
 		x=
+		g=
 		t=
+		n=
 		d=
 		current=$1
 	fi
@@ -86,7 +91,7 @@ code () {
 /EOS
 
 cat $1 |
-sed "/^x=/ s,[0-9.*:,]*,,g"
+sed "/^[xg]=/ s,[0-9.*:,]*,,g"
 
 echo flush
 

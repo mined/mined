@@ -29,8 +29,11 @@ prio	Unicode block
 01	4E00..9FFF; CJK Unified Ideographs
 02	3400..4DBF; CJK Unified Ideographs Extension A
 03	20000..2A6DF; CJK Unified Ideographs Extension B
-04?	2A700..2B73F; CJK Unified Ideographs Extension C
-04?	2B740..2B81F; CJK Unified Ideographs Extension D
+04	2A700..2B73F; CJK Unified Ideographs Extension C
+04	2B740..2B81F; CJK Unified Ideographs Extension D
+04	2B820..2CEAF; CJK Unified Ideographs Extension E
+04	2CEB0..2EBEF; CJK Unified Ideographs Extension F
+05	30000..3134F; CJK Unified Ideographs Extension G
 11?	2E80..2EFF; CJK Radicals Supplement
 21	F900..FAFF; CJK Compatibility Ideographs
 22	2F800..2FA1F; CJK Compatibility Ideographs Supplement
@@ -52,7 +55,10 @@ priouni () {
 	-e "s,\(U+0*4[0-9A-Da-d]\),02 \1," -e t \
 	-e "s,\(U+2[0-9Aa]\),03 \1," -e t \
 	-e "s,\(U+2[Aa][789A-Fa-f]\),04 \1," -e t \
-	-e "s,\(U+2[Bb][0-9A-Ba-b]\),04 \1," -e t \
+	-e "s,\(U+2[B-Db-d][0-9A-Fa-f]\),04 \1," -e t \
+	-e "s,\(U+2E[0-9A-Ba-b]\),04 \1," -e t \
+	-e "s,\(U+30[0-9A-Fa-f]\),05 \1," -e t \
+	-e "s,\(U+31[0-3]\),05 \1," -e t \
 	-e "s,\(U+0*2[Ee][89A-Fa-f]\),11 \1," -e t \
 	-e "s,\(U+0*[Ff][9Aa]\),21 \1," -e t \
 	-e "s,\(U+2[Ff][89Aa]\),22 \1," -e t \

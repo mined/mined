@@ -18,7 +18,9 @@ struct hanentry {
 	char * HanyuPinlu;
 	char * HanyuPinyin;
 	char * XHCHanyuPinyin;
+	char * TGHZ;
 	char * Tang;
+	char * Nushu;
 	char * Definition;
 };
 

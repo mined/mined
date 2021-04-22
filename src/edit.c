@@ -4372,12 +4372,16 @@ display_Han (cpoi, force_utf8)
   char * value_HanyuPinyin = "";
   char * flag_XHCHanyuPinyin = "";
   char * value_XHCHanyuPinyin = "";
+  char * flag_TGHZ = "";
+  char * value_TGHZ = "";
   char * flag_Tang = "";
   char * value_Tang = "";
+  char * flag_Nushu = "";
+  char * value_Nushu = "";
   char * flag_description = "";
   char * value_description = "";
 
-  char s [27] [maxXMAX];	/* buffer for description menu */
+  char s [31] [maxXMAX];	/* buffer for description menu */
 
   if (force_utf8 || utf8_text) {
 	utf8_info (cpoi, & utfcount, & unichar);
@@ -4475,9 +4479,21 @@ display_Han (cpoi, force_utf8)
 		fill_menuitem (& descr_menu [i], s [i], NIL_PTR);
 		i ++;
 	}
+	if (entry && disp_Han_TGHZ && * entry->TGHZ) {
+		strcpy (s [i], "TGHZ 2013: ");
+		strcat (s [i], entry->TGHZ);
+		fill_menuitem (& descr_menu [i], s [i], NIL_PTR);
+		i ++;
+	}
 	if (entry && disp_Han_Tang && * entry->Tang) {
 		strcpy (s [i], "Tang: ");
 		strcat (s [i], entry->Tang);
+		fill_menuitem (& descr_menu [i], s [i], NIL_PTR);
+		i ++;
+	}
+	if (entry && disp_Han_Nushu && * entry->Nushu) {
+		strcpy (s [i], "Nushu: ");
+		strcat (s [i], entry->Nushu);
 		fill_menuitem (& descr_menu [i], s [i], NIL_PTR);
 		i ++;
 	}
@@ -4614,9 +4630,17 @@ display_Han (cpoi, force_utf8)
 		flag_XHCHanyuPinyin = " X: ";
 		value_XHCHanyuPinyin = entry->XHCHanyuPinyin;
 	}
+	if (entry && disp_Han_TGHZ && * entry->TGHZ) {
+		flag_TGHZ = " G: ";
+		value_TGHZ = entry->TGHZ;
+	}
 	if (entry && disp_Han_Tang && * entry->Tang) {
 		flag_Tang = " T: ";
 		value_Tang = entry->Tang;
+	}
+	if (entry && disp_Han_Nushu && * entry->Nushu) {
+		flag_Nushu = " N: ";
+		value_Nushu = entry->Nushu;
 	}
 	if (entry && disp_Han_description && * entry->Definition) {
 		flag_description = " D: ";
@@ -4629,7 +4653,7 @@ display_Han (cpoi, force_utf8)
 	if (cjk_text && ! no_unichar (unichar)) {
 	    if (no_char (hanchar)) {
 		build_string (text_buffer, 
-			"Unmapped Han (U+%04lX)%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+			"Unmapped Han (U+%04lX)%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 			unichar,
 			flag_Mandarin, value_Mandarin,
 			flag_Cantonese, value_Cantonese,
@@ -4641,12 +4665,14 @@ display_Han (cpoi, force_utf8)
 			flag_HanyuPinlu, value_HanyuPinlu,
 			flag_HanyuPinyin, value_HanyuPinyin,
 			flag_XHCHanyuPinyin, value_XHCHanyuPinyin,
+			flag_TGHZ, value_TGHZ,
 			flag_Tang, value_Tang,
+			flag_Nushu, value_Nushu,
 			flag_description, value_description
 		);
 	    } else {
 		build_string (text_buffer, 
-			"%04lX (U+%04lX)%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+			"%04lX (U+%04lX)%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 			hanchar,
 			unichar,
 			flag_Mandarin, value_Mandarin,
@@ -4659,7 +4685,9 @@ display_Han (cpoi, force_utf8)
 			flag_HanyuPinlu, value_HanyuPinlu,
 			flag_HanyuPinyin, value_HanyuPinyin,
 			flag_XHCHanyuPinyin, value_XHCHanyuPinyin,
+			flag_TGHZ, value_TGHZ,
 			flag_Tang, value_Tang,
+			flag_Nushu, value_Nushu,
 			flag_description, value_description
 		);
 	    }
@@ -4673,7 +4701,7 @@ display_Han (cpoi, force_utf8)
 	    }
 	} else {
 		build_string (text_buffer, 
-			"U+%04lX%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+			"U+%04lX%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 			unichar,
 			flag_Mandarin, value_Mandarin,
 			flag_Cantonese, value_Cantonese,
@@ -4685,7 +4713,9 @@ display_Han (cpoi, force_utf8)
 			flag_HanyuPinlu, value_HanyuPinlu,
 			flag_HanyuPinyin, value_HanyuPinyin,
 			flag_XHCHanyuPinyin, value_XHCHanyuPinyin,
+			flag_TGHZ, value_TGHZ,
 			flag_Tang, value_Tang,
+			flag_Nushu, value_Nushu,
 			flag_description, value_description
 		);
 	}

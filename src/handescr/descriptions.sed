@@ -18,7 +18,9 @@ s,	kVietnamese,	07 V,
 s,	kHanyuPinlu,	08 P,
 s,	kHanyuPinyin,	09 Y,
 s,	kXHC1983,	10 X,
-s,	kTang,	11 T,
+s,	kTGHZ2013,	11 G,
+s,	kTang,	12 T,
+s,	kNushu,	13 N,
 s,	kDefinition,	99 D,
 t cont
 d

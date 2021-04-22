@@ -57,7 +57,7 @@ term_iscombining (ucs)
 {
 }
 
-FLAG
+int
 iscombining_unichar (u)
   unsigned long u;
 {
