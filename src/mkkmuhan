@@ -73,6 +73,7 @@ priouni () {
 (
 cat <<\/eoc
 #include <stdio.h>
+#include <string.h>
 
 char * keys = "";
 

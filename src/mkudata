@@ -1,0 +1,24 @@
+#! /bin/sh
+
+echo assigned
+uniset +0000-10FFFF clean table > udata-assigned
+
+echo combining
+uniset +cat=Me +cat=Mn +cat=Cf -00AD +1160-11FF +200B table > udata-combining
+
+echo ambiguous
+uniset +WIDTH-A -cat=Me -cat=Mn -cat=Cf table > udata-ambiguous
+
+echo rtl
+sed -e 's-^\([^;]*\);\([^;]*\);\([^;]*\);\([^;]*\);R;.*-	\1-' -e t -e 's-^\([^;]*\);\([^;]*\);\([^;]*\);\([^;]*\);AL;.*-	\1-' -e t -e d UnicodeData.txt | uniset +- table > udata-right-to-left
+
+echo wide
+sed -e "s,^\([^;]*\);[FW],\1," -e t -e d EastAsianWidth.txt > width-w-new
+extra="+1160-11FF +D7B0-D7C6 +D7CB-D7FB"
+#uniset $extra +width-w-new compact > udata-width
+uniset $extra +width-w-new table > udata-width
+rm -f width-w-new
+
+echo "accented letters (UniWITH, to check new mnemonics)"
+sed -e "s,^\([^;]*\);\([^;]* LETTER [^;]* WITH [^;]*\);.*,U+\1	\2 AND," -e t -e d UnicodeData.txt | insutf8 > UniWITH
+

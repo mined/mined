@@ -6,7 +6,13 @@ case "$1" in
 	shift;;
 esac
 
-cjbig5=${1-etc/charmaps/hkscs/hkscs-2004-cj.txt}
+#cjbig5=${1-etc/charmaps/hkscs/hkscs-2004-cj.txt}
+
+# https://www.ccli.gov.hk/doc/hkscs-2008-cj_unicode.txt
+# https://www.ccli.gov.hk/doc/hkscs-2008-cj.txt
+cjbig5=${1-etc/charmaps/hkscs/hkscs-2008-cj_unicode.txt}
+# disable lookup_encodedchar below if input file is unicode
+
 cjuni=keymaps/hkscs.uni
 
 
@@ -42,6 +48,8 @@ FLAG utf16_file = 0;
 FLAG utf16_little_endian = 0;
 FLAG cjk_text = 0;
 FLAG mapped_text = 0;
+FLAG ebcdic_text = False;
+FLAG ebcdic_file = False;
 FLAG unassigned_single_width = False;	/* unassigned chars displayed single width? */
 
 FLAG ascii_screen;
@@ -67,6 +75,9 @@ iscombining_unichar (u)
 int
 main () {
 	(void) set_text_encoding (NIL_PTR, 'B', "mkkmhkscs");
+
+/* suppress transformation if input is Unicode */
+#define lookup_encodedchar	
 
 /eoc
 

@@ -22,7 +22,7 @@ FLAG ebcdic_text = 0;
 FLAG ebcdic_file = 0;
 
 
-FLAG
+int
 iscombining_unichar (u)
   unsigned long u;
 {

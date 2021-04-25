@@ -301,5 +301,11 @@ struct keymap keymap_Katakana [] = {
 	{"_koto", "ヿ"},
 	{"_e", "𛀀"},
 
+	{"archaic e", "𛀀"},
+	{"xwi", "𛅤"},
+	{"xwe", "𛅥"},
+	{"xwo", "𛅦"},
+	{"xn", "𛅧"},
+
 	{NIL_PTR}
 };

@@ -45,6 +45,8 @@ struct keymap keymap_Bopomofo [] = {
 	{"ng", "ㄫ"},
 	{"gn", "ㄬ"},
 	{"ih", "ㄭ"},
+	{"o with dot above", "ㄮ"},
+	{"nn", "ㄯ"},
 	{"bu", "ㆠ"},
 	{"zi", "ㆡ"},
 	{"ji", "ㆢ"},
@@ -68,5 +70,9 @@ struct keymap keymap_Bopomofo [] = {
 	{"gh", "ㆸ"},
 	{"lh", "ㆹ"},
 	{"zy", "ㆺ"},
+	{"gw", "ㆼ"},
+	{"kw", "ㆽ"},
+	{"oe", "ㆾ"},
+	{"ah", "ㆿ"},
 	{NIL_PTR}
 };

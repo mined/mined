@@ -279,5 +279,10 @@ struct keymap keymap_Hiragana [] = {
 	{"_yori", "ゟ"},
 	{"_ye", "𛀁"},
 
+	{"archaic ye", "𛀁"},
+	{"xwi", "𛅐"},
+	{"xwe", "𛅑"},
+	{"xwo", "𛅒"},
+
 	{NIL_PTR}
 };
