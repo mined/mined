@@ -12,6 +12,7 @@ CC=${CC-cc}
 (
 cat <</eoc
 #include <stdio.h>
+#include <string.h>
 
 long range_low;
 long range_high = -2;

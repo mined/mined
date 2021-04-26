@@ -35,6 +35,7 @@ static struct interval list_Dash [] = {
 	{0xFE58, 0xFE58},
 	{0xFE63, 0xFE63},
 	{0xFF0D, 0xFF0D},
+	{0x10EAD, 0x10EAD},
 };
 static struct interval list_Ps [] = {
 	{0x0028, 0x0028},

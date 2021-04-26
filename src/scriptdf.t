@@ -1,145 +1,171 @@
-#define catAhom	1
-#define catAnatolian_Hieroglyphs	2
-#define catArabic	3
-#define catArmenian	4
-#define catAvestan	5
-#define catBalinese	6
-#define catBamum	7
-#define catBassa_Vah	8
-#define catBatak	9
-#define catBengali	10
-#define catBopomofo	11
-#define catBrahmi	12
-#define catBraille	13
-#define catBuginese	14
-#define catBuhid	15
-#define catCanadian_Aboriginal	16
-#define catCarian	17
-#define catCaucasian_Albanian	18
-#define catChakma	19
-#define catCham	20
-#define catCherokee	21
-#define catCommon	22
-#define catControl	23
-#define catCoptic	24
-#define catCuneiform	25
-#define catCurrency_Symbol	26
-#define catCypriot	27
-#define catCyrillic	28
-#define catDeseret	29
-#define catDevanagari	30
-#define catDuployan	31
-#define catEgyptian_Hieroglyphs	32
-#define catElbasan	33
-#define catEthiopic	34
-#define catFormat	35
-#define catGeorgian	36
-#define catGlagolitic	37
-#define catGothic	38
-#define catGrantha	39
-#define catGreek	40
-#define catGujarati	41
-#define catGurmukhi	42
-#define catHan	43
-#define catHangul	44
-#define catHanunoo	45
-#define catHatran	46
-#define catHebrew	47
-#define catHiragana	48
-#define catImperial_Aramaic	49
-#define catInherited	50
-#define catInscriptional_Pahlavi	51
-#define catInscriptional_Parthian	52
-#define catJavanese	53
-#define catKaithi	54
-#define catKannada	55
-#define catKatakana	56
-#define catKayah_Li	57
-#define catKharoshthi	58
-#define catKhmer	59
-#define catKhojki	60
-#define catKhudawadi	61
-#define catLao	62
-#define catLatin	63
-#define catLepcha	64
-#define catLetter	65
-#define catLimbu	66
-#define catLinear_A	67
-#define catLinear_B	68
-#define catLisu	69
-#define catLycian	70
-#define catLydian	71
-#define catMahajani	72
-#define catMalayalam	73
-#define catMandaic	74
-#define catManichaean	75
-#define catMark	76
-#define catMeetei_Mayek	77
-#define catMende_Kikakui	78
-#define catMeroitic_Cursive	79
-#define catMeroitic_Hieroglyphs	80
-#define catMiao	81
-#define catModi	82
-#define catMongolian	83
-#define catMro	84
-#define catMultani	85
-#define catMyanmar	86
-#define catNabataean	87
-#define catNew_Tai_Lue	88
-#define catNko	89
-#define catNumber	90
-#define catOgham	91
-#define catOl_Chiki	92
-#define catOld_Hungarian	93
-#define catOld_Italic	94
-#define catOld_North_Arabian	95
-#define catOld_Permic	96
-#define catOld_Persian	97
-#define catOld_South_Arabian	98
-#define catOld_Turkic	99
-#define catOriya	100
-#define catOsmanya	101
-#define catPahawh_Hmong	102
-#define catPalmyrene	103
-#define catPau_Cin_Hau	104
-#define catPhags_Pa	105
-#define catPhoenician	106
-#define catPsalter_Pahlavi	107
-#define catPunctuation	108
-#define catRejang	109
-#define catRunic	110
-#define catSamaritan	111
-#define catSaurashtra	112
-#define catSeparator	113
-#define catSharada	114
-#define catShavian	115
-#define catSiddham	116
-#define catSignWriting	117
-#define catSinhala	118
-#define catSora_Sompeng	119
-#define catSundanese	120
-#define catSyloti_Nagri	121
-#define catSymbol	122
-#define catSyriac	123
-#define catTagalog	124
-#define catTagbanwa	125
-#define catTai_Le	126
-#define catTai_Tham	127
-#define catTai_Viet	128
-#define catTakri	129
-#define catTamil	130
-#define catTelugu	131
-#define catThaana	132
-#define catThai	133
-#define catTibetan	134
-#define catTifinagh	135
-#define catTirhuta	136
-#define catUgaritic	137
-#define catVai	138
-#define catWarang_Citi	139
-#define catYi	140
+#define catAdlam	1
+#define catAhom	2
+#define catAnatolian_Hieroglyphs	3
+#define catArabic	4
+#define catArmenian	5
+#define catAvestan	6
+#define catBalinese	7
+#define catBamum	8
+#define catBassa_Vah	9
+#define catBatak	10
+#define catBengali	11
+#define catBhaiksuki	12
+#define catBopomofo	13
+#define catBrahmi	14
+#define catBraille	15
+#define catBuginese	16
+#define catBuhid	17
+#define catCanadian_Aboriginal	18
+#define catCarian	19
+#define catCaucasian_Albanian	20
+#define catChakma	21
+#define catCham	22
+#define catCherokee	23
+#define catChorasmian	24
+#define catCommon	25
+#define catControl	26
+#define catCoptic	27
+#define catCuneiform	28
+#define catCurrency_Symbol	29
+#define catCypriot	30
+#define catCyrillic	31
+#define catDeseret	32
+#define catDevanagari	33
+#define catDives_Akuru	34
+#define catDogra	35
+#define catDuployan	36
+#define catEgyptian_Hieroglyphs	37
+#define catElbasan	38
+#define catElymaic	39
+#define catEthiopic	40
+#define catFormat	41
+#define catGeorgian	42
+#define catGlagolitic	43
+#define catGothic	44
+#define catGrantha	45
+#define catGreek	46
+#define catGujarati	47
+#define catGunjala_Gondi	48
+#define catGurmukhi	49
+#define catHan	50
+#define catHangul	51
+#define catHanifi_Rohingya	52
+#define catHanunoo	53
+#define catHatran	54
+#define catHebrew	55
+#define catHiragana	56
+#define catImperial_Aramaic	57
+#define catInherited	58
+#define catInscriptional_Pahlavi	59
+#define catInscriptional_Parthian	60
+#define catJavanese	61
+#define catKaithi	62
+#define catKannada	63
+#define catKatakana	64
+#define catKayah_Li	65
+#define catKharoshthi	66
+#define catKhitan_Small_Script	67
+#define catKhmer	68
+#define catKhojki	69
+#define catKhudawadi	70
+#define catLao	71
+#define catLatin	72
+#define catLepcha	73
+#define catLetter	74
+#define catLimbu	75
+#define catLinear_A	76
+#define catLinear_B	77
+#define catLisu	78
+#define catLycian	79
+#define catLydian	80
+#define catMahajani	81
+#define catMakasar	82
+#define catMalayalam	83
+#define catMandaic	84
+#define catManichaean	85
+#define catMarchen	86
+#define catMark	87
+#define catMasaram_Gondi	88
+#define catMedefaidrin	89
+#define catMeetei_Mayek	90
+#define catMende_Kikakui	91
+#define catMeroitic_Cursive	92
+#define catMeroitic_Hieroglyphs	93
+#define catMiao	94
+#define catModi	95
+#define catMongolian	96
+#define catMro	97
+#define catMultani	98
+#define catMyanmar	99
+#define catNabataean	100
+#define catNandinagari	101
+#define catNew_Tai_Lue	102
+#define catNewa	103
+#define catNko	104
+#define catNumber	105
+#define catNushu	106
+#define catNyiakeng_Puachue_Hmong	107
+#define catOgham	108
+#define catOl_Chiki	109
+#define catOld_Hungarian	110
+#define catOld_Italic	111
+#define catOld_North_Arabian	112
+#define catOld_Permic	113
+#define catOld_Persian	114
+#define catOld_Sogdian	115
+#define catOld_South_Arabian	116
+#define catOld_Turkic	117
+#define catOriya	118
+#define catOsage	119
+#define catOsmanya	120
+#define catPahawh_Hmong	121
+#define catPalmyrene	122
+#define catPau_Cin_Hau	123
+#define catPhags_Pa	124
+#define catPhoenician	125
+#define catPsalter_Pahlavi	126
+#define catPunctuation	127
+#define catRejang	128
+#define catRunic	129
+#define catSamaritan	130
+#define catSaurashtra	131
+#define catSeparator	132
+#define catSharada	133
+#define catShavian	134
+#define catSiddham	135
+#define catSignWriting	136
+#define catSinhala	137
+#define catSogdian	138
+#define catSora_Sompeng	139
+#define catSoyombo	140
+#define catSundanese	141
+#define catSyloti_Nagri	142
+#define catSymbol	143
+#define catSyriac	144
+#define catTagalog	145
+#define catTagbanwa	146
+#define catTai_Le	147
+#define catTai_Tham	148
+#define catTai_Viet	149
+#define catTakri	150
+#define catTamil	151
+#define catTangut	152
+#define catTelugu	153
+#define catThaana	154
+#define catThai	155
+#define catTibetan	156
+#define catTifinagh	157
+#define catTirhuta	158
+#define catUgaritic	159
+#define catVai	160
+#define catWancho	161
+#define catWarang_Citi	162
+#define catYezidi	163
+#define catYi	164
+#define catZanabazar_Square	165
 
 char * category_names [] = {0,
+	"Adlam",
 	"Ahom",
 	"Anatolian Hieroglyphs",
 	"Arabic",
@@ -150,6 +176,7 @@ char * category_names [] = {0,
 	"Bassa Vah",
 	"Batak",
 	"Bengali",
+	"Bhaiksuki",
 	"Bopomofo",
 	"Brahmi",
 	"Braille",
@@ -161,6 +188,7 @@ char * category_names [] = {0,
 	"Chakma",
 	"Cham",
 	"Cherokee",
+	"Chorasmian",
 	"Common",
 	"Control",
 	"Coptic",
@@ -170,9 +198,12 @@ char * category_names [] = {0,
 	"Cyrillic",
 	"Deseret",
 	"Devanagari",
+	"Dives Akuru",
+	"Dogra",
 	"Duployan",
 	"Egyptian Hieroglyphs",
 	"Elbasan",
+	"Elymaic",
 	"Ethiopic",
 	"Format",
 	"Georgian",
@@ -181,9 +212,11 @@ char * category_names [] = {0,
 	"Grantha",
 	"Greek",
 	"Gujarati",
+	"Gunjala Gondi",
 	"Gurmukhi",
 	"Han",
 	"Hangul",
+	"Hanifi Rohingya",
 	"Hanunoo",
 	"Hatran",
 	"Hebrew",
@@ -198,6 +231,7 @@ char * category_names [] = {0,
 	"Katakana",
 	"Kayah Li",
 	"Kharoshthi",
+	"Khitan Small Script",
 	"Khmer",
 	"Khojki",
 	"Khudawadi",
@@ -212,10 +246,14 @@ char * category_names [] = {0,
 	"Lycian",
 	"Lydian",
 	"Mahajani",
+	"Makasar",
 	"Malayalam",
 	"Mandaic",
 	"Manichaean",
+	"Marchen",
 	"Mark",
+	"Masaram Gondi",
+	"Medefaidrin",
 	"Meetei Mayek",
 	"Mende Kikakui",
 	"Meroitic Cursive",
@@ -227,9 +265,13 @@ char * category_names [] = {0,
 	"Multani",
 	"Myanmar",
 	"Nabataean",
+	"Nandinagari",
 	"New Tai Lue",
+	"Newa",
 	"Nko",
 	"Number",
+	"Nushu",
+	"Nyiakeng Puachue Hmong",
 	"Ogham",
 	"Ol Chiki",
 	"Old Hungarian",
@@ -237,9 +279,11 @@ char * category_names [] = {0,
 	"Old North Arabian",
 	"Old Permic",
 	"Old Persian",
+	"Old Sogdian",
 	"Old South Arabian",
 	"Old Turkic",
 	"Oriya",
+	"Osage",
 	"Osmanya",
 	"Pahawh Hmong",
 	"Palmyrene",
@@ -258,7 +302,9 @@ char * category_names [] = {0,
 	"Siddham",
 	"SignWriting",
 	"Sinhala",
+	"Sogdian",
 	"Sora Sompeng",
+	"Soyombo",
 	"Sundanese",
 	"Syloti Nagri",
 	"Symbol",
@@ -270,6 +316,7 @@ char * category_names [] = {0,
 	"Tai Viet",
 	"Takri",
 	"Tamil",
+	"Tangut",
 	"Telugu",
 	"Thaana",
 	"Thai",
@@ -278,6 +325,9 @@ char * category_names [] = {0,
 	"Tirhuta",
 	"Ugaritic",
 	"Vai",
+	"Wancho",
 	"Warang Citi",
+	"Yezidi",
 	"Yi",
+	"Zanabazar Square",
 };
