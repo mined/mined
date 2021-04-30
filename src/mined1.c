@@ -3691,6 +3691,7 @@ print_terminal_info ()
 	printf ("- non-BMP width data mode %02X: plane_2_double %d plane_1_comb %d plane_14_comb %d\n", 
 			nonbmp_width_data, plane_2_double_width, 
 			plane_1_combining, plane_14_combining);
+	printf ("- unassigned single-width %d\n", unassigned_single_width);
 
 	if (terminal_type > ' ') {
 		printf ("- terminal type %d ('%c') version %d\n", 
@@ -3725,7 +3726,7 @@ print_terminal_info ()
 		printf ("- 'KDE konsole' version %d\n", konsole_version);
 	}
 	if (mintty_version > 0) {
-		printf ("- 'mintty' version %d\n", mintty_version);
+		printf ("- 'mintty' version %d.%d.%d\n", mintty_version / 10000, (mintty_version % 10000) / 100, (mintty_version % 100));
 	}
 	if (mlterm_version > 1) {
 		printf ("- 'mlterm' version %d\n", mlterm_version);
@@ -4034,8 +4035,8 @@ terminal_configure_init ()
 		   they are sometimes displayed single-width by rxvt
 		   or xterm +mk_width (the default)
 		 */
-		xwidth = get_screen_width ("㄀ㄯ㄰㆏꒎꓏﫿﹯＀", utf8_widths, arrlen (utf8_widths));
-		if (xwidth < 18) {
+		xwidth = get_screen_width ("㄀ㄯ㄰㆏꒎꓏﫿﹯", utf8_widths, arrlen (utf8_widths));
+		if (xwidth < 16) {
 			unassigned_single_width = True;
 		}
 
@@ -4802,7 +4803,7 @@ terminal_configure_init ()
 	   so the check was moved out (see above)
 	 */
 	if (rxvt_version > 0) {
-		if (test_screen_width ("㄀ㄯ㄰㆏꒎꓏﫿﹯＀") < 18) {
+		if (test_screen_width ("㄀ㄯ㄰㆏꒎꓏﫿﹯") < 16) {
 			unassigned_single_width = True;
 		}
 	}

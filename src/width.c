@@ -727,9 +727,17 @@ term_iswide (ucs)
 
   do_trace (0x4DC0);
   do_trace (0xFE19);
+  do_trace (0xFF00);
   do_trace (0x232A);
   do_trace (0x3099);
   do_trace (0x302A);
+  do_trace (0x2A708);
+  do_trace (0x9FFC);
+  do_trace (0x321F);
+  do_trace (0x3248);
+  do_trace (0x32FF);
+  do_trace (0xD7A4);
+  do_trace (0xFE1A);
 #endif
 
   if (width_data_version == 0) {
