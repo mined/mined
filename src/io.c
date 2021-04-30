@@ -1192,6 +1192,11 @@ raw_mode (to_raw_state)
 /*	output a byte that SunOS may swallow:	*/
 	(void) write (output_fd, " \r", 2);
 
+/*	swallow mouse sequences that xterm sends after disabling (?):	*/
+	while (xterm_version && char_ready_within (50, NIL_PTR)) {
+		(void) _readchar_nokeymap ();
+	}
+
 #if defined (TIOCEXCL) && defined (TIOCNXCL)
 	/* release tty lock */
 	(void) ioctl (tty_fd, TIOCNXCL);
