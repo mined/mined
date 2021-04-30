@@ -560,34 +560,40 @@ void
 update_syntax_state (line)
   LINE * line;
 {
-  char * lpoi = line->text;
-  character syntax_mask = line->prev->syntax_mask;	/* state at line begin */
-  character prev_syntax_mask = line->syntax_mask;	/* previous state of line */
-  character syntax_mask_old = syntax_none;
-  character syntax_mask_new = syntax_mask;
+  do {
+	char * lpoi = line->text;
+	character syntax_mask = line->prev->syntax_mask;	/* state at line begin */
+	character prev_syntax_mask = line->syntax_mask;	/* previous state of line */
+	character syntax_mask_old = syntax_none;
+	character syntax_mask_new = syntax_mask;
 
-  if (mark_HTML == False &&
-	prev_syntax_mask == syntax_unknown && syntax_mask == syntax_unknown) {
-	return;
-  }
+	if (mark_HTML == False &&
+		prev_syntax_mask == syntax_unknown &&
+		syntax_mask == syntax_unknown)
+	{
+		return;
+	}
 
-  while (* lpoi != '\0') {
-	syntax_mask_new = syntax_state (syntax_mask_new, syntax_mask_old, lpoi, line->text);
-	syntax_mask_old = syntax_mask;
-	syntax_mask = syntax_mask_new;
-	advance_char (& lpoi);
-  }
-  line->syntax_mask = syntax_mask;
+	while (* lpoi != '\0') {
+		syntax_mask_new = syntax_state (syntax_mask_new, syntax_mask_old, lpoi, line->text);
+		syntax_mask_old = syntax_mask;
+		syntax_mask = syntax_mask_new;
+		advance_char (& lpoi);
+	}
+	line->syntax_mask = syntax_mask;
 #ifdef debug_syntax_state
-  printf ("update_syntax_state %02X..%02X (was %02X) @%s", line->prev->syntax_mask, syntax_mask, prev_syntax_mask, line->text);
+	printf ("update_syntax_state %02X..%02X (was %02X) @%s", line->prev->syntax_mask, syntax_mask, prev_syntax_mask, line->text);
 #endif
-  line->dirty = True;
-  if (syntax_mask != prev_syntax_mask && line->next != tail) {
+	line->dirty = True;
+	if (syntax_mask == prev_syntax_mask || line->next == tail) {
+		break;
+	}
+
 #ifdef debug_syntax_state
-  printf ("...update_syntax_state @%s", line->next->text);
+	printf ("...update_syntax_state @%s", line->next->text);
 #endif
-	update_syntax_state (line->next);
-  }
+	line = line->next;
+  } while (1);
 }
 
 #define dont_debug_out_of_memory 5
