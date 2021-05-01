@@ -947,6 +947,8 @@ Control-mouse wheel scroll switches to next/previous file tab.
 
 Enhanced feedback on read errors or empty buffer when pasting.
 
+Workaround for xterm apparently sending mouse sequences after disabling them.
+
 
 Character information and encoding support:
 -------------------------------------------
@@ -976,6 +978,8 @@ EBCDIC auto-detection can be enabled by including the letter
 
 Bug fixes:
 ----------
+Fixed stack overflow when updating syntax state in large areas.
+
 Tweaked smart undentation (on Backspace) of auto-numbering.
 
 Fixed line split of long lines read from file.

@@ -434,9 +434,6 @@ tabexpand=2
 #[...]
 #...
 
-[merk*]
-smart_quotes de
-
 
 #############################################################################
 # Conditional options: terminal specific

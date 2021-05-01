@@ -28,6 +28,7 @@ $ compile /obj=[.charmaps] [.charmaps]cp1255
 $ compile /obj=[.charmaps] [.charmaps]cp1256
 $ compile /obj=[.charmaps] [.charmaps]cp1257
 $ compile /obj=[.charmaps] [.charmaps]cp1258
+$ compile /obj=[.charmaps] [.charmaps]cp20924
 $ compile /obj=[.charmaps] [.charmaps]cp437
 $ compile /obj=[.charmaps] [.charmaps]cp720
 $ compile /obj=[.charmaps] [.charmaps]cp737
@@ -48,6 +49,7 @@ $ compile /obj=[.charmaps] [.charmaps]cp866
 $ compile /obj=[.charmaps] [.charmaps]cp869
 $ compile /obj=[.charmaps] [.charmaps]cygwin
 $ compile /obj=[.charmaps] [.charmaps]georg-ps
+$ compile /obj=[.charmaps] [.charmaps]iso-6937
 $ compile /obj=[.charmaps] [.charmaps]isoarab
 $ compile /obj=[.charmaps] [.charmaps]isocyril
 $ compile /obj=[.charmaps] [.charmaps]isogreek
@@ -69,6 +71,7 @@ $ compile /obj=[.charmaps] [.charmaps]m-roman
 $ compile /obj=[.charmaps] [.charmaps]pt154
 $ compile /obj=[.charmaps] [.charmaps]tcvn
 $ compile /obj=[.charmaps] [.charmaps]tis620
+$ compile /obj=[.charmaps] [.charmaps]vga
 $ compile /obj=[.charmaps] [.charmaps]viscii
 $
 $ cre/dir [.'arch']

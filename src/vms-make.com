@@ -45,7 +45,6 @@ $ call make search
 $ call make charprop
 $ call make output
 $ call make prompt
-$ call make compose
 $ call make charcode
 $ call make keymaps
 $ call make keydefs
@@ -54,6 +53,7 @@ $ call make termprop
 $ call make width
 $ call make encoding
 $ call make handescr
+$ call make compose
 $ call make timestmp
 $! END sources
 

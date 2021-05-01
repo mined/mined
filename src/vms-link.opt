@@ -13,7 +13,6 @@ search
 charprop
 output
 prompt
-compose
 charcode
 keymaps
 keydefs
@@ -22,4 +21,5 @@ termprop
 width
 encoding
 handescr
+compose
 timestmp

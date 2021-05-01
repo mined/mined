@@ -182,7 +182,7 @@ decomposition_string (ucs)
 	strcpy (decomposition_str, decomposition_type [type]);
 
 	while (i < arrlen (decomposetable [0].decomposition_mapping) && decomp [i]) {
-		char su [9];
+		char su [10];
 		build_string (su, " U+%04lX", decomp [i]);
 		strcat (decomposition_str, su);
 		i ++;
