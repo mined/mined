@@ -39,7 +39,7 @@ File versions can optionally be specified and are handled properly.
 Mined features
 
 VMS-specific adaptations are also described in the section on VMS in 
-the manual page (http://mined.sf.net/, click Mined Manual).
+the manual page (http://mined.github.io/, click Mined Manual).
 
 The file chooser (F3 to select a file name for reading or writing) 
 accepts Unix-like or VMS-style directory notations for navigation.

@@ -518,7 +518,7 @@ DHELP=-DRUNDIR=\"$(rundir)\" -DLRUNDIR=\"$(lrundir)\"
 
 # Version/About text:
 #VERSION=`sed -e 's,^[^0-9]*,,' -e 's,[^0-9][^0-9]*,.,g' -e q ../VERSION`
-#ABOUT=\"MinEd $(VERSION) - http://mined.sourceforge.net/\"
+#ABOUT=\"MinEd $(VERSION) - http://mined.github.io/\"
 
 
 #############################################################################

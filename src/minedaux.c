@@ -982,7 +982,7 @@ ABOUT ()
 	strcat (about, ") - built ");
 	strcat (about, buildstamp ());
   } else {
-	strcat (about, ") - http://mined.sourceforge.net/");
+	strcat (about, ") - http://mined.github.io/");
   }
 
   negate (show_timestamp);

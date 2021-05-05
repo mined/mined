@@ -2164,8 +2164,8 @@ check_slow_hint ()
 	(now.tv_sec - now_start.tv_sec) * 1000
 	+ (now.tv_usec - now_start.tv_usec) / 1000 > 700)
   {
-		status_msg ("...checking directory...");
-		gettimeofday (& now_start, 0);
+	status_msg ("...checking directory...");
+	gettimeofday (& now_start, 0);
   }
 #endif
 }
