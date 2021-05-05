@@ -1799,6 +1799,7 @@ get_ansi_modes ()
 #define dont_debug_expect
 
 #ifdef debug_expect
+#include <sys/time.h>
 #warning extra debug read will provoke hanging
 # define debug_queries
 #define trace_expect(params)	printf ("[%lu] ", gettime ()); printf params
@@ -2848,13 +2849,17 @@ acquire_primary_device_attributes ()
 	c = expect1byte (False, "acquirep.");	/* '[' */
 	c = expect1byte (False, "acquirep..");	/* '?' */
 	dec_features = 0;
+	int cnt_features = 0;
 	do {
 		int feature;
 		c = get_digits (& feature);
-		trace_query (("terminal feature %d\n", feature));
-		dec_features |= 1 << feature;
+		if (cnt_features++) {
+			trace_query (("terminal feature %d\n", feature));
+			trace_query (("terminal feature| %09lX\n", (unsigned long) 1 << feature));
+			dec_features |= (unsigned long) 1 << feature;
+		}
 	} while (c == ';');
-	trace_query (("terminal features %08lX\n", dec_features));
+	trace_query (("terminal features %09lX\n", dec_features));
   }
 #endif
 }
@@ -2915,6 +2920,13 @@ get_terminal_report_string (s)
   c = expect1byte (UNSURE, "report");	/* ESC */
   if (receiving_response (c, s + 1)) {
 	c = expect1byte (False, "report.");	/* ']' */
+	if (s [1] == ']' && c == '[') {
+		/* lxterminal, xfce4-terminal, ... may send a stray [I */
+		c = expect1byte (False, "report.");	/* 'I' */
+		c = expect1byte (False, "report.");	/* ESC */
+		c = expect1byte (False, "report.");	/* ']' */
+	}
+
 	while ((c = expect1byte (False, "report..")) != '\033' && c != '\007' && c != 0x9C) {
 		if (spoi < & sbuf [maxMSGlen - 1]) {
 			* spoi ++ = c;
@@ -2930,7 +2942,7 @@ get_terminal_report_string (s)
   if (debug_mined) {
 	debuglog ("report", s + 1, sbuf);
   }
-  trace_query (("-> ^[%s\n", sbuf));
+  trace_query (("-> ^[%c%s\n", s [1], sbuf));
   return sbuf;
 #else
   return "";
