@@ -4665,8 +4665,10 @@ terminal_configure_init ()
   if (xterm_version > 305) {
 	can_dim = True;
   }
-  if (xterm_version > 0 /* && xterm_version < ?? */) {
-	suppress_non_BMP = True;
+  if (xterm_version > 0 && xterm_version <= 330) {
+	if (suppress_non_BMP == False) {
+		suppress_non_BMP = True;
+	}
   }
 
 #ifdef use_mouse_hilite_tracking
@@ -7339,7 +7341,9 @@ main (argc, argv)
 	/* (e.g. with LC_... after rlogin) */
 	width_data_version = 0;
 	utf_cjk_wide_padding = False;
-	suppress_non_BMP = True;
+	if (suppress_non_BMP == False) {
+		suppress_non_BMP = True;
+	}
 	suppress_extended_cjk = True;
 	if (limited_marker_font) {
 		very_limited_marker_font = True;
