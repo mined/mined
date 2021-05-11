@@ -4665,7 +4665,7 @@ terminal_configure_init ()
   if (xterm_version > 305) {
 	can_dim = True;
   }
-  if (xterm_version > 0 && xterm_version <= 330) {
+  if (xterm_version > 0 && xterm_version < 338) {
 	if (suppress_non_BMP == False) {
 		suppress_non_BMP = True;
 	}
