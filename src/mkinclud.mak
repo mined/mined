@@ -1,6 +1,9 @@
 #############################################################################
 # mined text editor make actions (make include file for make targets)
 
+# make CCFLAGS=-g	to debug
+# make OPT=-O1		to adjust optimization level
+
 
 #############################################################################
 # components to be compiled
@@ -525,7 +528,12 @@ DHELP=-DRUNDIR=\"$(rundir)\" -DLRUNDIR=\"$(lrundir)\"
 # Source compilation:
 
 $(OBJDIR)/mined1.o:	version.h mined1.c textfile.h encoding.h locales.t quotes.t mined.h io.h termprop.h
-	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) $(DHELP) -c mined1.c -o $(OBJDIR)/mined1.o
+	$(CC) $(CFLAGS) $(PROTOFLAGS) $(DHELP) -c mined1.c -o $(OBJDIR)/mined1.o
+$(OBJDIR)/keyboard.o:	keyboard.c mined.h termprop.h io.h
+	$(CC) $(CFLAGS) $(PROTOFLAGS) -c keyboard.c -o $(OBJDIR)/keyboard.o
+$(OBJDIR)/keycurs.o:	keyboard.c mined.h termprop.h
+	$(CC) $(CFLAGS) -DCURSES $(PROTOFLAGS) -c keyboard.c $(ICURSES) -o $(OBJDIR)/keycurs.o
+# with $(OPT):
 $(OBJDIR)/minedaux.o:	version.h minedaux.c mined.h io.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) $(DHELP) -c minedaux.c -o $(OBJDIR)/minedaux.o
 $(OBJDIR)/textfile.o:	textfile.c textfile.h mined.h charprop.h termprop.h
@@ -571,10 +579,6 @@ $(OBJDIR)/termprop.o:	termprop.c termprop.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c termprop.c -o $(OBJDIR)/termprop.o
 $(OBJDIR)/width.o:	width.c width.t termprop.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c width.c -o $(OBJDIR)/width.o
-$(OBJDIR)/keyboard.o:	keyboard.c mined.h termprop.h io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c keyboard.c -o $(OBJDIR)/keyboard.o
-$(OBJDIR)/keycurs.o:	keyboard.c mined.h termprop.h
-	$(CC) $(CFLAGS) -DCURSES $(PROTOFLAGS) -c keyboard.c $(ICURSES) -o $(OBJDIR)/keycurs.o
 $(OBJDIR)/io.o:	io.c io.h mined.h $(MOUSELIB) dosvideo.t termprop.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c io.c -o $(OBJDIR)/io.o
 $(OBJDIR)/ioansi.o:	io.c io.h mined.h $(MOUSELIB) dosvideo.t termprop.h
