@@ -70,6 +70,7 @@ FLAG vt220_keyboard = False;
 
 /* terminal features with respect to non-BMP characters (>= 0x10000) */
 int nonbmp_width_data = 0x4;
+FLAG nonbmp_all_wide = False;
 
 
 /*======================================================================*\

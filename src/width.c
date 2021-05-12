@@ -897,6 +897,7 @@ term_iswide (ucs)
       (width_data_version >= U520 && ucs >= 0xA960 && ucs <= 0xA97F) || /* Hangul Jamo Extended-A */
       (width_data_version >= U600 && ucs >= 0x1B000 && ucs <= 0x1B0FF) || /* Kana Supplement */
       (width_data_version >= U520 && ucs >= 0x1F200 && ucs <= 0x1F2FF) || /* Enclosed Ideographic Supplement */
+      (nonbmp_all_wide && ucs >= 0x10000) ||
       (plane_2_double_width && ucs >= 0x20000 && ucs <= 0x3ffff) ||
       (emojiwide_table && lookup (ucs, emojiwide_table, emojiwide_len))
       ));

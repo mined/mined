@@ -95,6 +95,7 @@ extern FLAG vt220_keyboard;
 
 /* terminal features with respect to non-BMP characters (>= 0x10000) */
 extern int nonbmp_width_data;
+extern FLAG nonbmp_all_wide;
 extern FLAG suppress_non_BMP;	/* suppressing display of non-BMP range */
 #define plane_2_double_width	((nonbmp_width_data & 0x4) != 0)
 #define plane_1_combining	((nonbmp_width_data & 0x2) == 0)

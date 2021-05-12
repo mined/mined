@@ -3700,9 +3700,10 @@ print_terminal_info ()
 			term_Unicode_version_name (combining_data_version), 
 			hangul_jamo_extended);
 	}
-	printf ("- non-BMP width data mode %02X: plane_2_double %d plane_1_comb %d plane_14_comb %d\n", 
+	printf ("- non-BMP width data mode %02X: plane_2_double %d plane_1_comb %d plane_14_comb %d all %d\n", 
 			nonbmp_width_data, plane_2_double_width, 
-			plane_1_combining, plane_14_combining);
+			plane_1_combining, plane_14_combining, 
+			nonbmp_all_wide);
 	printf ("- unassigned single-width %d\n", unassigned_single_width);
 
 	if (terminal_type > ' ') {
@@ -4041,7 +4042,11 @@ terminal_configure_init ()
 		}
 		if (get_screen_width ("𐌀𐌰𐐀", utf8_widths, arrlen (utf8_widths)) > 3 && suppress_non_BMP == False) {
 			/* e.g. KDE konsole */
-			suppress_non_BMP = True;
+			if (konsole_version > 0 || True) {
+				nonbmp_all_wide = True;
+			} else {
+				suppress_non_BMP = True;
+			}
 		}
 		/* check unassigned character width properties;
 		   they are sometimes displayed single-width by rxvt
