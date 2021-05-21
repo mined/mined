@@ -71,8 +71,8 @@ lpstat=lpstat
 choose_printer () {
 	printers=/tmp/printers.$$
 	(
-	#$lpstat -p | sed -e "s,^printer \([^ ]*\) .*,\1," -e t -e d
-	$lpstat -a | sed -e "s,^\(.*\) accepting .*,\1," -e t -e d
+	#LC_ALL=C $lpstat -p | sed -e "s,^printer \([^ ]*\) .*,\1," -e t -e d
+	LC_ALL=C $lpstat -a | sed -e "s,^\(.*\) accepting .*,\1," -e t -e d
 	) > $printers
 	if [ -n "$PRINTER" ]
 	then	defprinter=`grep -x -e "$PRINTER" $printers`
