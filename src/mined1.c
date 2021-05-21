@@ -2976,15 +2976,14 @@ test_screen_width (s)
   if (! ansi_esc) {
 	return -1;
   }
-#ifdef __CYGWIN__
-  if (cygwin_version || terminal_type < 0) {
-	/* somehow this causes "Late screen mode response" in cygwin console
-	   although acquire_screen_widths works;
-	   unfortunately, cygwin_version detection fails,
-	   so check terminal_type < 0 */
+  if (terminal_type < 0 && ! width_data_version) {
+	/* somehow test_screen_width causes "Late screen mode response" 
+	   in cygwin console (although acquire_screen_widths works);
+	   if (cygwin_version) doesn't work as cygwin_version detection fails,
+	   so check terminal_type < 0 and add heuristic width_data check 
+	   to keep support e.g. for st */
 	return -1;
   }
-#endif
 
   /* if (xterm_version >= 201) {
 	suppress visible effect by setting invisible character mode
