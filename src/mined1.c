@@ -3637,6 +3637,7 @@ splash_logo ()
   }
 #ifdef use_sixel_splash
   if (splash_level > 1 &&
+      ! screen_version &&
       ((xterm_version >= 298 && dec_features & (1 << 4))
        || mlterm_version >= 319 /* actually since 3.1.9 */
        || mintty_version >= 20600
