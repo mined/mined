@@ -3,6 +3,7 @@
 
 # make CCFLAGS=-g	to debug
 # make OPT=-O1		to adjust optimization level
+# make CCFLAGS=-DNOCJK	to disable extended CJK support
 
 
 #############################################################################
@@ -114,7 +115,7 @@ uniset:	uniset.tar.gz
 	gzip -dc uniset.tar.gz | tar xvf - uniset
 
 uniset.tar.gz:
-	$(WGET) http://www.cl.cam.ac.uk/~mgk25/download/uniset.tar.gz
+	$(WGET) https://www.cl.cam.ac.uk/~mgk25/download/uniset.tar.gz
 
 #WIDTH-A:	uniset.tar.gz
 #	tar xvzf uniset.tar.gz WIDTH-A
@@ -438,6 +439,7 @@ getKEYMAPS=`$(SH) ./mkkmlist`
 # invoke it to generate cumulative keymaps file:
 # (note, this does not work on Ultrix: test -d keymaps || mkdir keymaps)
 mkkeymaps:
+	echo generating keymaps.t via makefile
 	if [ ! -d keymaps ]; then mkdir keymaps; fi
 	echo SH=$(SH) > keymaps/makefile
 	echo keymaps.t: keymaps.cfg $(getKEYMAPS) mkkmincl >> keymaps/makefile
@@ -467,6 +469,7 @@ keymaps1/makefile:	keymaps.cfg
 # KEYMAPS is extracted list of configured keyboard mappings from keymaps.cfg:
 # (note, this does not work on Ultrix: test -d keymaps || mkdir keymaps)
 keymaps.t:	$(KEYMAPS) keymaps.cfg mkkmincl mkkmlist # keymaps1/makefile
+	echo generating keymaps.t via script
 	#$(MAKE) -f keymaps1/makefile keymapsc
 	if [ ! -d keymaps ]; then mkdir keymaps; fi
 	CC=$(CC) $(SH) ./mkkmincl $(KEYMAPS) > keymaps.t
@@ -527,12 +530,19 @@ DHELP=-DRUNDIR=\"$(rundir)\" -DLRUNDIR=\"$(lrundir)\"
 #############################################################################
 # Source compilation:
 
-$(OBJDIR)/mined1.o:	version.h mined1.c textfile.h encoding.h locales.t quotes.t mined.h io.h termprop.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) $(DHELP) -c mined1.c -o $(OBJDIR)/mined1.o
+# without $(OPT):
+OPT1=-O1
 $(OBJDIR)/keyboard.o:	keyboard.c mined.h termprop.h io.h
-	$(CC) $(CFLAGS) $(PROTOFLAGS) -c keyboard.c -o $(OBJDIR)/keyboard.o
+	$(CC) $(CFLAGS) $(OPT1) $(PROTOFLAGS) -c keyboard.c -o $(OBJDIR)/keyboard.o
 $(OBJDIR)/keycurs.o:	keyboard.c mined.h termprop.h
-	$(CC) $(CFLAGS) -DCURSES $(PROTOFLAGS) -c keyboard.c $(ICURSES) -o $(OBJDIR)/keycurs.o
+	$(CC) $(CFLAGS) $(OPT1) -DCURSES $(PROTOFLAGS) -c keyboard.c $(ICURSES) -o $(OBJDIR)/keycurs.o
+# workaround gcc 11; crash
+$(OBJDIR)/mined1.o:	version.h mined1.c textfile.h encoding.h locales.t quotes.t mined.h io.h termprop.h
+	$(CC) $(CFLAGS) $(OPT1) $(PROTOFLAGS) $(DHELP) -c mined1.c -o $(OBJDIR)/mined1.o
+# workaround gcc 11; UTF-8 input broken
+$(OBJDIR)/io.o:	io.c io.h mined.h $(MOUSELIB) dosvideo.t termprop.h
+	$(CC) $(CFLAGS) $(OPT1) $(PROTOFLAGS) -c io.c -o $(OBJDIR)/io.o
+
 # with $(OPT):
 $(OBJDIR)/minedaux.o:	version.h minedaux.c mined.h io.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) $(DHELP) -c minedaux.c -o $(OBJDIR)/minedaux.o
@@ -579,8 +589,6 @@ $(OBJDIR)/termprop.o:	termprop.c termprop.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c termprop.c -o $(OBJDIR)/termprop.o
 $(OBJDIR)/width.o:	width.c width.t termprop.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c width.c -o $(OBJDIR)/width.o
-$(OBJDIR)/io.o:	io.c io.h mined.h $(MOUSELIB) dosvideo.t termprop.h
-	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -c io.c -o $(OBJDIR)/io.o
 $(OBJDIR)/ioansi.o:	io.c io.h mined.h $(MOUSELIB) dosvideo.t termprop.h
 	$(CC) $(CFLAGS) $(OPT) $(PROTOFLAGS) -DANSI -c io.c -o $(OBJDIR)/ioansi.o
 $(OBJDIR)/iocurses.o:	io.c io.h mined.h termprop.h

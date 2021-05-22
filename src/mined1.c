@@ -2846,10 +2846,10 @@ acquire_primary_device_attributes ()
 
   c = expect1byte (True, "acquirep");	/* ESC */
   if (receiving_response (c, "acquirep")) {
+	int cnt_features = 0;
 	c = expect1byte (False, "acquirep.");	/* '[' */
 	c = expect1byte (False, "acquirep..");	/* '?' */
 	dec_features = 0;
-	int cnt_features = 0;
 	do {
 		int feature;
 		c = get_digits (& feature);

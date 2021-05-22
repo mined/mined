@@ -17,6 +17,6 @@ do	if [ -f "keymaps1/$map" ]
 	else	km="keymaps0/$map"
 	fi
 	kmlist="$kmlist $km"
-	echo including "$km" >&2
+	#echo including "$km" >&2
 done
 echo $kmlist

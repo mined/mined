@@ -1628,6 +1628,11 @@ void
 putescape (s)
   char * s;
 {
+#ifdef debug_escape_sequences
+  usleep(100000);
+  printf("putesc <%s>\n", s + 1);
+#endif
+
   if (!csi_term && *s == '\033' && s[1] == '[') {
  	return;
   }
@@ -4146,7 +4151,7 @@ set_screen_mode (m)
 {
   char resize_str [8];
 
-  if (m >= 0) {
+  if (m >= 0 && m < 1000) {
 	if (m != 50 && m != 43) {
 		screen_mode = m;
 	}
