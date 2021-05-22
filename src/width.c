@@ -679,7 +679,7 @@ term_iscombining (ucs)
 			ucs &= 0x1FFFFF;
 		}
 	}
-	if (! bidi_screen) {
+	if (! bidi_screen && rxvt_version) {
 		/* special case of rxvt, not mlterm */
 		if (ucs >= 0xF8F0 && ucs <= 0xF8FF) {
 			return 1;
@@ -738,6 +738,8 @@ term_iswide (ucs)
   do_trace (0x32FF);
   do_trace (0xD7A4);
   do_trace (0xFE1A);
+  do_trace (0x312F);
+  do_trace (0xFAFF);
 #endif
 
   if (width_data_version == 0) {
@@ -758,8 +760,16 @@ term_iswide (ucs)
 		}
 	}
 	if (! term_isassigned (ucs)) {
-		trace_width ("unassigned_single_width", 0);
-		return 0;
+/* heuristic improvement for lxterminal/gnome-terminal 
+   which do not seem to apply the compact closure for wide ranges */
+extern int is_wideunichar _((unsigned long ucs));
+		if (is_wideunichar (ucs)) {
+			trace_width ("unassigned_single_width but wide", 0);
+			return 1;
+		} else {
+			trace_width ("unassigned_single_width", 0);
+			return 0;
+		}
 	}
   }
 
