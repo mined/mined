@@ -40,8 +40,8 @@ MOUSELIB=
 #############################################################################
 # commands
 
-#WGET=wget -N -t 1 --timeout=55
-WGET=curl -R -O --connect-timeout 55 -z $@
+WGET=wget -N -t 1 --timeout=55
+#WGET=curl -R -O --connect-timeout 55 -z $@
 
 SH=sh
 #SH=${SHELL}
