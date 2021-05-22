@@ -48,6 +48,9 @@ INSTALLBIN = install
 # also derive /lib64 from IRIX64 but not from CYGWIN_NT-6.1-WOW64:
 LIBDIR=$(shell if (uname | sed -e "s,^[^-]*64,_64," ; uname -m) | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; else ls -d /lib; fi 2> /dev/null | sed -e "1 p" -e d )
 
+# select architecture for /lib/$(LIBARCH)
+LIBARCH=$(shell gcc -dumpmachine)
+
 # select user library directory
 USRLIBDIR	= /usr$(LIBDIR)
 # select root library directory
@@ -69,10 +72,10 @@ liblist	= \
 	ls $(ROOTLIBDIR)/libncurses.so*	$(USRLIBDIR)/libncurses.so*; \
 	ls $(ROOTLIBDIR)/libtermcap.so*	$(USRLIBDIR)/libtermcap.so*; \
 	ls 				$(USRLIBDIR)/termcap/libtermcap.so*; \
-	ls /lib/*/libtinfo.so*; \
-	ls /lib/*/libncursesw.so*; \
-	ls /lib/*/libncurses.so*; \
-	ls /lib/*/libtermcap.so*; \
+	ls /lib/$(LIBARCH)/libtinfo.so*; \
+	ls /lib/$(LIBARCH)/libncursesw.so*; \
+	ls /lib/$(LIBARCH)/libncurses.so*; \
+	ls /lib/$(LIBARCH)/libtermcap.so*; \
 
 #	ls $(ROOTLIBDIR)/*/libtinfo.so*	$(USRLIBDIR)/*/libtinfo.so*; \
 #	ls $(ROOTLIBDIR)/*/libncursesw.so*	$(USRLIBDIR)/*/libncursesw.so*; \
