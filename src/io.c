@@ -260,6 +260,7 @@ FLAG use_mouse_anymove_inmenu = True;
 FLAG use_mouse_anymove_always = False;
 FLAG use_mouse_extended = False;	/* UTF-8 encoding of mouse coordinates */
 FLAG use_mouse_1015 = False;		/* numeric encoding of mouse coordinates */
+FLAG use_mouse_1006 = False;		/* SGR mouse mode */
 FLAG use_bold = True;
 FLAG use_bgcolor = True;
 FLAG avoid_reverse_colour = False;
@@ -670,6 +671,8 @@ static char * cMouseX10Off = "\033[?9l";
 
 static char * cMouseExtendedOn = "\033[?1005h";
 static char * cMouseExtendedOff = "\033[?1005l";
+static char * cMouse1006On = "\033[?1006h";
+static char * cMouse1006Off = "\033[?1006l";
 static char * cMouse1015On = "\033[?1015h";
 static char * cMouse1015Off = "\033[?1015l";
 
@@ -1631,6 +1634,12 @@ putescape (s)
 #ifdef debug_escape_sequences
   usleep(100000);
   printf("putesc <%s>\n", s + 1);
+#endif
+#ifdef debug_escape_sequences_DECSET
+  if (s [2] == '?') {
+	usleep(100000);
+	printf("putesc <%s>\n", s + 1);
+  }
 #endif
 
   if (!csi_term && *s == '\033' && s[1] == '[') {
@@ -3646,8 +3655,13 @@ start_screen_mode (kb)
 		if (use_mouse_anymove_always) {
 			putescape (cMouseEventAnyOn);
 		}
-		if (use_mouse_1015) {
+		if (use_mouse_1006) {
+			/* SGR mouse mode */
+			putescape (cMouse1015On);
+			putescape (cMouse1006On);
+		} else if (use_mouse_1015) {
 			/* numeric encoding of mouse coordinates */
+			putescape (cMouse1006On);
 			putescape (cMouse1015On);
 		} else if (use_mouse_extended) {
 			/* UTF-8 encoding of mouse coordinates */
@@ -3694,10 +3708,17 @@ end_screen_mode ()
   if (use_mouse) {
 	putescape (cMouseFocusOff);
 	putescape (cAmbigOff);
-	if (use_mouse_1015) {
+	if (use_mouse_1006) {
+		putescape (cMouse1006Off);
 		putescape (cMouse1015Off);
+	} else if (use_mouse_1015) {
+		putescape (cMouse1015Off);
+		putescape (cMouse1006Off);
 	} else if (use_mouse_extended) {
 		putescape (cMouseExtendedOff);
+	}
+	if (use_mouse_anymove_always) {
+		putescape (cMouseEventAnyOff);
 	}
 	putescape (cMouseEventBtnOff);
 	putescape (cMouseButtonOff);

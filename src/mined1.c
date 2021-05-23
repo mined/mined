@@ -134,6 +134,7 @@ char panic_file [maxFILENAMElen];
 static char * TERM;
 static int terminal_type = -1;
 static int terminal_version = 0;
+static int terminal_registration = 0;
 static char * glyphs = NIL_PTR;
 static FLAG combining_screen_selected = False;	/* explicitly selected ? */
 static FLAG term_encoding_selected = False;	/* explicitly selected ? */
@@ -2814,14 +2815,13 @@ acquire_device_attributes (again)
 		c = get_digits (& terminal_version);
 	}
 	while (c == '.') {
-		int dummy;
+		int subver;
 		/* mrxvt sends sub-version 0.4.1 */
-		c = get_digits (& dummy);
-		terminal_version = terminal_version * 100 + dummy;
+		c = get_digits (& subver);
+		terminal_version = terminal_version * 100 + subver;
 	}
 	while (c == ';') {
-		int dummy;
-		c = get_digits (& dummy);
+		c = get_digits (& terminal_registration);
 	}
   }
 
@@ -3359,6 +3359,9 @@ detect_terminal_type ()
 			xterm_version = terminal_version;
 		}
 		set_fkeymap ("xterm");
+	} else if (terminal_type == 'A' && terminal_version > 999 && terminal_registration) {
+		/* probably gnome-terminal */
+		gnome_terminal_version = terminal_version;
 	} else if (terminal_type == 'C') {	/* cygwin console */
 		cygwin_version = terminal_version;
 		set_fkeymap ("xterm");
@@ -4855,6 +4858,9 @@ terminal_configure_init ()
 	}
 	/* numeric encoding of mouse coordinates since rxvt-unicode 9.10 */
 	use_mouse_1015 = True;
+  }
+  if (gnome_terminal_version) {
+	use_mouse_1006 = True;
   }
 
 #ifdef debug_graphics

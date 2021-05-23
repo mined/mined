@@ -279,6 +279,7 @@ extern FLAG use_mouse_release;
 extern FLAG use_mouse_anymove_inmenu;
 extern FLAG use_mouse_anymove_always;
 extern FLAG use_mouse_extended;	/* UTF-8 encoding of mouse coordinates */
+extern FLAG use_mouse_1006;	/* SGR mouse mode */
 extern FLAG use_mouse_1015;	/* numeric encoding of mouse coordinates */
 extern FLAG use_bold;
 extern FLAG avoid_reverse_colour;
