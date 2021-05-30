@@ -1855,6 +1855,8 @@ adjust_escdelay ()
 	if (strisprefix ("rxvt", TERM)) {
 		/* accept slow rxvt DA report */
 		default_escape_delay = 25555;
+	} else if (strisprefix ("/dev/tty", unnull (ttyname (2)))) {
+		/* do not increase delay on Linux console */
 	} else if (strisprefix ("xterm", TERM)
 		|| strisprefix ("screen", TERM)
 		|| (strisprefix ("vt", TERM) && TERM [2] >= '2' && TERM [2] < '5')
@@ -3712,7 +3714,7 @@ print_terminal_info ()
 			term_Unicode_version_name (combining_data_version), 
 			hangul_jamo_extended);
 	}
-	printf ("- non-BMP width data mode %02X: plane_2_double %d plane_1_comb %d plane_14_comb %d all %d\n", 
+	printf ("- non-BMP width mode %02X: plane_2_double %d plane_1_comb %d plane_14_comb %d all %d\n", 
 			nonbmp_width_data, plane_2_double_width, 
 			plane_1_combining, plane_14_combining, 
 			nonbmp_all_wide);
