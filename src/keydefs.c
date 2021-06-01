@@ -680,6 +680,7 @@ struct fkeyentry fkeymap [] = {
 	{"\033[L",	INSkey},	/* (termcap: insert character) */
 
 	/* xterm mouse */
+	{"\033[<",	DIRECTmouse},	/* SGR mouse address */
 	{"\033[M",	DIRECTxterm},	/* direct cursor address */
 	{"\033[t",	TRACKxterm},	/* xterm mouse highlight tracking */
 	{"\033[T",	TRACKxtermT},	/* xterm mouse highlight tracking */
@@ -888,6 +889,7 @@ struct fkeyentry fkeymap_linux [] = {
 
 struct fkeyentry fkeymap_xterm [] = {
 	/* xterm */
+	{"\033[<",	DIRECTmouse},	/* SGR mouse address */
 	{"\033[M",	DIRECTxterm},	/* direct cursor address */
 	{"\033[t",	TRACKxterm},	/* xterm mouse highlight tracking */
 	{"\033[T",	TRACKxtermT},	/* xterm mouse highlight tracking */

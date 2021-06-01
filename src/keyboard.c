@@ -848,7 +848,8 @@ DIRECTxtermgetxy (code)
 
 static
 void
-DIRECTsgrgetxy ()
+DIRECTmousegetxy (code)
+  char code;	/* 'M' for normal mouse report, ignore 't'/'T' for tracking */
 {
   notice_previous_click ();
 
@@ -949,6 +950,16 @@ DIRECTxterm ()
   printf ("DIRECTxterm\n");
 #endif
   DIRECTxtermgetxy ('M');
+  MOUSEfunction ();
+}
+
+void
+DIRECTmouse ()
+{
+#ifdef debug_mouse
+  printf ("DIRECTmouse\n");
+#endif
+  DIRECTmousegetxy ('M');
   MOUSEfunction ();
 }
 
@@ -2223,7 +2234,7 @@ check_ctrl_byte:
 			} while (ansi_fini == ';');
 			q_clear ();
 #ifdef debug_kbansi
-			printf ("ansi %c (%d)", ansi_fini, ansi_params);
+			printf ("ansi %c ...[%d] %c", ansi_ini, ansi_params, ansi_fini);
 			{int i;
 			 for (i = 0; i < ansi_params; i ++) {
 				printf (" %d", ansi_param [i]);
@@ -2360,7 +2371,7 @@ check_ctrl_byte:
 					DIRECTvtlocatorgetxy ();
 					keyproc = MOUSEfunction;
 				} else if (ansi_ini == '<') {
-					DIRECTsgrgetxy ();
+					DIRECTmousegetxy ();
 					keyproc = MOUSEfunction;
 				} else if (! ansi_ini && ansi_fini == 'M') {
 					DIRECTurxvtgetxy ();
@@ -2385,6 +2396,12 @@ check_ctrl_byte:
 		if (keyproc == ESCAPE) {
 			/* mintty application escape key mode */
 			return '\033';
+		} else if (keyproc == DIRECTmouse) {
+#ifdef debug_mouse
+			printf ("scanned xterm SGR mouse escape\n");
+#endif
+			DIRECTmousegetxy ('M');
+			keyproc = MOUSEfunction;
 		} else if (keyproc == DIRECTxterm) {
 #ifdef debug_mouse
 			printf ("scanned xterm mouse escape\n");

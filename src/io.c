@@ -1013,7 +1013,13 @@ add_terminfo_entries ()
   (void) add_terminfo_entry ("&7", "kspd",	SUSP, 0);	/* suspend key */
   (void) add_terminfo_entry ("&8", "kund",	UNDO, 0);	/* undo key */
   (void) add_terminfo_entry ("ku", "kcuu1",	UPkey, 0);	/* up-arrow key */
+#if 0
+#warning this makes no sense
+  /* both CSI M and CSI < occur in terminfo and both would need to be handled
+     differently... this is a broken terminfo attribute specification */
   (void) add_terminfo_entry ("Km", "kmous",	DIRECTxterm, 0);	/* Mouse event has occurred */
+  (void) add_terminfo_entry ("Km", "kmous",	DIRECTmouse, 0);	/* Mouse event has occurred */
+#endif
 }
 
 #endif	/* #else ANSI */

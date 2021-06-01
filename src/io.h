@@ -224,6 +224,7 @@ extern int char_ready_within _((int msec, char * debug_tag));
 /* mouse handling */
 extern void DIRECTcrttool _((void));
 extern void DIRECTvtlocator _((void));
+extern void DIRECTmouse _((void));
 extern void DIRECTxterm _((void));
 extern void TRACKxterm _((void));
 extern void TRACKxtermT _((void));
