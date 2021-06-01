@@ -18,4 +18,4 @@ sed -e 's-^\([^;]*\);\([^;]*\).*-	{"", 0x\1 /* U+\1 \2 */},-' |
 ./insutf8 | sed -e 's,U+[^ ]* ,,'
 
 echo "[43;30m edit output to add mnemonics [0m" >&2
-echo "[43;30m then check uniqueness with ./mnemos.check [0m" >&2
+echo "[43;30m then check uniqueness with ./mkmnemocheck [0m" >&2
