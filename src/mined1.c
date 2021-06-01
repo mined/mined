@@ -34,6 +34,9 @@
 
 
 #include <errno.h>	/* EEXIST */
+#ifdef __TURBOC__
+extern char * ttyname (int);
+#endif
 
 #ifdef __CYGWIN__
 #include <cygwin/version.h>	/* check CYGWIN_VERSION_DLL_MAJOR >= 1007 ? */

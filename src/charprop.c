@@ -546,7 +546,11 @@ static struct {
     char category;
     short combining_class;
 } combining_classes [] = {
+#ifdef __TURBOC__
+	{0, 0, 0, 0},
+#else
 #include "combin.t"
+#endif
 };
 
 /**
