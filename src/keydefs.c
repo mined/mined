@@ -680,7 +680,10 @@ struct fkeyentry fkeymap [] = {
 	{"\033[L",	INSkey},	/* (termcap: insert character) */
 
 	/* xterm mouse */
+#ifdef detect_mouse_via_fkeymap
+#warning this spoils mouse code detection of mined
 	{"\033[<",	DIRECTmouse},	/* SGR mouse address */
+#endif
 	{"\033[M",	DIRECTxterm},	/* direct cursor address */
 	{"\033[t",	TRACKxterm},	/* xterm mouse highlight tracking */
 	{"\033[T",	TRACKxtermT},	/* xterm mouse highlight tracking */
@@ -889,7 +892,10 @@ struct fkeyentry fkeymap_linux [] = {
 
 struct fkeyentry fkeymap_xterm [] = {
 	/* xterm */
+#ifdef detect_mouse_via_fkeymap
+#warning this spoils mouse code detection of mined
 	{"\033[<",	DIRECTmouse},	/* SGR mouse address */
+#endif
 	{"\033[M",	DIRECTxterm},	/* direct cursor address */
 	{"\033[t",	TRACKxterm},	/* xterm mouse highlight tracking */
 	{"\033[T",	TRACKxtermT},	/* xterm mouse highlight tracking */
