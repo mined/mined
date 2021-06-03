@@ -14,6 +14,19 @@
 #include "textfile.h"	/* grab_lock, ignore_lock */
 
 
+#define use_CJKkeymaps
+
+#if defined (noCJKkeymaps) || defined (NOCJK)
+#undef use_CJKkeymaps
+#endif
+
+#define use_HANinfo
+
+#if defined (noHANinfo) || defined (NOCJK)
+#undef use_HANinfo
+#endif
+
+
 /***********************************************************************\
 	Menu types and aux. function
 \***********************************************************************/
@@ -1920,6 +1933,7 @@ local menuitemtype infomenu [] = {
 	{" with decompos.", select_decomposition, "", infoon_decomposition},
 	{" with mnemos", select_mnemos, "", infoon_mnemos},
 
+#ifdef use_HANinfo
 	{"display Han info", separator, ""},
 	{"Han info", select_Han_info, "", infoon_Han},
 	{" in status line", toggle_Han_short_description, "", infoon_descr_short},
@@ -1939,6 +1953,7 @@ local menuitemtype infomenu [] = {
 	{"TGHZ 2013", toggle_TGHZ, "", infoon_TGHZ},
 	{"Tang", toggle_Tang, "", infoon_Tang},
 	{"Nushu", toggle_Nushu, "", infoon_Nushu},
+#endif
 };
 
 local menuitemtype textmenu [] = {

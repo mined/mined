@@ -6,6 +6,7 @@
 	{"Amharic", select_keymap_entry, "am", keymapon, "U"},
 	{"Ethiopic", select_keymap_entry, "et", keymapon, "Y"},
 	{"Esperanto", select_keymap_entry, "es", keymapon},
+#ifdef use_CJKkeymaps
 	{"Chinese", separator, ""},
 	{"Pinyin", select_keymap_entry, "py", keymapon, "C+"},
 	{"Cangjie", select_keymap_entry, "cj", keymapon, "H"},
@@ -21,6 +22,7 @@
 	{"Korean", separator, ""},
 	{"Hangul", select_keymap_entry, "hg", keymapon, "C"},
 	{"Hanja", select_keymap_entry, "hj", keymapon, "C"},
+#endif
 	{"Vietnamese", separator, ""},
 	{"VNI", select_keymap_entry, "vi", keymapon, "U"},
 	{"VIQR", select_keymap_entry, "vq", keymapon, "U"},

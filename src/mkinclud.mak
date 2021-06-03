@@ -335,7 +335,7 @@ filterCJK=-e "/^-.*Japanese/,/^$$/ b cjk" -e "/^-.*Chinese/,/^$$/ b cjk" -e "/^-
 # generate:		{"Group", separator, ""},
 keymapsm.t:	keymaps.cfg # mkinclud.mak
 	$(MAKE) -f mkinclud.mak checkkeymapstags
-	LC_ALL=C sed -e '/^#/ d' -e 's/^--* *\(.*\) */	{"\1", separator, ""},/' -e t -e 's/^[ 	"]*\([^	]*\)		*\([A-Za-z0-9_][^ 	]*\)		*\([^ 	][^ 	]\)		*(*\([^)	 ]*\))*.*/	{"\1", select_keymap_entry, "\3", keymapon, "\4"},/' -e t -e 's/^[ 	"]*\([^	]*\)		*\([A-Za-z0-9_][^ 	]*\).*\([^ 	][^ 	]\).*/	{"\1", select_keymap_entry, "\3", keymapon},/' -e t -e d keymaps.cfg > keymapsm.t
+	LC_ALL=C sed -e '/^#.*if/ b' -e '/^#/ d' -e 's/^--* *\(.*\) */	{"\1", separator, ""},/' -e t -e 's/^[ 	"]*\([^	]*\)		*\([A-Za-z0-9_][^ 	]*\)		*\([^ 	][^ 	]\)		*(*\([^)	 ]*\))*.*/	{"\1", select_keymap_entry, "\3", keymapon, "\4"},/' -e t -e 's/^[ 	"]*\([^	]*\)		*\([A-Za-z0-9_][^ 	]*\).*\([^ 	][^ 	]\).*/	{"\1", select_keymap_entry, "\3", keymapon},/' -e t -e d keymaps.cfg > keymapsm.t
 
 # from:		Greek	GreekMonotonic	gr	(Y)
 # generate:		{keymap_GreekMonotonic, "gr"},
