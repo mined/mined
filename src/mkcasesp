@@ -21,4 +21,4 @@ sed	-e "s/ *#.*//" \
 	-e "s/ \([a-zA-Z][a-zA-Z]*\)/ | U_cond_\1/g" \
 	-e "s/;*$/},/" -e "s/, |/ |/g" \
 	-e "s/{}/{0}/g" \
-| sort > casespec.t
+| LC_ALL=C sort > casespec.t

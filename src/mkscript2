@@ -13,7 +13,7 @@ sed -e 's/, "/, cat/g' -e 's/"//g' -e 's/ /_/g' -e 's/,_/, /g' scripts.tt > scri
 cats () {
 	sed -e 's/^.*"\([^"]*\)", "\([^"]*\)"},/\1\2/' scripts.tt |
 	tr '\015' '\012' |
-	sort | uniq
+	LC_ALL=C sort | uniq
 }
 
 (
