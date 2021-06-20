@@ -4706,11 +4706,13 @@ terminal_configure_init ()
 	/* give built-in keydefs precedence over buggy termcap */
 	set_fkeymap (NIL_PTR);
 	/* workaround for unusual keypad assignments */
+# ifdef disable_Home_selection_on_some_terminals
 	if (mined_keypad) {
 		mined_keypad = False;
 	} else {	/* in case option -k reversed it already */
 		mined_keypad = True;
 	}
+# endif
 
 	/* probably gnome-terminal */
 	if (! use_ascii_graphics) {
@@ -7385,11 +7387,13 @@ main (argc, argv)
 #  endif
 
 	/* workaround for unusual keypad assignments */
+# ifdef disable_Home_selection_on_some_terminals
 	if (mined_keypad) {
 		mined_keypad = False;
 	} else {	/* in case option -k reversed it already */
 		mined_keypad = True;
 	}
+# endif
 #endif
 
 	if (! text_encoding_selected) {
