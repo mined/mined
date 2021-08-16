@@ -1430,8 +1430,11 @@ paste_buffer (old_pos, use_clipboard)
   FLAG old_pos;
   FLAG use_clipboard;
 {
-  register int fd;		/* File descriptor for buffer */
+  register int fd = 0;		/* File descriptor for buffer */
   FLAG save_lineends_CRLFtoLF = lineends_CRLFtoLF;
+#ifndef __CYGWIN__
+  char * clipper = 0;
+#endif
 
   if (dont_modify ()) {
 	return;
@@ -1446,6 +1449,38 @@ paste_buffer (old_pos, use_clipboard)
 	status_uni ("Pasting from Windows clipboard");
 	if (cur_line->return_type == lineend_LF) {
 		lineends_CRLFtoLF = True;	/* temporary, reset below */
+	}
+  } else
+#else
+  if (use_clipboard) {
+#ifdef __APPLE__
+	if (access ("/usr/bin/pbpaste", X_OK) == 0)
+		clipper = "/usr/bin/pbpaste";
+#else
+	if (access ("/usr/bin/xsel", X_OK) == 0) {
+		clipper = "/usr/bin/xsel -o";
+	} else if (access ("/usr/bin/xclip", X_OK) == 0) {
+		clipper = "/usr/bin/xclip -o";
+	}
+#endif
+  }
+  if (clipper) {
+	char syscommand [maxCMDlen];
+# ifdef use_distinct_clipboard_file
+	char clip_file [maxLINElen];
+# warning adjust with building yankie_file etc
+	build_string (clip_file, "%s/mined_clip.%d", temp_dir, getpid());
+# else
+	char * clip_file = yankie_file;
+# endif
+	build_string (syscommand, "umask 066; %s > %s 2> /dev/null", clipper, clip_file);
+printf("use_cb %d clipper %s\n", use_clipboard, clipper);
+	if (system (syscommand) == 0) {
+		if ((fd = open (clip_file, O_RDONLY | O_BINARY, 0)) < 0) {
+			error ("No clipboard buffer present");
+			return;
+		}
+		status_uni ("Pasting from clipboard");
 	}
   } else
 #endif
@@ -1471,7 +1506,9 @@ paste_buffer (old_pos, use_clipboard)
 	}
   }
   /* Insert the buffer */
-  paste_file (fd, old_pos, False);
+  if (fd) {
+	paste_file (fd, old_pos, False);
+  }
 
   lineends_CRLFtoLF = save_lineends_CRLFtoLF;
 }
@@ -1967,6 +2004,26 @@ yankie ()
   status_uni ("Copying to Windows clipboard");
   if (copyfile (yank_file, "/dev/clipboard") != True) {
 	/* ignore error */
+  }
+  status_uni (text_buffer);
+#else
+  char syscommand [maxCMDlen];
+  char * clipper = 0;
+#ifdef __APPLE__
+  if (access ("/usr/bin/pbcopy", X_OK) == 0)
+	clipper = "/usr/bin/pbcopy";
+#else
+  if (access ("/usr/bin/xsel", X_OK) == 0) {
+	clipper = "/usr/bin/xsel -i";
+  } else if (access ("/usr/bin/xclip", X_OK) == 0) {
+	clipper = "/usr/bin/xclip -i";
+  }
+#endif
+  if (clipper) {
+	build_string (syscommand, "%s < %s", clipper, yank_file);
+	if (system (syscommand) != 0) {
+		/* ignore error */
+	}
   }
   status_uni (text_buffer);
 #endif
