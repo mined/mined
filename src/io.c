@@ -1201,8 +1201,8 @@ raw_mode (to_raw_state)
 /*	output a byte that SunOS may swallow:	*/
 	(void) write (output_fd, " \r", 2);
 
-/*	swallow mouse sequences that xterm sends after disabling (?):	*/
-	while (xterm_version && char_ready_within (50, NIL_PTR)) {
+/*	swallow mouse sequences that may have been sent already (xterm, gnome) */
+	while (char_ready_within (50, NIL_PTR)) {
 		(void) _readchar_nokeymap ();
 	}
 
