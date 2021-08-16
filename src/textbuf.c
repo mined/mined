@@ -687,6 +687,13 @@ file_status (message, bytecount, charcount, filename, lines, textstat, writefl, 
 			? num_out ((line_number - 1) / lines_per_page + 1, 10)
 			: ""
 		);
+  } else if (utf16_file) {
+	/* byte count refers to internal UTF-8 representation */
+	build_string (textinfo, "%slines %d chars %ld",
+		flaginfo,
+		lines,
+		charcount
+		);
   } else {
 	build_string (textinfo, "%slines %d chars %ld (bytes %ld)",
 		flaginfo,

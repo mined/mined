@@ -860,20 +860,37 @@ yank_text (fd, buf_status,
   chars_saved += chars_written;
   lines_saved += lines_written;
 
-  build_string (text_buffer, "%s %s: lines %d chars %ld (bytes %ld) - Paste with %s/Insert", 
-	(do_remove == DELETE) ?
-		appending ? "Cut/appended" : "Cut/moved"
-		: appending ? "Appended" : "Copied",
-	do_rectangular_paste ? "rectangular area" : "paste buffer",
-	lines_written,
-	chars_written,
-	bytes_written,
-	emulation == 'e' ? "^Y"		/* emacs yank */
-	: emulation == 's' ? "^K^C"	/* WordStar block copy */
-	: emulation == 'p' ? "^U"	/* pico uncut */
-	: emulation == 'w' ? "^V"	/* Windows paste */
-	: "^P"				/* mined paste */
-	);
+  if (utf16_file) {
+	/* byte count refers to internal UTF-8 representation */
+	build_string (text_buffer, "%s %s: lines %d chars %ld - Paste with %s/Insert", 
+		(do_remove == DELETE) ?
+			appending ? "Cut/appended" : "Cut/moved"
+			: appending ? "Appended" : "Copied",
+		do_rectangular_paste ? "rectangular area" : "paste buffer",
+		lines_written,
+		chars_written,
+		emulation == 'e' ? "^Y"		/* emacs yank */
+		: emulation == 's' ? "^K^C"	/* WordStar block copy */
+		: emulation == 'p' ? "^U"	/* pico uncut */
+		: emulation == 'w' ? "^V"	/* Windows paste */
+		: "^P"				/* mined paste */
+		);
+  } else {
+	build_string (text_buffer, "%s %s: lines %d chars %ld (bytes %ld) - Paste with %s/Insert", 
+		(do_remove == DELETE) ?
+			appending ? "Cut/appended" : "Cut/moved"
+			: appending ? "Appended" : "Copied",
+		do_rectangular_paste ? "rectangular area" : "paste buffer",
+		lines_written,
+		chars_written,
+		bytes_written,
+		emulation == 'e' ? "^Y"		/* emacs yank */
+		: emulation == 's' ? "^K^C"	/* WordStar block copy */
+		: emulation == 'p' ? "^U"	/* pico uncut */
+		: emulation == 'w' ? "^V"	/* Windows paste */
+		: "^P"				/* mined paste */
+		);
+  }
   status_uni (text_buffer);
   return FINE;
 }
