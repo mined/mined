@@ -2352,7 +2352,7 @@ DPC ()
 			)
 		      )
 		{
-			if (white_space (* cp)) {
+			if (numberlen && white_space (* cp)) {
 				/* cancel smart numbering detection */
 				numberlen = 0;
 				stop_col = column;
