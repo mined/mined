@@ -2201,7 +2201,17 @@ delete_char (with_combinings)
 		if (! iscombined_unichar (unichar, cur_text, cur_line->text)) {
 			/* delete combining accents together with base char */
 			unichar = unicodevalue (after_char);
-			while (iscombined_unichar (unichar, after_char, cur_line->text)) {
+			while (
+				/* iscombined_unichar checks by char class 
+				   and does not catch zero-width cases 
+				   like x U+200B y (cursor on y, then BS 
+				   would have deleted only the x),
+				   so we need an extra check
+				*/
+				term_iscombining (unichar) ||
+				iscombined_unichar (unichar, after_char, cur_line->text)
+			      )
+			{
 				advance_char (& after_char);
 				unichar = unicodevalue (after_char);
 			}
@@ -2269,14 +2279,13 @@ DPC0 ()
 	}
   } else {
 	/*FLAG was_on_comb = iscombining (unicodevalue (cur_text));*/
-	FLAG was_on_comb = iscombined_unichar (unicodevalue (cur_text), cur_text, cur_line->text);
+	unsigned long unichar = unicodevalue (cur_text);
+	FLAG was_on_comb = iscombined_unichar (unichar, cur_text, cur_line->text);
 	if (keyshift & ctrl_mask) {
 		ctrl_MLF ();
 	} else {
-		unsigned long unichar;
 		MOVLF ();
 		/* handle spacing combining characters */
-		unichar = unicodevalue (cur_text);
 		if (isspacingcombining_unichar (unichar)
 		    || /* handle ARABIC TAIL FRAGMENT */
 		    (unichar == 0xFE73
