@@ -5792,7 +5792,7 @@ quit_mined ()
 
   clear_status ();
   set_cursor (0, YMAX);
-  putchar ('\n');
+  putchar ('\n');  /* purpose unclear, causes visual distraction */
 #ifdef unix
   clear_window_title ();
 #endif
