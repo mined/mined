@@ -311,6 +311,7 @@ radical_stroke:	keymaps/Radical_Stroke.h
 
 keymaps/Radical_Stroke.h:	# Unihan.zip
 	cd handescr && $(MAKE) Radical_Stroke.h
+	mkdir -p keymaps
 	rm -f keymaps/Radical_Stroke.h; ln handescr/Radical_Stroke.h keymaps/ || cp handescr/Radical_Stroke.h keymaps/
 
 # Radical/Stroke input method table:
