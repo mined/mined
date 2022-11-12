@@ -801,8 +801,8 @@ generate:	# keymaps1/Radical_Stroke.h
 keymaps1/Radical_Stroke.h:	keymaps0/Radical_Stroke.h
 	CC=$(CC) $(SH) ./mkkmincl keymaps0/Radical_Stroke.h > keymaps1/Radical_Stroke.h
 
-#keymaps0/Radical_Stroke.h:	keymaps/Radical_Stroke.h
-#	cp keymaps/Radical_Stroke.h keymaps0/Radical_Stroke.h
+keymaps0/Radical_Stroke.h:	keymaps/Radical_Stroke.h
+	cp keymaps/Radical_Stroke.h keymaps0/Radical_Stroke.h
 
 # Cross-generation of charmaps files for MSDOS/VMS compilation
 NONCJKCHARMAPS=$(shell echo charmaps/*.map | sed -e "s, charmaps/cjk-[^ ]*.map,,g" )
