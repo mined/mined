@@ -3531,6 +3531,12 @@ get_term_cap (TERMname)
 	cS3 = "[10m";
   }
 #endif
+  if (streq (TERMname, "cygwin")) {
+	/* terminfo entry for cygwin is misleading */
+	cAS = "(0";
+	cAE = "(B";
+	cAC = "";
+  }
   if (* cAS == '\0') {
 	can_alt_cset = False;
   }
@@ -3551,7 +3557,8 @@ get_term_cap (TERMname)
 	cdisableEA = "";
   }
   if (* cS2 != '\0' && * cS3 != '\0') {
-	use_pc_block_graphics = True;
+	if (! use_vt100_block_graphics)
+		use_pc_block_graphics = True;
   }
 
   if ((* cTI == '\0'

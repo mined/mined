@@ -5881,6 +5881,7 @@ eval_options (minedopt, command_line)
 		} else if (* minedopt == 'v') {
 			explicit_border_style = command_line;
 			use_vt100_block_graphics = True;
+			use_pc_block_graphics = False;
 			use_ascii_graphics = False;
 		} else if (* minedopt == 'p' || * minedopt == 'P') {
 			menu_border_style = * minedopt;
