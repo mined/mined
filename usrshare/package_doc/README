@@ -94,19 +94,19 @@ installation package.
 
 
 -----------------------------------------------------------------------------
-Copyright/licence
+Copyright/licence and Warranty disclaimer
 
 For legal purposes, the GNU GENERAL PUBLIC LICENSE Version 3 applies 
 (see the file LICENCE.GPL).
 
 The intention is that the editor mined may be freely used, compiled, 
 ported to other systems or adapted to specific preferences.
-It is however appreciated that you please report any changes to 
-mined@towo.net for feedback and optional inclusion in further versions.
+It is however appreciated that you please report any changes as an issue 
+for feedback and optional inclusion in further versions.
 
-Redistributions within software collections are welcome.
-Please notify them to mined@towo.net and if the distribution is on 
-a fixed media (CD/DVD), a free copy will be appreciated.
+Redistribution within software collections is welcome.
+Repackaging for system distributions is especially welcome.
+Again it is appreciated to get notification about such packages.
 
 Although high effort was taken to prevent mined from loosing users' 
 edited data, no liability is accepted for any loss or damage whatsoever.
