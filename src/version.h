@@ -1,2 +1,2 @@
-#define VERSION "2021.26"
-#define UNICODE_VERSION "13.0"
+#define VERSION "2022.26"
+#define UNICODE_VERSION "15.0"

@@ -46,7 +46,7 @@ INSTALLBIN = install
 # derive /lib64 from uname -m ending on _64:
 #LIBDIR=$(shell if uname -m | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; else ls -d /lib; fi 2> /dev/null | sed -e "1 p" -e d )
 # also derive /lib64 from IRIX64 but not from CYGWIN_NT-6.1-WOW64:
-LIBDIR=$(shell if (uname | sed -e "s,^[^-]*64,_64," ; uname -m) | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; else ls -d /lib; fi 2> /dev/null | sed -e "1 p" -e d )
+LIBDIR=$(shell if (uname | sed -e "s,^[^-]*64,_64," ; uname -m) | grep _64 > /dev/null 2>&1; then ls -d /lib64; ls -d /lib/64; ls -d /lib; ls -d /usr/lib; else ls -d /lib; ls -d /usr/lib; fi 2> /dev/null | sed -e "s,^/usr,," -e "1 p" -e d )
 
 # select architecture for /lib/$(LIBARCH)
 LIBARCH=$(shell gcc -dumpmachine)
