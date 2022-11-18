@@ -618,10 +618,8 @@ $(OBJDIR)/charmaps:
 	mkdir -p $(OBJDIR)/charmaps
 
 $(OBJDIR)/charmaps.a:	$(CHARDEPS)
-	#ar ruvs $(OBJDIR)/charmaps.a $(CHAROBJS)
-	# option s does not exist on Ultrix
-	ar ruv $(OBJDIR)/charmaps.a $(CHAROBJS)
-	ranlib $(OBJDIR)/charmaps.a
+	# ar has no option s on Ultrix, there is no ranlib on some systems
+	ar ruvs $(OBJDIR)/charmaps.a $(CHAROBJS) || ar ruv $(OBJDIR)/charmaps.a $(CHAROBJS) && ranlib $(OBJDIR)/charmaps.a
 
 #CHARDEPEND=$(CHARDEPS)
 #CHARLIB=$(CHAROBJS)
