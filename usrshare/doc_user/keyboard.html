@@ -1,0 +1,223 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
+<meta name="keywords" content="editor, text mode editor, programmers editor, programming editor, Unicode editor, UTF-8 editor, Unicode text editor, UTF-8 text editor, Unicode text mode editor, UTF-8 text mode editor, text mode Unicode editor, text mode UTF-8 editor, text mode HTML editor, CJK editor">
+<meta name="robots" content="index">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Unicode text editor MinEd</title>
+
+<style>
+table.keypad {
+	border-spacing: 0; border-collapse: collapse;
+	xborder: solid black 1px;
+	}
+table.keypad td {
+	padding: 2pt;
+	text-align: center;
+	xborder: solid black 1px;
+	}
+table.keypad div {
+	xborder: 2px solid;
+	xborder: 4px groove green;
+	border: 3px outset #11DDDD;
+	background-color: #22CCCC;
+	padding: 3pt;
+	line-height: 200%;
+	font-weight: bold;
+	}
+table.keypad div.function {
+	border: none;
+	background-color: yellow;
+	line-height: 100%;
+	white-space: nowrap;
+	font-weight: normal;
+	}
+table#hop div.function, div#hop {
+	background-color: red;
+	color: yellow;
+	}
+code {background-color: #CCC0C0;}
+</style>
+
+<script>
+top.select2 ("overview", "keyboard");
+</script>
+
+</head>
+
+<body>
+<br>
+<center>
+<h3>MinEd Keyboard and Keypad Functions</h3>
+</center>
+
+<a name=keypad></a>
+<h4>Keypad assignment</h4>
+	<ul>
+	<li>Mined optimizes keypad usage for most frequently used functions, 
+	especially <i>paste buffer functions</i> in addition to 
+	<i>navigation functions</i>, by making them easily accessible on 
+	the keypad.
+	<ul>
+		<li>For this purpose, mined distinguished between 
+		Home/End keys on the numeric keypad and on the small 
+		keypad (whenever possible with the terminal) in order 
+		to avoid the waste of resources by the usually redundant 
+		mapping of these two keypad blocks.
+	</ul>
+	<li>The centrally placed <i>HOP key</i> can be used for intuitive 
+	modification of navigation functions and for useful alternatives 
+	of paste buffer functions.
+	<dl><dd><table border=0><tr>
+		<td valign=top><table border=0 class=keypad>
+		<tr valign=top>
+			<td><div>Insert
+				<div class=function>Paste</div>
+				</div>
+			<td><div>Home
+				<div class=function>Line beg.</div>
+				</div>
+			<td><div>PgUp
+				<div class=function>PgUp</div>
+				</div>
+		<tr valign=top>
+			<td><div>Delete
+				<div class=function>Del/Cut</div>
+				</div>
+			<td><div>End
+				<div class=function>Line end</div>
+				</div>
+			<td><div>PgDn
+				<div class=function>PgDn</div>
+				</div>
+		</table>
+		<td width=9>
+		<td valign=top><table border=0 class=keypad>
+		<tr valign=top>
+			<td><div> 7 <br> Home 
+				<div class=function>Mark</div>
+				</div>
+			<td><div> 8 <br>&uarr;
+				<div class=function>&uarr;</div>
+				</div>
+			<td><div> 9 <br> PgUp 
+				<div class=function>Prev</div>
+				</div>
+		<tr valign=top>
+			<td><div> 4 <br>&larr;
+				<div class=function>&larr;</div>
+				</div>
+			<td><div> 5 <br>      
+				<div class=function id=hop>HOP</div>
+				</div>
+			<td><div> 6 <br>&rarr;
+				<div class=function>&rarr;</div>
+				</div>
+		<tr valign=top>
+			<td><div> 1 <br>End
+				<div class=function>Copy</div>
+				</div>
+			<td><div> 2 <br>&darr;
+				<div class=function>&darr;</div>
+				</div>
+			<td><div> 3 <br>PgDn
+				<div class=function>Next</div>
+				</div>
+		<tr valign=top>
+			<td colspan=2><div> 0 <br>Ins
+				<div class=function>Paste</div>
+				</div>
+			<td><div> . <br>Del
+				<div class=function>Del/Cut</div>
+				</div>
+		</table>
+		<td width=9>
+		<td align=right>with HOP:
+		<td valign=top><table border=0 class=keypad id=hop>
+		<tr valign=top>
+			<td><div> 7 <br>Home
+				<div class=function>goto Mark</div>
+				</div>
+			<td><div> 8 <br>&uarr;
+				<div class=function>Screen top</div>
+				</div>
+			<td><div> 9 <br>PgUp
+				<div class=function>File beg.</div>
+				</div>
+		<tr valign=top>
+			<td><div> 4 <br>&larr;
+				<div class=function>Line beg.</div>
+				</div>
+			<td><div> 5 <br> 
+				<br> 
+				</div>
+			<td><div> 6 <br>&rarr;
+				<div class=function>Line end</div>
+				</div>
+		<tr valign=top>
+			<td><div> 1 <br>End
+				<div class=function>Append</div>
+				</div>
+			<td><div> 2 <br>&darr;
+				<div class=function>Screen bot.</div>
+				</div>
+			<td><div> 3 <br>PgDn
+				<div class=function>File end</div>
+				</div>
+		<tr valign=top>
+			<td colspan=2><div> 0 <br>Ins
+				<div class=function>Cross-window-paste</div>
+				</div>
+			<td><div> . <br>Del
+				<div class=function>...+Append</div>
+				</div>
+		</table>
+	</table>
+	</dl>
+	<li>The Del key performs the usual dual-mode function; if a visual 
+	selection is active, it deletes the selection (with a Cut to the 
+	paste buffer), if there is no visual selection, it deletes the 
+	next character.
+	<li>Mined offers additional function mappings for modified 
+	keypad keys, both for providing unambiguous mappings in any 
+	case and to handle the deviation of its benefit-optimized 
+	Home/End keypad mapping from frequent expectations, and an 
+	option to customize Home/End:
+	<ul>
+		<li>Alt-Home/End are mapped to the Home/End functions 
+		of the other keypad, respectively. So by default, on 
+		the numeric keypad they invoke the line navigation 
+		functions.
+		<li>The <code class=option>-k</code> option exchanges 
+		Home/End functions of the small and numeric keypads  
+		with each other, and switches Alt-Home/End to also 
+		invoke the “other” function, respectively:
+		keypad function assignments:
+
+		<li>Ctrl-Del is always mapped to character deletion, 
+		while Shift-Del is mapped to the paste buffer Cut function, 
+		regardless of the visual selection.
+		<li>Ctrl-Home/End are always mapped to line 
+		navigation, while Shift-Home/End are mapped to the 
+		paste buffer functions Mark/Copy, regardless of the 
+		<code class=option>-k</code> option.
+		<li>Alt-Del is mapped to the respective “other” function, 
+		depending on visual selection.
+
+		<li><i>Note:</i> Keypad function assignments as 
+		described depend on terminal support to distinguish 
+		all involved keys and modifiers which is unfortunately 
+		not always the case.
+		<br>Terminal support for proper distinction of 
+		different keypads and modified keys may be enhanced by 
+		appropriate terminal configuration, see the manual 
+		section on <a href=mined.html#keyconf>Keypad configuration</a>.
+	</ul>
+	</ul>
+
+
+<hr>
+<dt>Mined <a target=_top href=./>homepage</a> and download.
+<dt><a href=mailto:mined@towo.net>Thomas Wolff</a>
+</body>

@@ -1,0 +1,110 @@
+<head>
+<link rel="shortcut icon" href="minedfav.ico" />
+<link rel="canonical" href="http://towo.net/mined/">
+<meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
+<meta name="keywords" content="editor, text mode editor, programmers editor, programming editor, Unicode editor, UTF-8 editor, Unicode text editor, UTF-8 text editor, Unicode text mode editor, UTF-8 text mode editor, text mode Unicode editor, text mode UTF-8 editor, text mode HTML editor, CJK editor">
+<meta name="robots" content="index">
+<meta name="icon" content="mined-uni.png">
+
+<title>Unicode text editor MinEd</title>
+
+<script language="JavaScript">
+var selected_item = "";
+var selected_subitem = "";
+
+function select (item) {
+	selected_item = item;
+	if (navigation.select) {
+		navigation.select (item);
+	}
+}
+
+function select2 (item, subitem) {
+	selected_item = item;
+	selected_subitem = subitem;
+	if (navigation.select2) {
+		navigation.select2 (item, subitem);
+	}
+}
+</script>
+
+</head>
+
+
+<frameset rows=100,* border=0 frameborder=0 framespacing=0>
+	<frame frameborder=0
+	 src=header.html
+	 marginwidth=0 marginheight=0
+	 scrolling=no
+	>
+	<frameset cols=160,* border=0 frameborder=0 framespacing=0>
+		<frame frameborder=0 name=navigation
+		 src=navigate.html
+		 scrolling=no
+		 marginwidth=0 marginheight=0
+		>
+		<frame frameborder=0 name=mined
+		 src=overview.html
+		 marginwidth=10 marginheight=10
+		>
+	</frameset>
+</frameset>
+
+<noframes>
+<table width=100% cellpadding=4 cellspacing=4>
+<tr>
+	<td height=10></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=overview.html><font color=black><b>
+	Overview</b></font></a></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=features.html><font color=black><b>
+	Features</b></font></a></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=design.html><font color=black><b>
+	Design Principles</b></font></a></td>
+	</tr>
+<tr>
+	<td height=10></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=unicode.html><font color=black><b>
+	Unicode Howto</b></font></a></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=mined.html><font color=black><b>
+	Mined Manual</b></font></a></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=mnemodoc.html><font color=black><b>
+	Character Mnemos</b></font></a></td>
+	</tr>
+<tr>
+	<td height=10></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=download.html><font color=black><b>
+	Download</b></font></a></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=changes.html><font color=black><b>
+	Change Log</b></font></a></td>
+	</tr>
+<tr>
+	<td bgcolor=#4080F0>
+	<a href=contact.html><font color=black><b>
+	Mailing List</b></font></a></td>
+	</tr>
+</table>
+</noframes>
