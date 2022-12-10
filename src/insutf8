@@ -46,11 +46,17 @@ int
 prio (unichar)
 	unsigned long unichar;
 {
-/*
+/* prioritize according to range names in Blocks.txt
 4E00..9FFF; CJK Unified Ideographs
 3400..4DBF; CJK Unified Ideographs Extension A
 20000..2A6DF; CJK Unified Ideographs Extension B
+2A700..2B73F; CJK Unified Ideographs Extension C
+2B740..2B81F; CJK Unified Ideographs Extension D
+2B820..2CEAF; CJK Unified Ideographs Extension E
+2CEB0..2EBEF; CJK Unified Ideographs Extension F
+30000..3134F; CJK Unified Ideographs Extension G
 2E80..2EFF; CJK Radicals Supplement
+31C0..31EF; CJK Strokes
 F900..FAFF; CJK Compatibility Ideographs
 2F800..2FA1F; CJK Compatibility Ideographs Supplement
 3300..33FF; CJK Compatibility
@@ -67,9 +73,27 @@ FE30..FE4F; CJK Compatibility Forms
 	} else if (unichar >= 0x20000 && unichar <= 0x2A6DF) {
 		/* CJK Unified Ideographs Extension B */
 		return 3;
+	} else if (unichar >= 0x2A700 && unichar <= 0x2B73F) {
+		/* CJK Unified Ideographs Extension C */
+		return 4;
+	} else if (unichar >= 0x2B740 && unichar <= 0x2B81F) {
+		/* CJK Unified Ideographs Extension D */
+		return 5;
+	} else if (unichar >= 0x2B820 && unichar <= 0x2CEAF) {
+		/* CJK Unified Ideographs Extension E */
+		return 6;
+	} else if (unichar >= 0x2CEB0 && unichar <= 0x2EBEF) {
+		/* CJK Unified Ideographs Extension F */
+		return 7;
+	} else if (unichar >= 0x30000 && unichar <= 0x3134F) {
+		/* CJK Unified Ideographs Extension G */
+		return 8;
 	} else if (unichar >= 0x2E80 && unichar <= 0x2EFF) {
 		/* CJK Radicals Supplement */
 		return 11;
+	} else if (unichar >= 0x31C0 && unichar <= 0x31EF) {
+		/* CJK Strokes */
+		return 12;
 	} else if (unichar >= 0xF900 && unichar <= 0xFAFF) {
 		/* CJK Compatibility Ideographs */
 		return 21;
