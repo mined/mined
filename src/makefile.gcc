@@ -50,6 +50,8 @@ LIBDIR=$(shell if (uname | sed -e "s,^[^-]*64,_64," ; uname -m) | grep _64 > /de
 
 # select architecture for /lib/$(LIBARCH)
 LIBARCH=$(shell gcc -dumpmachine)
+# support /lib/i386-linux-gnu where LIBARCH is i686-linux-gnu
+LIBARCH:=$(shell echo $(LIBARCH) | sed -e "s,i[36]86,i[36]86,")
 
 # select user library directory
 USRLIBDIR	= /usr$(LIBDIR)
@@ -163,6 +165,7 @@ include mkinclud.mak
 # test targets
 
 libtest:
+	echo lib arch: "$(LIBARCH)"
 	echo libdirs checked: $(ROOTLIBDIR) $(USRLIBDIR)
 	echo ---------- liblist:
 	( $(liblist) ) || true
