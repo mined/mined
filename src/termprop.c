@@ -100,6 +100,8 @@ static struct name_table {
 	{U1100, "Unicode 11.0"},
 	{U1210, "Unicode 12.1"},
 	{U1300, "Unicode 13.0"},
+	{U1400, "Unicode 14.0"},
+	{U1500, "Unicode 15.0"},
 	{0, 0}
 };
 

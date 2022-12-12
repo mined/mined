@@ -3045,6 +3045,8 @@ static screen_width utf8_widths [] = {
 	{".ఄ.৾"},	/* U1100 */
 	{".຺.ꦽ"},	/* U1210 */
 	{".ᪿ.୕"},	/* U1300 */
+	{".఼.᠏"}, /* U1400 */
+	{".໎.໎"}, /* U1500 */
 	{"ᄀힰᄀퟋ"},	/* Hangul Jamo Extended-B */
 
 	/* detecting xterm -cjk_width: */
@@ -3992,7 +3994,11 @@ terminal_configure_init ()
 
 		/* Add new test strings to array utf8_widths
 		   (section detecting combining_data_version) */
-		if (get_screen_width (".ᪿ.୕", utf8_widths, arrlen (utf8_widths)) == 2) {
+		if (get_screen_width (".໎.໎", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U1500;
+		} else if (get_screen_width (".఼.᠏", utf8_widths, arrlen (utf8_widths)) == 2) {
+			combining_data_version = U1400;
+		} else if (get_screen_width (".ᪿ.୕", utf8_widths, arrlen (utf8_widths)) == 2) {
 			combining_data_version = U1300;
 		} else if (get_screen_width (".຺.ꦽ", utf8_widths, arrlen (utf8_widths)) == 2) {
 			combining_data_version = U1210;

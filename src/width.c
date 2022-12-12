@@ -456,7 +456,25 @@ void
 term_setup_data ()
 {
 #ifndef __TURBOC__
-  if (combining_data_version >= U1300) {
+  if (combining_data_version >= U1500) {
+	combining_table = combining_1500;
+	combining_len = arrlen (combining_1500);
+	spacing_combining_table = spacing_combining_1500;
+	spacing_combining_len = arrlen (spacing_combining_1500);
+	assigned_table = assigned_1500;
+	assigned_len = arrlen (assigned_1500);
+	emojiwide_table = emojiwide_1500;
+	emojiwide_len = arrlen (emojiwide_1500);
+  } else if (combining_data_version >= U1400) {
+	combining_table = combining_1400;
+	combining_len = arrlen (combining_1400);
+	spacing_combining_table = spacing_combining_1400;
+	spacing_combining_len = arrlen (spacing_combining_1400);
+	assigned_table = assigned_1400;
+	assigned_len = arrlen (assigned_1400);
+	emojiwide_table = emojiwide_1400;
+	emojiwide_len = arrlen (emojiwide_1400);
+  } else if (combining_data_version >= U1300) {
 	combining_table = combining_1300;
 	combining_len = arrlen (combining_1300);
 	spacing_combining_table = spacing_combining_1300;

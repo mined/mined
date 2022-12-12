@@ -28,6 +28,9 @@ done > $tmp.diff
 
 set - `wc -l $tmp.diff`
 err=$1
+if [ "$err" -ne 0 ]
+then	cat $tmp.diff
+fi
 rm -f $tmp.diff
 
 echo $err inconsistent duplicate mnemonics
