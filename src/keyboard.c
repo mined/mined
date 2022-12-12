@@ -849,7 +849,8 @@ DIRECTxtermgetxy (code)
 static
 void
 DIRECTmousegetxy (code)
-  char code;	/* 'M' for normal mouse report, ignore 't'/'T' for tracking */
+  char code;
+  /* unused; 'M' for normal mouse report, ignore 't'/'T' for tracking */
 {
   notice_previous_click ();
 
@@ -2371,7 +2372,7 @@ check_ctrl_byte:
 					DIRECTvtlocatorgetxy ();
 					keyproc = MOUSEfunction;
 				} else if (ansi_ini == '<') {
-					DIRECTmousegetxy ();
+					DIRECTmousegetxy ('<');
 					keyproc = MOUSEfunction;
 				} else if (! ansi_ini && ansi_fini == 'M') {
 					DIRECTurxvtgetxy ();

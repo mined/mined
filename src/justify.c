@@ -364,7 +364,7 @@ JUSclever ()
 		}
 	}
   }
-#warning check mode (JUSmode XOR hop, jushop) and prefix (below)
+/* #warning check mode (JUSmode XOR hop, jushop) and prefix (below) */
   if (lastc != ' ') {
 	/* current line begins a paragraph */
 	FLAG is_itemchar = False;
