@@ -52,6 +52,8 @@ LIBDIR=$(shell if (uname | sed -e "s,^[^-]*64,_64," ; uname -m) | grep _64 > /de
 LIBARCH=$(shell gcc -dumpmachine)
 # support /lib/i386-linux-gnu where LIBARCH is i686-linux-gnu
 LIBARCH:=$(shell echo $(LIBARCH) | sed -e "s,i[36]86,i[36]86,")
+# alternatively, add 4 LIBARCH3 cases below with:
+#LIBARCH3=$(shell gcc -dumpmachine | sed -e 's,^i686,i386,')
 
 # select user library directory
 USRLIBDIR	= /usr$(LIBDIR)
