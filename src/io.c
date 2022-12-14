@@ -1202,9 +1202,11 @@ raw_mode (to_raw_state)
 	(void) write (output_fd, " \r", 2);
 
 /*	swallow mouse sequences that may have been sent already (xterm, gnome) */
+#ifndef vms
 	while (char_ready_within (50, NIL_PTR)) {
 		(void) _readchar_nokeymap ();
 	}
+#endif
 
 #if defined (TIOCEXCL) && defined (TIOCNXCL)
 	/* release tty lock */
