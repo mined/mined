@@ -10,14 +10,19 @@ mkdir -p $rsdir
 LC_ALL=C
 export LC_ALL
 
+# use a compiled UTF-8 inserter here for speedup,
+# while still keeping the script in ../ for other use cases
+${CC-cc} -o insutf8ch ../insutf8ch.c
+
 r=$min
 while [ $r -le $max ]
 do
 	echo ideographs with radical $r
+	echo extract ideographs with radical $r >& 2
 
 #	U+3400	kRSUnicode	1.4
 	sed -e "s,\(.*\)kRSUnicode	\($r\)\([']*\)\.\(.*\),\4	\1," -e t -e d $db |
-	../insutf8 -d | sort -n | uniq -s 2 > $rsdir/$r
+	./insutf8ch -d | sort -n | uniq -s 2 > $rsdir/$r
 	cat $rsdir/$r
 
 	r=`expr $r + 1`

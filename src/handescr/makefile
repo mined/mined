@@ -65,7 +65,7 @@ menu1:	menu.radicals
 
 unihan.rs.list:	unihan.rsunicode mkrs
 	echo Generation of Unihan data may take a while...
-	./mkrs > unihan.rs.list
+	CC=$(CC) ./mkrs > unihan.rs.list
 
 strokemap:	Radical_Stroke.h
 

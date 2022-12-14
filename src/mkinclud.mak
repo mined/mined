@@ -302,7 +302,7 @@ unihan:	handescr.t radical_stroke
 
 # Unihan character description table:
 handescr.t:	# handescr/mkdescriptions handescr/descriptions.sed handescr/descriptions.uni # Unihan.zip
-	cd handescr && $(MAKE) descriptions.h
+	CC=$(CC) cd handescr && $(MAKE) descriptions.h
 	rm -f handescr.t; ln handescr/descriptions.h handescr.t || cp handescr/descriptions.h handescr.t
 	rm -f keymaps0/Radical_Stroke.h; ln handescr/Radical_Stroke.h keymaps0/ || cp handescr/Radical_Stroke.h keymaps0/
 
@@ -310,7 +310,7 @@ handescr.t:	# handescr/mkdescriptions handescr/descriptions.sed handescr/descrip
 radical_stroke:	keymaps/Radical_Stroke.h
 
 keymaps/Radical_Stroke.h:	# Unihan.zip
-	cd handescr && $(MAKE) Radical_Stroke.h
+	CC=$(CC) cd handescr && $(MAKE) Radical_Stroke.h
 	mkdir -p keymaps
 	rm -f keymaps/Radical_Stroke.h; ln handescr/Radical_Stroke.h keymaps/ || cp handescr/Radical_Stroke.h keymaps/
 

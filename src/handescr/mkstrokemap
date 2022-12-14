@@ -13,7 +13,7 @@ echo "struct keymap keymap_Radical_Stroke [] = {"
 r=$min
 while [ $r -le $max ]
 do
-	echo ideographs with radical $r >& 2
+	echo collect ideographs with radical $r >& 2
 
 #0	01 19968 一 U+4E00	
 #1	01 19969 丁 U+4E01	
