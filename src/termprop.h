@@ -77,9 +77,10 @@ extern FLAG spacing_combining;		/* mlterm */
 extern FLAG wide_Yijing_hexagrams;	/* wcwidth glitch */
 extern FLAG printable_bidi_controls;	/* since xterm 230 */
 
-/* version indications of specific terminals */
-/* a value of -1 means the specific terminal has not been detected */
+/* version and feature indications of specific terminals */
+/* a _version value of -1 means the specific terminal has not been detected */
 extern int decterm_version;
+extern unsigned long dec_features;
 extern int xterm_version;
 extern int gnome_terminal_version;
 extern int rxvt_version;

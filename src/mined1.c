@@ -172,8 +172,6 @@ FLAG configure_xterm_keyboard = False;	/* deleteIsDEL, metaSendsEscape */
 FLAG combining_mode = False;	/* UTF-8 combining character display support ? */
 FLAG separate_isolated_combinings = True;	/* separated display of comb. at line beg./after TAB ? */
 
-static unsigned long dec_features = 1 << 4;	/* assume SIXEL for mlterm */
-
 #if defined (unix) || defined (ANSI)
 /* window headline and icon text setting */
 char * title_string_pattern = "";
@@ -3381,7 +3379,7 @@ detect_terminal_type ()
 	} else if (terminal_type == 'U') {	/* rxvt-unicode */
 		rxvt_version = terminal_version * 10;
 		TERM = "rxvt";
-	} else if (terminal_type == 6) {	/* Haiku Terminal */
+	} else if (terminal_type == 6) { /* weston-terminal, Haiku Terminal */
 		fine_scrollbar = False;
 		use_stylish_menu_selection = False;
 	} else if (terminal_type == 2) {	/* VT240 */

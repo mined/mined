@@ -3498,6 +3498,9 @@ get_term_cap (TERMname)
   /* set mouse mode controls */
   if (! ansi_esc) {
 	/* disable xterm mouse escape sequences */
+#ifdef debug_mouse
+	printf ("disabling mouse sequences\n");
+#endif
 	cMouseX10On = "";
 	cMouseX10Off = "";
 	cMouseButtonOn = "";
@@ -3607,7 +3610,11 @@ void
 start_screen_mode (kb)
   int kb;
 {
-  if (decterm_version > 0) {	/* setup DEC locator reports */
+  if (decterm_version > 0 && !xterm_version && (dec_features & (1 << 29))) {
+	/* setup DEC locator reports */
+#ifdef debug_mouse
+	printf ("locator mode\n");
+#endif
 	cMouseX10On = "";
 	cMouseX10Off = "";
 	cMouseButtonOn = "\033[1'z\033[1'{\033[3'{";

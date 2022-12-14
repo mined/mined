@@ -53,8 +53,9 @@ FLAG spacing_combining = False;		/* mlterm */
 FLAG wide_Yijing_hexagrams = True;	/* wcwidth glitch */
 FLAG printable_bidi_controls = False;	/* since xterm 230 */
 
-/* version indications of specific terminals */
+/* version and feature indications of specific terminals */
 int decterm_version = 0;
+unsigned long dec_features = 1 << 4;	/* assume SIXEL for mlterm */
 int xterm_version = 0;
 int gnome_terminal_version = 0;
 int rxvt_version = 0;
