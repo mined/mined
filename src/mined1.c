@@ -394,7 +394,7 @@ FLAG disp_Han_HanyuPinyin = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_XHCHanyuPinyin = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_TGHZ = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_Tang = False;	/* display this Han pronunciation ? */
-FLAG disp_Han_Nushu = False;;	/* display this Han pronunciation ? */
+FLAG disp_Han_Nushu = False;	/* display this Han pronunciation ? */
 FLAG disp_Han_description = True;	/* display Han description ? */
 FLAG disp_Han_full = True;	/* display full popup Han description ? */
 
