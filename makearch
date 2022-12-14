@@ -88,7 +88,7 @@ src="src/*.h src/*.c src/*.t"
 srcbuild="src/mnemos.??*$suf src/*.cfg src/*.prj src/charmaps/*.c"
 srcdoc="src/*.doc"
 
-srcmake="src/makefile.*$suf src/mk*$suf src/categors.sed src/vni.*$suf src/insutf8 src/handescr/m*$suf src/handescr/*.se? src/charmaps/*.map src/keymaps?/*.h src/keymaps0/punctuation*$suf src/vms-*"
+srcmake="src/makefile.*$suf src/mk*$suf src/categors.sed src/vni.*$suf src/insutf8 src/handescr/m*$suf src/handescr/*.se? src/charmaps/*.map src/keymaps0/*.h src/keymaps0/punctuation*$suf src/vms-*"
 man="man/*.*$suf man/makefile src/help/*$suf"
 stuff="README README*$suf LICENCE.*$suf CHANGES *.DOC VERSION doc usrshare/*/*$suf usrshare/*/.minedrc"
 package="*.sed *.add DESCR"
