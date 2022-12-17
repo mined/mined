@@ -12,7 +12,7 @@ export LC_ALL
 
 # use a compiled UTF-8 inserter here for speedup,
 # while still keeping the script in ../ for other use cases
-${CC-cc} -o insutf8ch ../insutf8ch.c
+${CC-cc} -o insutf8ch insutf8ch.c
 
 r=$min
 while [ $r -le $max ]
