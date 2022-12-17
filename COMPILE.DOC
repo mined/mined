@@ -251,7 +251,7 @@ With 2012.21, the issues should be resolved.
 Cygwin
 
 Note: A Windows/cygwin binary version of mined is available from the 
-mined web site http://towo.net/mined/.
+mined web site https://mined.github.io.
 The cygwin download archive includes the cygwin libraries needed 
 by mined, so it can be used without an installed cygwin environment.
 
@@ -292,7 +292,7 @@ see "Source file generation" above.
 DOS/djgpp
 
 Note: A djgpp-compiled DOS/Windows binary release of mined 
-is available from the mined web site http://towo.net/mined/.
+is available from the mined web site https://mined.github.io.
 
 To compile mined with djgpp, you will have to go into the 'src' 
 sub-directory and address makefile.dj or makefile.dos explicitly, 

@@ -65,10 +65,8 @@ Build
 
   Choose one closest to your operating system. Try makefile.bsd 
   for BSD style Unix, or makefile.sun for System V style Unix.
-  Also please consult the file COMPILE.DOC for some hints on how to 
-  adapt a makefile for your system. In this case, if you need help, or 
-  if you finally succeed, please send a note to mined@towo.net so I 
-  can extend the range of automatically supported systems.
+  In special cases, please consult the file COMPILE.DOC for some hints 
+  on how to adapt a makefile for your system.
 
 
 ------------------------------------------------------------------------

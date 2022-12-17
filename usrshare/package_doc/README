@@ -6,7 +6,7 @@ user interface and fast, small-footprint behaviour.
 
 For an overview of major features and highlights, see the file DESCR 
 or the overview in the HTML documentation (doc/overview.html or 
-http://towo.net/mined/).
+https://mined.github.io).
 
 
 -----------------------------------------------------------------------------
@@ -69,7 +69,7 @@ For Unicode (UTF-8) terminal operation on Unix / X:
 * Start xterm with the script uterm from the mined runtime support 
   library or with the uxterm command.
 
-See http://towo.net/mined/, click "Unicode Howto", for more details.
+See https://mined.github.io, click "Unicode Howto", for more details.
 
 
 -----------------------------------------------------------------------------

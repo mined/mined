@@ -7,7 +7,7 @@ Cygwin package of current MinEd version
 Overview
 
 Mined is a text editor with extensive Unicode and CJK support.
-See the generic README file or http://towo.net/mined/ for an overview.
+See the generic README file or https://mined.github.io for an overview.
 This file mentions issues specific to the cygwin release of mined.
 
 
@@ -222,11 +222,10 @@ Windows Explorer context menu for text files (mintty 0.6 required).
 -----------------------------------------------------------------------------
 Contact
 
-See http://towo.net/mined/ for documentation and download of the 
+See https://mined.github.io for documentation and download of the 
 current mined version (including a Windows package based on a cygwin 
 stand-alone binary version).
-Send comments, feature requests, suggestions, bug reports etc. to:
-mined@towo.net
+Find the issue tracker from the project page https://github.com/mined/mined.
 
 
 -----------------------------------------------------------------------------

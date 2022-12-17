@@ -84,36 +84,34 @@ donation</a>.
 <p>
 <hr>
 <h4>Download binary packages</h4>
-<i>Binary packages for 2022.26 are not yet prepared, except for cygwin.</i>
+<i>Binary packages for the current release will be added to the 
+<a target=release href=https://github.com/mined/mined/releases>
+github release area</a> as available.</i>
 
-<a target=softpedia href="http://www.softpedia.com/get/Office-tools/Text-editors/Mined.shtml">
-<img align=right src="softpedia_free_award_f.gif" xwidth="130" xheight="130" border="0"
+<!a target=softpedia href="http://www.softpedia.com/get/Office-tools/Text-editors/Mined.shtml">
+<!img align=right src="softpedia_free_award_f.gif" xwidth="130" xheight="130" border="0"
  style="position: relative; bottom: 10; right: 20;"
  alt="Free download software">
-</a>
+<!/a>
 <p>
 <dl>
 <dt><b><i>Windows version</i></b>
-<dd>Runs from Windows explorer context menu for text files (with bundled mintty), or from Start menu or Desktop.
-<dd>Also runs in Windows console or Windows terminal emulator (e.g. mintty, xterm, urxvt).
+<dd>The Windows standalone version is based on the cygwin runtime 
+and is bundled with all dependencies, including the mintty terminal.
+<dd>It runs from the Windows explorer context menu for text files, 
+or from the Start menu or a Desktop shortcut.
+<dd>It also runs in a Windows console or the Windows Terminal.
 <p>
 	<ul>
-	<li><a class=download
-		title="Download Windows Installer"
-		href="http://towo.net/mined/download/MinEd-2022.26-install.exe"
-		><button>Download</button> <span>
-		Windows 7/XP/2000/NT self-installing binary package</span></a>
-		(built with cygwin)
-	<small>
-	<dl>
-	<dt>The stand-alone package includes the 
+	<li>The Windows self-installing binary package is built with cygwin
+	and includes the 
 	<a target=cygwin href=http://cygwin.com/>cygwin</a> library, 
 	the 
 	<a target=mintty href=http://code.google.com/p/mintty/>mintty</a> 
 	terminal, the dash command shell, and the regtool and cygpath tools 
 	(for the installer).
-	<dt>(For sources for cygwin, mintty, dash see the cygwin repository.)
-	</dl>
+	<dt><small>
+	(For sources for cygwin, mintty, dash see the cygwin repository.)
 	</small>
 	</ul>
 </dl>
@@ -124,28 +122,21 @@ donation</a>.
 <dd><i>Includes enhanced codepage support, also for FreeDOS/DR-DOS.</i>
 <p>
 	<ul>
-	<li><a class=download
+	<li><!a class=download
 		title="Download DOS archive"
 		href="http://towo.net/mined/download/mined-2022.26-dos.zip"
-		><button>Download</button> <span>
-		DOS binary package</span></a>
-		(built with djgpp)
+		><!button><!/button><!/a>
+		The DOS binary package is built with djgpp.
 	</ul>
 </dl>
 
 <dl>
 <dt><b><i>VMS version</i></b>
 <dd>Runs on OpenVMS on VAX or ALPHA architecture (or emulator) or Integrity server (Itanium IA64).
-<dd><i>Built on <s><a target=fafner href=http://fafner.dyndns.org/>FAFNER</a></s>, 
-<s>HP OpenVMS Program servers</s>, <s>Polarhome</s>.</i>
 <p>
 	<ul>
-	<li><a class=download
-		title="Download VMS archive"
-		href="http://towo.net/mined/download/MINED-2022.26.ZIP"
-		><button>Download</button> <span>
-		VMS binary package</span></a>
-		(built with DECC)
+	<li>The VMS binary package is built with DECC 
+	and includes an Alpha binary.
 	</ul>
 </dl>
 
@@ -218,15 +209,8 @@ For the newest version, build and install mined from the source archive.
 <hr>
 <h4>Install or download Debian package</h4>
 <dt>
-On a Debian system, type <code>apt-get install mined</code> to 
-install the Debian distribution package from the 
-<a href=http://packages.debian.org/unstable/editors/mined>
-new release area</a> (or eventually the 
-<a href=http://packages.debian.org/testing/editors/mined>
-testing area</a> 
-or the 
-<a href=http://packages.debian.org/stable/editors/mined>
-stable area</a>).
+On a Debian system, type <code>apt install mined</code> to 
+install the Debian distribution package.
 <br>
 Or find a more recent Debian package in the 
 openSUSE software archive (see above).
