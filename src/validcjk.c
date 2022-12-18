@@ -38,6 +38,21 @@ FLAG suppress_non_BMP = 0;
 
 
 /*======================================================================*\
+	Function from charproc, to simplify tool dependency
+\*======================================================================*/
+
+/* struct interval list_wide [] */
+#include "wide.t"
+
+int
+is_wideunichar (ucs)
+  unsigned long ucs;
+{
+  return lookup (ucs, list_wide, arrlen (list_wide));
+}
+
+
+/*======================================================================*\
 	Checking function
 \*======================================================================*/
 

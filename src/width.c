@@ -5,6 +5,9 @@
 |	according to different Unicode versions and other features
 \*======================================================================*/
 
+#include "mined.h"
+#include "charprop.h"
+
 #include "termprop.h"
 
 
@@ -780,7 +783,6 @@ term_iswide (ucs)
 	if (! term_isassigned (ucs)) {
 /* heuristic improvement for lxterminal/gnome-terminal 
    which do not seem to apply the compact closure for wide ranges */
-extern int is_wideunichar _((unsigned long ucs));
 		if (is_wideunichar (ucs)) {
 			trace_width ("unassigned_single_width but wide", 0);
 			return 1;

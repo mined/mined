@@ -1491,7 +1491,6 @@ paste_buffer (old_pos, use_clipboard)
 	char * clip_file = yankie_file;
 # endif
 	build_string (syscommand, "umask 066; %s > %s 2> /dev/null", clipper, clip_file);
-printf("use_cb %d clipper %s\n", use_clipboard, clipper);
 	if (system (syscommand) == 0) {
 		if ((fd = open (clip_file, O_RDONLY | O_BINARY, 0)) < 0) {
 			error ("No clipboard buffer present");
