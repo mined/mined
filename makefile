@@ -336,6 +336,8 @@ bin/DOS/MINED.EXE:
 
 vms:	src/vms/vax/mined.exe src/vms/alpha/mined.exe src/vms/ia64/mined.exe release/MINED-$(VMSVER)-VMS.ZIP
 
+vmsalpha:	src/vms/alpha/mined.exe release/MINED-$(VMSVER)-VMS.ZIP
+
 release/MINED-$(VMSVER)-VMS.ZIP:
 	mkdir -p src/vms
 	cp README.vms src/vms/mined.readme
