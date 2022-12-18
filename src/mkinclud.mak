@@ -388,6 +388,7 @@ locales.t:	locales.cfg # mkinclud.mak
 	sed -e '/^$$/ d' -e '/^#/ d' -e 's/\([^ 	][^ 	]*\)[ 	][ 	]*\([^ 	][^ 	]*\)[ 	]*\([^ 	]*\)/	{"\1", "\2", "\3"},/' -e 's/, ""//' locales.cfg | LC_ALL=C sort > locales.t
 
 # Find supplements for locales.cfg:
+# the file locale.alias is now deprecated (still included in package gettext)
 localealiases:	/usr/share/locale/locale.alias locales.cfg
 	sed -e "/^#/ d" -e "/8859-1$$/ d" -e "s,\([^ 	]*\)[ 	][ 	]*\([^ 	]*\),\1	\2," -e "s,	[^.]*\.,	," -e "s,	euc,	EUC-," /usr/share/locale/locale.alias | fgrep -a -v -x -f locales.cfg
 

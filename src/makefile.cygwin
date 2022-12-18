@@ -152,16 +152,6 @@ win:	wined mintty
 	cp /bin/cygwin1.dll $(WINBIN)cygwin1.dll
 	cp /bin/cygwin-console-helper.exe $(WINBIN)cygwin-console-helper.exe
 
-#gcclibs=$(shell LC_ALL=C gcc -v 2>&1 | \
-#	sed -e "s,^Target: *\(.*\),\1/," -e "t target" -e "s,^gcc version \([^ ]*\).*,/\1," -e "t version" -e d \
-#	    -e ": target" -e h -e d -e ": version" -e H -e g -e "s,/.*/,/," )
-
-#attempt to find static libs explicitly, not using -static-libgcc
-#staticgcc=$(shell ls "/usr/lib/gcc/$(gcclibs)/libgcc_eh.a" )
-#staticlibs=/usr/lib/libncurses.a $(staticgcc)
-#	$(CC) $(OBJS) $(SCREENOBJ) $(LINKOPTS) ${LDFLAGS} $(staticlibs) -o $(WINBIN)mined.exe
-#	cd /usr/src/mintty-read-only; rm -f mintty.exe; make cc="gcc $(staticgcc)"
-
 STATICLIB=$(shell echo $(SLIB) | sed -e "s,dll,---[41mstatic-lib-not-found---install-libncurses-devel[0m---,g")
 
 wined:	$(WINBIN)mined.exe
@@ -172,19 +162,17 @@ $(WINBIN)mined.exe:	$(PROGOBJS) $(SCREENOBJ)
 
 mintty:	$(WINBIN)mintty.exe
 
-#MINTTY_SRC=$(shell ls -dp /usr/src/mintty* | grep "/$" | sed -e "$ p" -e d)
-MINTTY_SRC=/usr/src/mintty-master/src
+MINTTY=/usr/src/mintty-master
 
-$(WINBIN)mintty.exe:	$(MINTTY_SRC)/mintty.exe
-	cp $(MINTTY_SRC)/mintty.exe $(WINBIN)mintty.exe
+$(WINBIN)mintty.exe:	$(MINTTY)/bin/mintty.exe
+	cp $(MINTTY)/bin/mintty.exe $(WINBIN)mintty.exe
 	#strip $(WINBIN)mintty.exe	# "is not a valid Win32 application"
 
-$(MINTTY_SRC)/mintty.exe:	$(MINTTY_SRC)
-	cd $(MINTTY_SRC)/src; rm -f mintty.exe; make cc="gcc -static-libgcc -static"
+$(MINTTY)/bin/mintty.exe:	$(MINTTY)
+	cd $(MINTTY); rm -f bin/mintty.exe; cd src; make CC="gcc -static-libgcc -static" bin
 
-$(MINTTY_SRC):
-#	cd /usr/src; svn checkout http://mintty.googlecode.com/svn/trunk/ mintty-read-only
-	cd /usr/src; wget https://github.com/mintty/mintty/archive/master.zip; unzip mintty-master.zip
+$(MINTTY):
+	cd /usr/src; wget https://github.com/mintty/mintty/archive/master.zip -O mintty-master.zip; unzip mintty-master.zip
 
 
 #############################################################################

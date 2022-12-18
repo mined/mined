@@ -63,7 +63,7 @@ copy ${ARCHPREF}mintty.exe "$INSTDIR/bin/mintty.exe"
 copy mined.hlp "$INSTDIR/bin"
 #copy dash.exe "$INSTDIR/bin/sh.exe"
 
-copy locale.alias "$INSTDIR/usr/share/locale"
+#copy locale.alias "$INSTDIR/usr/share/locale"
 
 makedir "$INSTDIR/setup"
 copy dash.exe "$INSTDIR/setup"

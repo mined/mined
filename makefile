@@ -209,8 +209,8 @@ cygport=release/cygwin/$(cygportfn)
 
 cygwin:	release/mined-$(VER).tar.gz
 	$(MAKE) cygwinbin
-	# make src archive only once (cuts by failing on x86_64):
-	uname -m | grep i686
+	# make src archive only once (cuts by failing on i686):
+	uname -m | grep x86_64
 	$(MAKE) cygwinsrc
 
 #compress=bzip2
@@ -326,7 +326,7 @@ DESCR:	doc/overview.html descr.sed
 # PC binary archives (development target, doesn't currently work locally)
 bin:	win dos
 
-win:	release/MinEd-$(VER)-install.exe
+win:	release/MinEd-$(VER)-Windows-install.exe
 
 dos:	bin/DOS/MINED.EXE release/mined-$(VER)-dos.zip
 
@@ -345,8 +345,9 @@ release/MINED-$(VMSVER)-VMS.ZIP:
 	cp usrshare/conf_user/MINED-VMS.COM src/vms/mined-vms.com
 	cd src/vms; zip ../../release/MINED-$(VMSVER)-VMS.ZIP mined.readme mined.hlp mined-vms.com */mined.exe
 
-release/MinEd-$(VER)-install.exe:	release/mined-$(VER)-windows.zip
-	uname -m | grep i686
+release/MinEd-$(VER)-Windows-install.exe:	release/mined-$(VER)-windows.zip
+	#uname -m | grep i686
+	uname -m | grep x86_64
 	rm -fr release/tmp.win
 	mkdir -p release/tmp.win
 	sed -e "s,%version%,$(VER)," makewinx.cfg > release/tmp.win/mined.SED
@@ -358,10 +359,10 @@ release/MinEd-$(VER)-install.exe:	release/mined-$(VER)-windows.zip
 	cd release/tmp.win; cp /bin/regtool.exe .
 	cd release/tmp.win; cp /bin/dash.exe .
 	cd release/tmp.win; iexpress /n mined.SED
-	mv -f release/tmp.win/MinEd-$(VER)-install.exe release/
+	mv -f release/tmp.win/MinEd-$(VER)-Windows-install.exe release/
 
 winbin:
-	cd src; $(MAKE) win
+	cd src; $(MAKE) -f makefile.cygwin win
 
 winzip:	release/mined-$(VER)-windows.zip
 
@@ -374,9 +375,9 @@ release/mined-$(VER)-windows.zip:	winbin usrshare/help/mined.hlp README.windows
 	cd usrshare/setup_install; zip ../../release/mined-$(VER)-windows.zip mined.ico
 	cd usrshare/setup_install/win; zip ../../../release/mined-$(VER)-windows.zip *.* -x *~
 	cp -fp README.windows release/README.txt
-	cp -fp /usr/share/locale/locale.alias release/
-	cd release; zip mined-$(VER)-windows.zip README.txt locale.alias
-	cd release; rm -f README.txt locale.alias
+	#cp -fp /usr/share/locale/locale.alias release/
+	cd release; zip mined-$(VER)-windows.zip README.txt # locale.alias
+	cd release; rm -f README.txt # locale.alias
 
 release/mined-$(VER)-dos.zip:	bin/DOS/MINED.EXE usrshare/help/mined.hlp README.dos
 	mkdir -p release
