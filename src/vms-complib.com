@@ -28,7 +28,6 @@ $ compile /obj=[.charmaps] [.charmaps]cp1255
 $ compile /obj=[.charmaps] [.charmaps]cp1256
 $ compile /obj=[.charmaps] [.charmaps]cp1257
 $ compile /obj=[.charmaps] [.charmaps]cp1258
-$ compile /obj=[.charmaps] [.charmaps]cp20924
 $ compile /obj=[.charmaps] [.charmaps]cp437
 $ compile /obj=[.charmaps] [.charmaps]cp720
 $ compile /obj=[.charmaps] [.charmaps]cp737
