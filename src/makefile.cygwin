@@ -172,7 +172,7 @@ $(MINTTY)/bin/mintty.exe:	$(MINTTY)
 	cd $(MINTTY); rm -f bin/mintty.exe; cd src; make CC="gcc -static-libgcc -static" bin
 
 $(MINTTY):
-	cd /usr/src; wget https://github.com/mintty/mintty/archive/master.zip -O mintty-master.zip; unzip mintty-master.zip
+	cd /usr/src; wget --no-check-certificate https://github.com/mintty/mintty/archive/master.zip -O mintty-master.zip; unzip mintty-master.zip
 
 
 #############################################################################

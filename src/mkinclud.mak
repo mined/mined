@@ -41,6 +41,7 @@ MOUSELIB=
 # commands
 
 WGET=wget -N -t 1 --timeout=55
+WGET:=$(WGET) --no-check-certificate
 #WGET=curl -R -O --connect-timeout 55 -z $@
 
 SH=sh
@@ -65,7 +66,7 @@ DOC=../usrshare/doc_user
 # With Unicode 7.0, there is no UCD.zip anymore, so downloaded separately
 UCD.zip:
 	echo Trying to retrieve Unicode data file via Internet
-	$(WGET) http://unicode.org/Public/UNIDATA/UCD.zip
+	$(WGET) http://www.unicode.org/Public/UNIDATA/UCD.zip
 UnicodeData.txt:	UCD.zip
 	unzip -o UCD $@; touch -r UCD.zip $@
 Scripts.txt:	UCD.zip
@@ -86,15 +87,15 @@ DerivedBidiClass.txt:	UCD.zip
 	unzip -o -j UCD extracted/$@; touch -r UCD.zip $@
 
 %.txt:
-	$(WGET) http://unicode.org/Public/UNIDATA/$@
+	$(WGET) http://www.unicode.org/Public/UNIDATA/$@
 
 Unihan.zip:
 	echo Trying to retrieve Unicode data file via Internet
-	$(WGET) http://unicode.org/Public/UNIDATA/Unihan.zip
+	$(WGET) http://www.unicode.org/Public/UNIDATA/Unihan.zip
 
 BIG5.TXT:
 	echo Trying to retrieve Unicode data file via Internet
-	$(WGET) http://unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/OTHER/BIG5.TXT
+	$(WGET) http://www.unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/OTHER/BIG5.TXT
 
 check_ccc:
 	grep "^ccc; *230;.*; *Above$$" PropertyValueAliases.txt
@@ -526,7 +527,7 @@ DHELP=-DRUNDIR=\"$(rundir)\" -DLRUNDIR=\"$(lrundir)\"
 
 # Version/About text:
 #VERSION=`sed -e 's,^[^0-9]*,,' -e 's,[^0-9][^0-9]*,.,g' -e q ../VERSION`
-#ABOUT=\"MinEd $(VERSION) - http://mined.github.io/\"
+#ABOUT=\"MinEd $(VERSION) - https://mined.github.io\"
 
 
 #############################################################################

@@ -69,7 +69,7 @@ $(CREOLE):	CHANGES VERSION
 	sed -e "1,/href=#$(VER)/ d" -e "/href=#/,$$ d" -e "s,	<p[^/]*>\([^<]*\)</.*,==== \1," -e t -e "s,^		<li>,** ," -e t -e "s,^	<li>,* ," -e t -e "/^[ 	]*</ d" -e "s,^[ 	]*,," CHANGES | sed -e "s,~,~~,g" >> $(CREOLE).new
 	# suffix
 	(echo ----; echo) >> $(CREOLE).new
-	(echo === Full documentation; echo "See [[http://mined.github.io/|mined home page]], including:"; echo) >> $(CREOLE).new
+	(echo === Full documentation; echo "See [[https://mined.github.io|mined home page]], including:"; echo) >> $(CREOLE).new
 	(echo ==== Further package download and build options; echo "Click **Download**."; echo) >> $(CREOLE).new
 	(echo ==== Full changelog; echo "Click **Change Log**."; echo) >> $(CREOLE).new
 	# move in place
@@ -90,7 +90,7 @@ description.summary:	doc/overview.html makefile
 
 description.medium:	DESCR
 	sed -n -e "/Overview/ q" -e p DESCR > description.medium
-	echo "For an overview and further information see http://mined.github.io/" >> description.medium
+	echo "For an overview and further information see https://mined.github.io" >> description.medium
 
 description.long:	DESCR
 	cp DESCR description.long
@@ -276,7 +276,7 @@ $(cygport):	description.medium makefile
 	cat description.medium >> $(cygport)
 	echo '"' >> $(cygport)
 	echo '' >> $(cygport)
-	echo 'HOMEPAGE="http://mined.github.io/"' >> $(cygport)
+	echo 'HOMEPAGE="https://mined.github.io"' >> $(cygport)
 #	echo 'SRC_URI="http://towo.net/mined/download/mined-$${PV}.tar.gz"' >> $(cygport)
 	echo 'SRC_URI="https://github.com/${NAME}/${NAME}/archive/${VERSION}/${NAME}-${VERSION}.tar.gz"' >> $(cygport)
 	echo '' >> $(cygport)
