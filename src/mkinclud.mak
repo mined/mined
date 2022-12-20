@@ -396,6 +396,8 @@ localealiases:	/usr/share/locale/locale.alias locales.cfg
 # HTML character mnemonics:
 charref:
 	$(WGET) https://dev.w3.org/html5/html-author/charref
+	#$(WGET) -N https://html.spec.whatwg.org/multipage/named-characters.html
+	#mv named-characters.html charref
 
 mnemos.com:	mkaccent accents.cfg # UnicodeData.txt
 	CC=$(CC) $(SH) ./mkaccent -

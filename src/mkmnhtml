@@ -9,9 +9,10 @@
 
 refpage=${1-charref}
 
-htmlver=`sed -e '1 s,.*HTML \([0-9.]*\).*,\1,' -e t -e d $refpage`
-
-echo "	/* HTML $htmlver mnemos (named entities) */"
+#htmlver=`sed -e '1 s,.*HTML \([0-9.]*\).*,\1,' -e t -e d $refpage`
+#echo "	/* HTML $htmlver mnemos (named entities) */"
+echo "	/* HTML mnemos (named characters, former charref) */"
+#echo "	/* https://html.spec.whatwg.org/multipage/named-characters.html */"
 
 #<tr title="U+000A3 POUND SIGN"
 # data-block="C1 Controls and Latin-1 Supplement"
@@ -44,3 +45,28 @@ sed	-e 's,"not","\&not",' \
 	-e 's,"wcirc","\&wcirc",'
 
 echo "check uniqueness with ./mkmnemocheck" >&2
+
+exit
+
+# this would transform the recent version of the file instead,
+# https://html.spec.whatwg.org/multipage/named-characters.html
+# but there are some incompatible changes, and not to the better, 
+# e.g. "ohm" from Ω U+2126 OHM SIGN to Ω U+03A9 CAPITAL LETTER OMEGA,
+# so we refrain from a change for now
+
+#<tr id=entity-pound><td> <code>pound;</code> <td> U+000A3 <td> <span class=glyph>£</span> 
+#	 aelig; 	 U+000E6 	 æ 
+#	 amp; 	 U+00026 	 &amp; 
+
+# note: cannot match \3 below as sed fails on non-BMP in cygwin
+cat $refpage |
+sed -e 's,<tr,\n<tr,g' | grep '^<tr' |
+sed -e 's,<td>,	,g' -e 's,<[^>]*>,,g' -e 's,&amp;,\&,g' -e 's,&lt;,<,g' |
+sed -e 's:	 *\([^; 	]*\);* *	 *\(U+[^	]*\)	 *:	{"\1", \2 /* :' -e t -e d |
+sed -e 's:$:*/},:' |
+sed -e 's,U+0,0x,g' -e 's,U+,0x,g' -e 's,  , ,g'
+
+echo "check uniqueness with ./mkmnemocheck" >&2
+
+exit
+
