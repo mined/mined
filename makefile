@@ -302,8 +302,9 @@ $(cygport):	description.medium makefile
 $(setuphint):	description.medium makefile
 	mkdir -p $(cygrel)
 	echo '# cygwin setup file' > $(setuphint)
-	echo 'sdesc: $(SUMMARY)' >> $(setuphint)
+	echo 'sdesc: "$(SUMMARY)"' >> $(setuphint)
 	echo 'category: Editors' >> $(setuphint)
+	echo 'homepage: https://mined.github.io' >> $(setuphint)
 	echo 'requires: cygwin' >> $(setuphint)
 	echo 'ldesc: "' >> $(setuphint)
 	cat description.medium >> $(setuphint)
