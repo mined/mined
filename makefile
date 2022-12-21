@@ -218,8 +218,16 @@ cygwin:	release/mined-$(VER).tar.gz
 compress=xz -fv
 compressuf=xz
 
-cygwinsrc:	$(cygport) cygwinsrc-$(ARCH)
+cygwinsrc:	$(cygport) # cygwinsrc-$(ARCH)
+	mkdir -p $(cygrel)/
+	echo making cygwin source package release $(REL) of mined $(VER)
+	cd release/cygwin; tar xvfz ../mined-$(VER).tar.gz
+	cd release/cygwin; tar cvf mined-$(VER)-$(REL)-src.tar $(TARUSER) mined.cygport mined-$(VER)
+	cd release/cygwin; $(compress) mined-$(VER)-$(REL)-src.tar
+	# move source package into arch dir
+	cd release/cygwin; mv mined-$(VER)-$(REL)-src.tar.$(compressuf) $(ARCH)/
 
+#deprecated
 cygwinsrc-x86:
 	mkdir -p $(cygrel)/
 	echo making cygwin source package release $(REL) of mined $(VER)
@@ -231,6 +239,7 @@ cygwinsrc-x86:
 
 SRCREADME=release/cygwin/mined-x86_64-src.readme
 
+#deprecated
 cygwinsrc-x86_64:	$(SRCREADME)
 	mkdir -p $(cygrel)/
 	cd release/cygwin; tar cvf mined-$(VER)-$(REL)-src.tar $(TARUSER) mined.cygport mined-x86_64-src.readme
