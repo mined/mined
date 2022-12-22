@@ -213,6 +213,7 @@ setInterval ("checkall ();", 222);
 	would be excluded from the file list (where N is a number):
 	"x~", "x;N", "x.~N~", 
 	so that, e.g., <code>mined x*</code> edits x and x1 but not x~.
+	</dd>
 </span>
 
 
@@ -1675,6 +1676,7 @@ This manual contains the main topics
 	<li><span class=ex>left click-drag</span>
 			<dd>	moves text position in file by moving relative 
 				mouse position on scrollbar
+		</li>
 	<li><span class=ex>right click</span>
 			<dd>	moves one page away from the mouse position (as seen 
 				from the current scrollbar position marker)
@@ -1727,12 +1729,16 @@ This manual contains the main topics
 	<ul>
 	<li><span class=ex>left or middle click or mouse drag</span>
 		<dd>	opens selected file
+		</li>
 	<li><span class=ex><img align=absmiddle src=new-rot.gif title=2022.26>right click or mouse wheel scroll</span>
 		<dd>	opens file switcher menu (like Alt-F3)
+		</li>
 	<li><span class=ex><img align=absmiddle src=new-rot.gif title=2022.26>control-right click</span>
 		<dd>	opens file opening menu (like F3)
+		</li>
 	<li><span class=ex><img align=absmiddle src=new-rot.gif title=2022.26>control-mouse wheel scroll</span>
 		<dd>	switches to next/previous file tab
+		</li>
 	</ul>
 	<dt>On open menu
 	<ul>
@@ -1775,6 +1781,7 @@ This manual contains the main topics
 <p>	<i>Configuration hint:</i> To enable mouse operation in a 
 	Windows console window, deactivate "QuickEdit mode" in the 
 	properties menu.
+	</dl>
 
 <h3>	Menus</h3>
 	Mined provides three kinds of menus, all can be opened with 
@@ -6348,8 +6355,9 @@ This manual contains the main topics
 	<li>RFC 1345 mnemos (except mappings to Unicode private use areas); 
 	in ambiguous cases, the RFC 1345 mnemos must be entered in 
 	long mnemonic input mode, e.g. with "^V pi " rather than "^Vpi"
-	<li>HTML mnemos; in ambiguous cases, the HTML mnemos 
-	must be prepended with a "&"
+	<li>HTML mnemos as listed in 
+	<a href=https://html.spec.whatwg.org/multipage/named-characters.html>
+	HTML living standard</a>, prepended with a "&"
 	<li>TeX mnemos (macros) and substitutes, leaving out any "\"
 	<li><img align=absmiddle src=new.gif title=2015.25>
 	groff glyphs (roff special characters), mnemonics beginning with "("
