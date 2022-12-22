@@ -12,8 +12,12 @@ LOCALAPPS=$LOCALAPPDATA
 
 if [ -n "$ProgramW6432" ]
 then	ARCH=64
+	# this used to be used for a dual-arch installer
 	ARCHPREF=64
 	PROGFILES=$ProgramW6432
+	# single-mode installer
+	ARCHPREF=
+	PROGFILES=$PROGRAMFILES
 else	ARCH=32
 	ARCHPREF=
 	PROGFILES=$PROGRAMFILES

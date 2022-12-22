@@ -37,10 +37,13 @@ UNIVER=$(shell sed -e '/^\# Blocks-/ b ver' -e d -e ': ver' -e 's,^[^0-9]*\([0-9
 #VMSVER=$(shell echo $(VER) | sed -e 's,\.,_,g' )
 VMSVER=$(shell sed -e 's,^[^0-9]*,,' -e 's,[^0-9][^0-9]*,.,g' -e 's,\.,_,g' -e q VERSION )
 
+BITS=$(shell uname -m | sed -e 's,x86_64,64,' -e t -e 's,.*,32,' )
+
 ver:
 	echo mined $(VER)
 	echo Unicode $(UNIVER)
 	echo VMS $(VMSVER)
+	echo BITS $(BITS)
 
 versionh:	# src/Blocks.txt # VERSION
 	echo '#define VERSION "$(VER)"' > src/version.h.new
@@ -336,7 +339,7 @@ DESCR:	doc/overview.html descr.sed
 # PC binary archives (development target, doesn't currently work locally)
 bin:	win dos
 
-win:	release/MinEd-$(VER)-Windows-install.exe
+win:	release/MinEd-$(VER)-Windows$(BITS)-install.exe
 
 dos:	bin/DOS/MINED.EXE release/mined-$(VER)-dos.zip
 
@@ -355,13 +358,13 @@ release/MINED-$(VMSVER)-VMS.ZIP:
 	cp usrshare/conf_user/MINED-VMS.COM src/vms/mined-vms.com
 	cd src/vms; zip ../../release/MINED-$(VMSVER)-VMS.ZIP mined.readme mined.hlp mined-vms.com */mined.exe
 
-release/MinEd-$(VER)-Windows-install.exe:	release/mined-$(VER)-windows.zip
+release/MinEd-$(VER)-Windows$(BITS)-install.exe:	release/mined-$(VER)-windows$(BITS).zip
 	#uname -m | grep i686
-	uname -m | grep x86_64
+	#uname -m | grep x86_64
 	rm -fr release/tmp.win
 	mkdir -p release/tmp.win
-	sed -e "s,%version%,$(VER)," makewinx.cfg > release/tmp.win/mined.SED
-	cd release/tmp.win; unzip ../mined-$(VER)-windows.zip
+	sed -e "s,%version%,$(VER)," -e "s,%bits%,$(BITS)," makewinx.cfg > release/tmp.win/mined.SED
+	cd release/tmp.win; unzip ../mined-$(VER)-windows$(BITS).zip
 	cd release/tmp.win; cp /bin/mkshortcut.exe .
 	cd release/tmp.win; cp /bin/cygpopt-0.dll .
 	cd release/tmp.win; cp /bin/cygstart.exe .
@@ -369,24 +372,24 @@ release/MinEd-$(VER)-Windows-install.exe:	release/mined-$(VER)-windows.zip
 	cd release/tmp.win; cp /bin/regtool.exe .
 	cd release/tmp.win; cp /bin/dash.exe .
 	cd release/tmp.win; iexpress /n mined.SED
-	mv -f release/tmp.win/MinEd-$(VER)-Windows-install.exe release/
+	mv -f release/tmp.win/MinEd-$(VER)-Windows$(BITS)-install.exe release/
 
 winbin:
 	cd src; $(MAKE) -f makefile.cygwin win
 
-winzip:	release/mined-$(VER)-windows.zip
+winzip:	release/mined-$(VER)-windows$(BITS).zip
 
-release/mined-$(VER)-windows.zip:	winbin usrshare/help/mined.hlp README.windows
+release/mined-$(VER)-windows$(BITS).zip:	winbin usrshare/help/mined.hlp README.windows
 	mkdir -p release
 	cd bin/win; chmod +x *.exe *.dll
-	cd bin/win; zip mined-$(VER)-windows.zip *.exe *.dll
-	mv -f bin/win/mined-$(VER)-windows.zip release/
-	cd usrshare/help; zip ../../release/mined-$(VER)-windows.zip mined.hlp
-	cd usrshare/setup_install; zip ../../release/mined-$(VER)-windows.zip mined.ico
-	cd usrshare/setup_install/win; zip ../../../release/mined-$(VER)-windows.zip *.* -x *~
+	cd bin/win; zip mined-$(VER)-windows$(BITS).zip *.exe *.dll
+	mv -f bin/win/mined-$(VER)-windows$(BITS).zip release/
+	cd usrshare/help; zip ../../release/mined-$(VER)-windows$(BITS).zip mined.hlp
+	cd usrshare/setup_install; zip ../../release/mined-$(VER)-windows$(BITS).zip mined.ico
+	cd usrshare/setup_install/win; zip ../../../release/mined-$(VER)-windows$(BITS).zip *.* -x *~
 	cp -fp README.windows release/README.txt
 	#cp -fp /usr/share/locale/locale.alias release/
-	cd release; zip mined-$(VER)-windows.zip README.txt # locale.alias
+	cd release; zip mined-$(VER)-windows$(BITS).zip README.txt # locale.alias
 	cd release; rm -f README.txt # locale.alias
 
 release/mined-$(VER)-dos.zip:	bin/DOS/MINED.EXE usrshare/help/mined.hlp README.dos

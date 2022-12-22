@@ -207,7 +207,10 @@ libtest:
 	echo $(termcap)
 
 winarch=$(shell echo $(ARCH) | sed -e 's,.*86_*,,' )
-WINBIN=../bin/win/$(winarch)
+# this used to be used for a dual-arch installer
+#WINBIN=../bin/win/$(winarch)
+# ... which is now obsolete
+WINBIN=../bin/win/
 
 bintest:
 	echo STATICLIB $(STATICLIB)
