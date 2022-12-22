@@ -210,7 +210,7 @@ cygport=release/cygwin/$(cygportfn)
 cygwin:	release/mined-$(VER).tar.gz
 	$(MAKE) cygwinbin
 	# make src archive only once (cuts by failing on i686):
-	uname -m | grep x86_64
+	#uname -m | grep x86_64
 	$(MAKE) cygwinsrc
 
 #compress=bzip2
