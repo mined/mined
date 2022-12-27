@@ -7,7 +7,7 @@ mnemodupats () {
 	sort | uniq -d
 }
 
-files=${*-mnemos.??[!~]}
+files=${*:-mnemos.??[!~]}
 
 tmp=/tmp/mnemodupats
 
