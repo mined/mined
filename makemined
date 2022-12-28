@@ -38,11 +38,13 @@ case "$1" in
 *install*)	CC=true;;
 esac
 
-# if CC is explicitly set to gcc, shortcut to use it
-case "$CC" in
-gcc)	$GMAKE -f makefile.gcc $1
+# unless configuring: if CC is explicitly set to gcc, shortcut to use it
+case "$1.$CC" in
+configure.*)
+	true;;
+*.gcc)	$GMAKE -f makefile.gcc $1
 	exit;;
-"")	CC=cc;;
+*.)	CC=cc;;
 esac
 
 
