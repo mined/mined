@@ -156,17 +156,25 @@ name=MinEd
 # Context menu command to invoke
 regcmd='"'"$INSTDIR"'\bin\mintty" -oLocale=C -oCharset=UTF-8 -oUseSystemColours=1 -oBoldAsBright=0 -oScrollbar=0 -oWindowShortcuts=0 -oZoomShortcuts=0 -e /bin/mined +eW "%1"'
 
-ROOTKEY=/HKEY_CLASSES_ROOT/SystemFileAssociations/text/shell/$name
-USERKEY=/HKEY_CURRENT_USER/Software/Classes/SystemFileAssociations/text/shell/$name
-
 case $for in
-all)	MENUKEY="$ROOTKEY";;
-me)	MENUKEY="$USERKEY";;
+all)	keypre=/HKEY_CLASSES_ROOT
+	;;
+me)	keypre=/HKEY_CURRENT_USER/Software/Classes
+	;;
 esac
 
-regtool add "$MENUKEY"
-regtool add "$MENUKEY/command"
-regtool -e set "$MENUKEY/command/" "$regcmd"
+# context menu for text files (Windows 7)
+key7=/SystemFileAssociations/text/shell/$name
+# context menu for text files (Windows 10)
+key10=/txtfile/shell/$name
+
+
+regtool add "$keypre/$key7"
+regtool add "$keypre/$key7/command"
+regtool -e set "$keypre/$key7/command/" "$regcmd"
+regtool add "$keypre/$key10"
+regtool add "$keypre/$key10/command"
+regtool -e set "$keypre/$key10/command/" "$regcmd"
 
 
 # ====================================================================
