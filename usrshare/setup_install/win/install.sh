@@ -154,7 +154,7 @@ fi
 # Name of menu entry
 name=MinEd
 # Context menu command to invoke
-regcmd='"'"$INSTDIR"'\bin\mintty" -oLocale=C -oCharset=UTF-8 -oUseSystemColours=1 -oBoldAsBright=0 -oScrollbar=0 -oWindowShortcuts=0 -oZoomShortcuts=0 -e /bin/mined +eW "%1"'
+regcmd='"'"$INSTDIR"'\bin\mintty" -i/mined.ico -oLocale=C -oCharset=UTF-8 -oUseSystemColours=1 -oBoldAsBright=0 -oScrollbar=0 -oWindowShortcuts=0 -oZoomShortcuts=0 -e /bin/mined +eW "%1"'
 
 case $for in
 all)	keypre=/HKEY_CLASSES_ROOT
@@ -170,9 +170,11 @@ key10=/txtfile/shell/$name
 
 
 regtool add "$keypre/$key7"
+regtool -s set "$keypre/$key7/Icon" "$INSTDIR\\mined.ico"
 regtool add "$keypre/$key7/command"
 regtool -e set "$keypre/$key7/command/" "$regcmd"
 regtool add "$keypre/$key10"
+regtool -s set "$keypre/$key10/Icon" "$INSTDIR\\mined.ico"
 regtool add "$keypre/$key10/command"
 regtool -e set "$keypre/$key10/command/" "$regcmd"
 
