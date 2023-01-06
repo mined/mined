@@ -95,6 +95,7 @@ echo '@set nodosfilewarning=1' >> "$INSTDIR/mined.bat"
 echo '@"%minedexe%" +eW %1 %2 %3 %4 %5 %6 %7 %8 %9' >> "$INSTDIR/mined.bat"
 
 # Create command line script for window invocation
+config="-c %APPDATA%\mined-mintty.conf"
 charset="-oLocale=C -oCharset=UTF-8"
 colour="-oUseSystemColours=1 -oBoldAsBright=0"
 window="-oScrollbar=0"
@@ -103,7 +104,7 @@ echo -n '@set mintty=' > "$INSTDIR/wined.bat"
 # use DOS name of installation dir to avoid codepage issues
 cygpath -d "$INSTDIR/bin/mintty.exe" >> "$INSTDIR/wined.bat"
 echo '@set nodosfilewarning=1' >> "$INSTDIR/wined.bat"
-echo '@start "" "%mintty%"' $charset $colour $window $keyboard /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9 >> "$INSTDIR/wined.bat"
+echo '@start "" "%mintty%"' $config $charset $colour $window $keyboard /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9 >> "$INSTDIR/wined.bat"
 
 if false; then
 # Create link to command line script for minimized invocation
