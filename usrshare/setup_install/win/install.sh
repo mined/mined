@@ -59,7 +59,6 @@ makedir () {
 
 makedir "$INSTDIR"
 makedir "$INSTDIR/bin"
-makedir "$INSTDIR/usr/share/locale"
 
 copy README.txt "$INSTDIR"
 copy mined.ico "$INSTDIR"
@@ -71,6 +70,7 @@ copy ${ARCHPREF}mintty.exe "$INSTDIR/bin/mintty.exe"
 copy mined.hlp "$INSTDIR/bin"
 #copy dash.exe "$INSTDIR/bin/sh.exe"
 
+#makedir "$INSTDIR/usr/share/locale"
 #copy locale.alias "$INSTDIR/usr/share/locale"
 
 makedir "$INSTDIR/setup"
