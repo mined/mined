@@ -150,7 +150,7 @@ esac
 # Remove Start Menu group
 delete "$PROGS/MinEd/MinEd.lnk"
 delete "$PROGS/MinEd/Mined Web Manual.url"
-delete "$PROGS/MinEd/Uninstall....lnk"
+delete "$PROGS/MinEd/Uninstall Mined.lnk"
 rmdir "$PROGS/MinEd"
 # Remove Desktop symbol
 delete "$DESK/MinEd.lnk"

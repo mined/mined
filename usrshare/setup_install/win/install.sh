@@ -228,7 +228,7 @@ esac
 makedir "$PROGS/MinEd"
 copy $lnk "$PROGS/MinEd/MinEd.lnk"
 copy "Mined Web Manual.url" "$PROGS/MinEd"
-copy $unlnk "$PROGS/MinEd/Uninstall....lnk"
+copy $unlnk "$PROGS/MinEd/Uninstall MinEd.lnk"
 # Create Desktop symbol
 copy $lnk "$DESK/MinEd.lnk"
 
