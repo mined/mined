@@ -24,10 +24,14 @@ else	ARCH=32
 fi
 
 # Test case: installation for all not possible
-#PROGFILES="/cygdrive/c/System Volume Information"
+if [ -n "$INSTALL_FOR_ME" ]
+then	PROGFILES="/cygdrive/c/System Volume Information"
+fi
 
 # check whether installation for all users permitted
-if [ -w "$PROGFILES" ]
+# need to check via cygpath; result would be wrong with Windows path
+pf=`cygpath "$PROGFILES"`
+if [ -w "$pf" ]
 then	INSTDIR="$PROGFILES\\MinEd"
 	for=all
 else	INSTDIR="$LOCALAPPS\\MinEd"
@@ -142,10 +146,10 @@ else	regtool -e set "$1" "$PATH1"
 fi
 }
 
-if addpath "$ROOTPATH"
-then	true
-else	addpath "$USERPATH"
-fi
+case $for in
+all)	addpath "$ROOTPATH";;
+me)	addpath "$USERPATH";;
+esac
 
 
 # ====================================================================
@@ -159,20 +163,31 @@ regcmd='"'"$INSTDIR"'\bin\mintty" -i/mined.ico -oLocale=C -oCharset=UTF-8 -oUseS
 case $for in
 all)	keypre=/HKEY_CLASSES_ROOT
 	;;
-me)	keypre=/HKEY_CURRENT_USER/Software/Classes
+me)	keypre=/HKEY_CURRENT_USER/SOFTWARE/Classes
 	;;
 esac
 
 # context menu for text files (Windows 7)
-key7=/SystemFileAssociations/text/shell/$name
+# need to create tree down step by step
+key7=SystemFileAssociations/text/shell/$name
+key71=SystemFileAssociations/text/shell
+key72=SystemFileAssociations/text
+key73=SystemFileAssociations
 # context menu for text files (Windows 10)
-key10=/txtfile/shell/$name
+key10=txtfile/shell/$name
+key101=txtfile/shell
+key102=txtfile
 
 
+regtool add "$keypre/$key73"
+regtool add "$keypre/$key72"
+regtool add "$keypre/$key71"
 regtool add "$keypre/$key7"
 regtool -s set "$keypre/$key7/Icon" "$INSTDIR\\mined.ico"
 regtool add "$keypre/$key7/command"
 regtool -e set "$keypre/$key7/command/" "$regcmd"
+regtool add "$keypre/$key102"
+regtool add "$keypre/$key101"
 regtool add "$keypre/$key10"
 regtool -s set "$keypre/$key10/Icon" "$INSTDIR\\mined.ico"
 regtool add "$keypre/$key10/command"
