@@ -365,9 +365,9 @@ release/MinEd-$(VER)-Windows$(BITS)-install.exe:	release/mined-$(VER)-windows$(B
 	mkdir -p release/tmp.win
 	sed -e "s,%version%,$(VER)," -e "s,%bits%,$(BITS)," makewinx.cfg > release/tmp.win/mined.SED
 	cd release/tmp.win; unzip ../mined-$(VER)-windows$(BITS).zip
-	cd release/tmp.win; cp /bin/mkshortcut.exe .
+#	cd release/tmp.win; cp /bin/cygstart.exe .
+#	cd release/tmp.win; cp /bin/mkshortcut.exe .
 	cd release/tmp.win; cp /bin/cygpopt-0.dll .
-	cd release/tmp.win; cp /bin/cygstart.exe .
 	cd release/tmp.win; cp /bin/cygpath.exe .
 	cd release/tmp.win; cp /bin/regtool.exe .
 	cd release/tmp.win; cp /bin/dash.exe .

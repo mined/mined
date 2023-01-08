@@ -19,11 +19,13 @@ rmdir bin
 
 cd setup
 del dash.exe
-del uninstall.sh
-del cygpath.exe
 del cygwin1.dll
-del deleteall.bat
 del regtool.exe
+del cygpath.exe
+del mkshortcut.exe
+del cygpopt-0.dll
+del uninstall.sh
+del deleteall.bat
 cd ..
 rmdir setup
 

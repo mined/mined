@@ -21,7 +21,10 @@ case "$*" in
 		for=all;;
 "-for me")	INSTDIR="$LOCALAPPS\\MinEd"
 		for=me;;
-*)	if [ -w "$PROGFILES" -a -d "$PROGFILES\\MinEd" ]
+*)
+	# check -w via cygpath; result would be wrong with Windows path
+	pf=`cygpath "$PROGFILES"`
+	if [ -w "$pf" -a -d "$PROGFILES\\MinEd" ]
 	then	INSTDIR="$PROGFILES\\MinEd"
 		for=all
 	elif [ -d "$LOCALAPPS\\MinEd" ]
@@ -57,10 +60,6 @@ rmdir () {
 # registry keys
 ROOTPATH="/HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Session Manager/Environment/Path"
 USERPATH="/HKEY_CURRENT_USER/Environment/PATH"
-case $for in
-all)	PATHKEY="$ROOTPATH";;
-me)	PATHKEY="$USERPATH";;
-esac
 
 doublebackslash () {
 parse="$*"
@@ -96,10 +95,10 @@ case "$PATH1" in
 esac
 }
 
-if removepath "$ROOTPATH"
-then	true
-else	removepath "$USERPATH"
-fi
+case $for in
+all)	removepath "$ROOTPATH";;
+me)	removepath "$USERPATH";;
+esac
 
 
 # ====================================================================

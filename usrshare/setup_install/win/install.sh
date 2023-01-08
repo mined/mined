@@ -122,30 +122,28 @@ fi
 # registry keys
 ROOTPATH="/HKEY_LOCAL_MACHINE/SYSTEM/CurrentControlSet/Control/Session Manager/Environment/Path"
 USERPATH="/HKEY_CURRENT_USER/Environment/PATH"
-case $for in
-all)	PATHKEY="$ROOTPATH";;
-me)	PATHKEY="$USERPATH";;
-esac
 
 addpath () {
-PATH0=`regtool get "$1" 2> /dev/null`
-PATH1=
-case ";$PATH0;" in
-*";$INSTDIR;"*)	# already in PATH
-		echo MinEd already in PATH
-		;;
-";;")		# empty PATH
-		echo Creating new PATH to MinEd
-		PATH1="$INSTDIR";;
-*)		# append
-		echo Appending MinEd to PATH
-		PATH1="$PATH0;$INSTDIR";;
-esac
+	PATH0=`regtool get "$1" 2> /dev/null`
+	PATH1=
+	case ";$PATH0;" in
+	*";$INSTDIR;"*)	# already in PATH
+			echo MinEd already in PATH
+			;;
+	";;")		# empty PATH
+			echo Creating new PATH to MinEd
+			PATH1="$INSTDIR";;
+	*)		# append
+			echo Appending MinEd to PATH
+			PATH1="$PATH0;$INSTDIR";;
+	esac
 
-if [ -z "$PATH1" ]
-then	true
-else	regtool -e set "$1" "$PATH1"
-fi
+	if [ -z "$PATH1" ]
+	then	true
+	else	regtool -e set "$1" "$PATH1"
+		# enforce immediate effect:
+		cmd /c setx "$1" "$PATH1"
+	fi
 }
 
 case $for in
