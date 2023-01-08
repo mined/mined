@@ -78,7 +78,6 @@ copy dash.exe "$INSTDIR/setup"
 copy cygwin1.dll "$INSTDIR/setup"
 copy regtool.exe "$INSTDIR/setup"
 copy cygpath.exe "$INSTDIR/setup"
-copy mkshortcut.exe "$INSTDIR/setup"
 copy cygpopt-0.dll "$INSTDIR/setup"
 copy uninstall.sh "$INSTDIR/setup"
 copy deleteall.bat "$INSTDIR/setup"
@@ -95,16 +94,17 @@ echo '@set nodosfilewarning=1' >> "$INSTDIR/mined.bat"
 echo '@"%minedexe%" +eW %1 %2 %3 %4 %5 %6 %7 %8 %9' >> "$INSTDIR/mined.bat"
 
 # Create command line script for window invocation
-config="-c %APPDATA%\mined-mintty.conf"
-charset="-oLocale=C -oCharset=UTF-8"
-colour="-oUseSystemColours=1 -oBoldAsBright=0"
-window="-oScrollbar=0"
-keyboard="-oWindowShortcuts=0 -oZoomShortcuts=0"
+config='-c "%APPDATA%\mined-mintty.conf"'
+icon='-i /mined.ico'
+charset='-oLocale=C -oCharset=UTF-8'
+colour='-oUseSystemColours=1 -oBoldAsBright=0'
+window='-oScrollbar=0'
+keyboard='-oWindowShortcuts=0 -oZoomShortcuts=0'
 echo -n '@set mintty=' > "$INSTDIR/wined.bat"
 # use DOS name of installation dir to avoid codepage issues
 cygpath -d "$INSTDIR/bin/mintty.exe" >> "$INSTDIR/wined.bat"
 echo '@set nodosfilewarning=1' >> "$INSTDIR/wined.bat"
-echo '@start "" "%mintty%"' $config $charset $colour $window $keyboard /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9 >> "$INSTDIR/wined.bat"
+echo '@start "" "%mintty%"' $config $icon $charset $colour $window $keyboard /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9 >> "$INSTDIR/wined.bat"
 
 if false; then
 # Create link to command line script for minimized invocation
@@ -116,6 +116,7 @@ mkshortcut --arguments="$charset $colour $window $keyboard /bin/mined +eW %1 %2 
 	--workingdir="%HOME%" \
 	/bin/mintty.exe
 fi
+
 
 # Add script directory to PATH in registry
 # registry keys

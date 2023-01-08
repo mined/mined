@@ -7,7 +7,8 @@ rem Note: mintty 0.6 or higher required for -o option
 
 rem Set appropriate parameters
 
-set config=-c %APPDATA%\mined-mintty.conf
+set config=-c "%APPDATA%\mined-mintty.conf"
+set icon=-i /mined.ico
 set charset=-oLocale=C -oCharset=UTF-8
 set colour=-oUseSystemColours=1 -oBoldAsBright=0
 set window=-oScrollbar=0
@@ -15,6 +16,6 @@ set keyboard=-oWindowShortcuts=0 -oZoomShortcuts=0
 
 rem Start terminal
 
-mintty %config% %charset% %colour% %window% %keyboard% /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9
+mintty %config% %icon% %charset% %colour% %window% %keyboard% /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 rem End
