@@ -104,11 +104,11 @@ echo -n '@set mintty=' > "$INSTDIR/wined.bat"
 # use DOS name of installation dir to avoid codepage issues
 cygpath -d "$INSTDIR/bin/mintty.exe" >> "$INSTDIR/wined.bat"
 echo '@set nodosfilewarning=1' >> "$INSTDIR/wined.bat"
-echo '@start "" "%mintty%"' $config $icon $charset $colour $window $keyboard /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9 >> "$INSTDIR/wined.bat"
+echo '@start "" "%mintty%"' $icon $charset $colour $window $keyboard $config /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9 >> "$INSTDIR/wined.bat"
 
 if false; then
 # Create link to command line script for minimized invocation
-mkshortcut --arguments="$charset $colour $window $keyboard /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9" \
+mkshortcut --arguments="$charset $colour $window $keyboard $config /bin/mined +eW %1 %2 %3 %4 %5 %6 %7 %8 %9" \
 	--name="`cygpath $INSTDIR`/wined" \
 	--icon="`cygpath $INSTDIR`/mined.ico" \
 	--desc="MinEd Unicode text editor" \
@@ -158,7 +158,7 @@ esac
 # Name of menu entry
 name=MinEd
 # Context menu command to invoke
-regcmd='"'"$INSTDIR"'\bin\mintty" -i/mined.ico -oLocale=C -oCharset=UTF-8 -oUseSystemColours=1 -oBoldAsBright=0 -oScrollbar=0 -oWindowShortcuts=0 -oZoomShortcuts=0 -e /bin/mined +eW "%1"'
+regcmd='"'"$INSTDIR"'\bin\mintty" -i/mined.ico -oLocale=C -oCharset=UTF-8 -oUseSystemColours=1 -oBoldAsBright=0 -oScrollbar=0 -oWindowShortcuts=0 -oZoomShortcuts=0 -c "%APPDATA%\mined-mintty.conf" -e /bin/mined +eW "%1"'
 
 case $for in
 all)	keypre=/HKEY_CLASSES_ROOT
