@@ -48,11 +48,12 @@ GFLAGS= -ansi -Waggregate-return -Winline \
 
 GCC3FLAGS=-Wdeclaration-after-statement -Wno-pragmas
 # -Wunreachable-code deprecated
-GCC4FLAGS=$(GCC3FLAGS) -Wno-pointer-sign -Wtype-limits
+GCC4FLAGS=$(GCC3FLAGS) -Wno-pointer-sign
+GCC5FLAGS=$(GCC4FLAGS) -Wtype-limits
 
 # Warning options for newer gcc versions:
 # (additional grep for the sake of MSys sed failing on CRLF from MinGW gcc)
-W= $(shell $(CC) -v 2>&1 | grep "gcc version" | sed -e "s,gcc version [4-9].*,$(GCC4FLAGS)," -e t -e d )
+W= $(shell $(CC) -v 2>&1 | grep -i "gcc.version" | sed -e "s,gcc.[Vv]ersion \([5-9]\|[0-9][0-9]\).*,$(GCC5FLAGS)," -e t -e d )
 # Tune further -W options with the environment variable $WFLAGS
 
 # Suppress overzealous warnings for clang:
