@@ -98,6 +98,8 @@ Linux*)	if [ -n "$ANDROID_ROOT" ]
 		sh mkmined $1 $makevars
 	else
 		case "`uname -m`" in
+		armv7*)	# ARM arch not Raspberry Pi
+			$MAKE makefile.linux $1 $makevars;;
 		arm*)	# Raspberry Pi: no termcap API
 			sh mkmined $1 $makevars;;
 		*)	$MAKE makefile.linux $1 $makevars;;
