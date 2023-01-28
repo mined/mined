@@ -19,6 +19,13 @@ Build
 
   -------------------------------------------------------
 
+  Mined in its default configuration needs the termcap API to access the 
+  terminfo terminal database (for alternatives, see below or COMPILE.DOC). 
+  On modern systems, the library is provided with the ncurses package 
+  (or libtermcap or libtinfo on some legacy systems).
+
+  -------------------------------------------------------
+
   To override automatic selection of the makefile and use gcc, 
   you may invoke:
 	CC=gcc make
