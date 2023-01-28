@@ -381,13 +381,16 @@ winzip:	release/mined-$(VER)-windows$(BITS).zip
 
 release/mined-$(VER)-windows$(BITS).zip:	winbin usrshare/help/mined.hlp README.windows
 	mkdir -p release
-	cd bin/win; chmod +x *.exe *.dll
+	# not needed, fails on some systems:
+	#cd bin/win; chmod +x *.exe *.dll
 	cd bin/win; zip mined-$(VER)-windows$(BITS).zip *.exe *.dll
 	mv -f bin/win/mined-$(VER)-windows$(BITS).zip release/
 	cd usrshare/help; zip ../../release/mined-$(VER)-windows$(BITS).zip mined.hlp
 	cd usrshare/setup_install; zip ../../release/mined-$(VER)-windows$(BITS).zip mined.ico
 	cd usrshare/setup_install/win; zip ../../../release/mined-$(VER)-windows$(BITS).zip *.* -x *~
-	cp -fp README.windows release/README.txt
+	# -p fails on some systems:
+	cp -f README.windows release/README.txt
+	# deprecated:
 	#cp -fp /usr/share/locale/locale.alias release/
 	cd release; zip mined-$(VER)-windows$(BITS).zip README.txt # locale.alias
 	cd release; rm -f README.txt # locale.alias
