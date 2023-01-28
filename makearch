@@ -53,7 +53,8 @@ then
 	$exit 9
     fi
 
-    if grep "$version (`LC_ALL=C date +%B\ %Y`)" doc/changes.html > /dev/null
+    # strip "(`LC_ALL=C date +%B\ %Y`)" from this check to support later build
+    if grep "$version" doc/changes.html > /dev/null
     then
 	true
     else
