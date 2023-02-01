@@ -5040,7 +5040,10 @@ do_backup (fn)
 	backup_ok = copyfile (fn, backup_name);
   }
   if (backup_ok == False) {
-	error ("Could not copy to backup file");
+	if (backup_name)
+		error2 ("Could not copy to backup file: ", backup_name);
+	else
+		error ("Could not copy to backup file");
 	sleep (1);	/* give some time to see the hint */
 	return False;
   } else if (backup_ok == True) {
