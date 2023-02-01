@@ -142,7 +142,7 @@ addpath () {
 	then	true
 	else	regtool -e set "$1" "$PATH1"
 		# enforce immediate effect:
-		cmd /c setx "$1" "$PATH1"
+		cmd /c setx PATH "$PATH1"
 	fi
 }
 
