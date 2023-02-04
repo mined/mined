@@ -1856,8 +1856,10 @@ adjust_escdelay ()
 	if (strisprefix ("rxvt", TERM)) {
 		/* accept slow rxvt DA report */
 		default_escape_delay = 25555;
+#ifndef __TURBOC__
 	} else if (strisprefix ("/dev/tty", unnull (ttyname (2)))) {
 		/* do not increase delay on Linux console */
+#endif
 	} else if (strisprefix ("xterm", TERM)
 		|| strisprefix ("screen", TERM)
 		|| (strisprefix ("vt", TERM) && TERM [2] >= '2' && TERM [2] < '5')
