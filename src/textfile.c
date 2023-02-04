@@ -3047,8 +3047,17 @@ get_backup_name (file_name)
 	int maxver;
 
 	dir = opendir (dirname);
+#ifdef __CYGWIN__
+	if (! dir && *dirname && dirname [1] == ':' && !dirname [2]) {
+		char rootdirname [4];
+		strcpy (rootdirname, dirname);
+		strcat (rootdirname, "\\");
+		dir = opendir (rootdirname);
+	}
+#endif
 	if (! dir) {
 		error2 ("Cannot open directory ", dirname);
+		sleep (1);
 		return NIL_PTR;
 	}
 
