@@ -8854,6 +8854,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	two-letter script tag to set the active mapping, or it is 
 	prepended with "-" to set the standby mapping, or a combination.
 	<br><i>Example:</i>
+	<dl>
 	    <dd>
 	    <code>export <span class=env>MINEDKEYMAP</span>=-gr</code>
 	    will set Greek keyboard mapping standby.
@@ -8861,7 +8862,8 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	    <code>export <span class=env>MINEDKEYMAP</span>=py-rs</code>
 	    will set Pinyin input method active and Radical/Stroke 
 	    input method standby.
-	<br>The respective tags attached to the keyboard mappings can be 
+	</dl>
+	The respective tags attached to the keyboard mappings can be 
 	looked up in the Input Method flag menu; the HOP function 
 	toggles between display of the full input method name and its tag.
 
@@ -8880,6 +8882,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	used for nested quotations) for more specific selection. It 
 	can also indicate French spacing as shown in the example.
 	<br><i>Examples (for values of -q parameter or MINEDQUOTES variable):</i>
+	<dl>
 	    <dd>
 	    <code class=option>»</code>
 	    sets »Danish« quotes style and corresponding single smart quotes.
@@ -8893,7 +8896,8 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	    <dd>
 	    <code class=option>« »</code>
 	    sets « French » quotes style with embedded spacing.
-	<br>See <a href=#smartquotes>Smart Quotes</a> for more options.
+	</dl>
+	See <a href=#smartquotes>Smart Quotes</a> for more options.
 
 <a name=haninfoconf></a>
 <h3>	Han info configuration</h3>
@@ -9074,6 +9078,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	configured character would terminate the indication at the end 
 	of the screen line. ("··«" is a nice setting for people who 
 	used to work at Siemens terminals.)
+	<dl>
 	<dd>Pattern:
 <pre>
 		<span class=env>MINEDRET</span>=123	# line end displays as 122222223
@@ -9083,7 +9088,8 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 <pre>
 		<span class=env>MINEDUTFRET</span>=&#9166;	# U+23CE
 </pre>
-	<p>The indication of DOS line ends (CRLF) and Mac line ends (CR) 
+	</dl>
+	The indication of DOS line ends (CRLF) and Mac line ends (CR) 
 	may be configured with the variables <span class=env>MINEDDOSRET</span> or <span class=env>MINEDUTFDOSRET</span>, 
 	and <span class=env>MINEDMACRET</span> or <span class=env>MINEDUTFMACRET</span>, respectively.
 	They are also distinguished by different colours.
@@ -9104,11 +9110,13 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	the second is used to mark the middle of the Tab span. If three 
 	characters are configured, the first and last are used to mark 
 	the beginning and end of the Tab span.
+	<dl>
 	<dd>Pattern:
 <pre>
 		<span class=env>MINEDTAB</span>=123	# Tab displays as 12222223
 		<span class=env>MINEDTAB</span>=12	# Tab displays as 11112111
 </pre>
+	</dl>
 <h4>Long lines</h4>
 	Lines which are too long for the screen are usually indicated 
 	by a '»' double right angle (guillemot) character. If the current 
