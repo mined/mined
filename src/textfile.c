@@ -3340,7 +3340,10 @@ delete_lockfile (lf)
 	 */
 	char target [maxFILENAMElen];
 	if (readlink (lf, target, sizeof (target) - 1) < 0) {
-		(void) truncate (lf, 0);
+		if (truncate (lf, 0) < 0) {
+			error2 ("Cannot unlock: ", serror ());
+			sleep (1);
+		}
 	}
   }
 }

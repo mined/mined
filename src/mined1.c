@@ -7932,6 +7932,8 @@ main (argc, argv)
 	if (! only_detect_text_encoding) {
 		if (homedir_selected) {
 			(void) chdir (gethomedir ());
+			/* option -~ is not documented, so we 
+			   don't check the unlikely failure of chdir here */
 		}
 		load_wild_file (NIL_PTR, reading_pipe, False);
 	}

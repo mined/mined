@@ -74,6 +74,10 @@ debuglog (tag, l1, l2)
 	strappend (logfn, "/.minedlog", maxFILENAMElen);
 #endif
 	log = fopen (logfn, "a");
+	if (!log) {
+		fprintf (stderr, "failed to open %s: %s\n", logfn, serror ());
+		return;
+	}
     }
     if (tag) {
 	char timbuf [99];
