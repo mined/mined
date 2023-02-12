@@ -1,8 +1,8 @@
 <head>
 <meta name="description" content="Powerful text editor with extensive Unicode and CJK support.">
 <meta name="manheader" content="Unicode text editor">
-<meta charset=utf-8>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta charset=iso-8859-1>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <style type="text/css">
 h3 {margin-bottom: 0.8em;}
 h4 {font-style: italic; margin-top: 0.8em; margin-bottom: 0.5em;}
@@ -227,7 +227,7 @@ setInterval ("checkall ();", 222);
 <span summary>
 	<h4>Security and safety features</h4>
 	<ul>
-	<li><img align=absmiddle src=new.gif title=2015.25>Transparent editing of encrypted files, 
+	<li>Transparent editing of encrypted files, 
 		using filters configurable by file type
 	<li>Systematic text and file handling safety, avoiding loss of data
 	<li>Backup features, supporting simple or versioned backup
@@ -298,7 +298,7 @@ setInterval ("checkall ();", 222);
 		<li>Auto-indentation and Undent function (smart Backspace)
 		<li>Smart quotes (with quotation marks style selection 
 		and auto-detection) and smart dashes
-		<li><img align=absmiddle src=new.gif title=2015.25>Advanced list support (bullet and numbered lists)
+		<li>Advanced list support (bullet and numbered lists)
 	</ul>
 	<li>Search and replacement patterns can have multiple lines
 	<li><img align=absmiddle src=new-rot.gif title=2022.26>Search and replacement patterns can contain substitution references 
@@ -362,8 +362,7 @@ This manual contains the main topics
 	<li><a href=#handlingfiles>Handling files with mined</a>
 	<ul>
 		<li><a href=#tags>Tags file support</a>
-		<li><img align=absmiddle src=new.gif title=2015.25>
-		<a href=#encrypted>Encrypted files</a>
+		<li><a href=#encrypted>Encrypted files</a>
 		<li><a href=#datasecurity>Data safety and security</a>, 
 		Backup and recovery files and File locking
 		<li><a href=#binarytransparency>Line end modes and binary-transparent editing</a>
@@ -542,7 +541,6 @@ This manual contains the main topics
 	<dd>	Mined positions to the given line number.
 <dt><code class=option>+/</code>expr
 	<dd>	Mined initially searches for the given search expression.
-		<img align=absmiddle src=new.gif title=2015.25>
 		The search can be repeated with F9.
 <dt><code class=option>-v</code>
 	<dd>	Mined starts in view only mode. The text cannot be modified.
@@ -696,7 +694,6 @@ This manual contains the main topics
 		as parameters by auto-detection, print out the 
 		information and quit.
 <dt><code class=option>-E</code> <i>or</i> <code class=option>-E-</code>
-		<img align=absmiddle src=new.gif title=2015.25>
 	<dd>	Disable text encoding auto-detection and derive it 
 		from the locale environment.
 <a name=optionK></a>
@@ -847,8 +844,7 @@ This manual contains the main topics
 		as suggested in the sample file <code class=path>Xdefaults.mined</code> 
 		in the <a href=#support>Mined runtime support library</a>.)
 <dt><code class=option>+#</code>
-	<dd>	<img align=absmiddle src=new.gif title=2015.25>
-		Assume dark terminal background and adjust some colours 
+	<dd>	Assume dark terminal background and adjust some colours 
 		accordingly.
 <dt><code class=option>-nc</code>
 	<dd>	Suppress usage of terminal colour attributes.
@@ -868,8 +864,7 @@ This manual contains the main topics
 		<ul>
 		<li>s: Unicode script
 		<li>n: Unicode character name
-		<li><img align=absmiddle src=new.gif title=2015.25>
-		q: Unicode named sequence
+		<li>q: Unicode named sequence
 		<li>d: Unicode character decomposition
 		<li>m: mined input mnemonics available for this character
 		</ul>
@@ -1059,8 +1054,7 @@ This manual contains the main topics
 		distinguished keypad functions by using the NumLock 
 		function of the keyboard and switching on this option.
 <dt><code class=option>+Bp</code>
-	<dd><img align=absmiddle src=new.gif title=2015.25>
-		Backspace should apply "plain backspacing" rather than 
+	<dd>	Backspace should apply "plain backspacing" rather than 
 		"smart backspacing", i.e. no auto-undent and only delete 
 		one combining character of a combined character;
 		without this option, use Control-Backspace for the "plain" function;
@@ -1090,14 +1084,10 @@ This manual contains the main topics
 		<li>1: (or another digit) add a margin between menu 
 			borders and contents (can be combined with any 
 			other <code class=option>-Q</code> option),
-		<li>B: <img align=absmiddle src=new.gif title=2015.25>
-			full menu background
-		<li>b: <img align=absmiddle src=new.gif title=2015.25>
-			transparent menu background
-		<li>p: <img align=absmiddle src=new.gif title=2015.25>
-			plain menu borders (no lines)
-		<li>P: <img align=absmiddle src=new.gif title=2015.25>
-			very plain: no menu borders
+		<li>B: full menu background
+		<li>b: transparent menu background
+		<li>p: plain menu borders (no lines)
+		<li>P: very plain: no menu borders
 		<li>Q: stylish selection bar for navigating menu items, see image
 			(can be combined with another option 
 			<code class=option>-Qs</code> or 
@@ -1513,8 +1503,7 @@ This manual contains the main topics
 		different keypads and modified keys may be enhanced by 
 		appropriate terminal configuration, see the section 
 		on <a href=mined.html#keyconf>Keypad configuration</a>.
-		<br><img align=absmiddle src=new.gif title=2015.25>
-		With xterm since 280, all desired distinctions between 
+		<br>With xterm since 280, all desired distinctions between 
 		different keypads as well as modified keypad keys are 
 		achieved (by using the modifyKeyboard resource mode in 
 		combination with VT220 Keyboard and Application Keypad modes).
@@ -2165,7 +2154,7 @@ This manual contains the main topics
 	allow unmodified copy and paste using terminal mouse functions.
 
 <a name=listsupport></a>
-<h3>	<img align=absmiddle src=new.gif title=2015.25>Advanced list support (bullet and numbered lists)</h3>
+<h3>	Advanced list support (bullet and numbered lists)</h3>
 	A new paragraph (according to the currently selected 
 	paragraph end mode, or considering Unicode paragraph separators) 
 	after a bullet or numbered item will clone the bullet or 
@@ -2196,11 +2185,11 @@ This manual contains the main topics
 	in your X configuration, see the example configuration file 
 	<code class=path>Xdefaults.mined</code> in the 
 	<a href=#support>Mined runtime support library</a>.
-	<br><i>Note:</i><img align=absmiddle src=new.gif title=2015.25>
-	Configuration option <code class=option>plain_BS</code> (command line 
-	option <code class=option>+Bp</code>) switches the Backarrow key 
-	from smart backspacing to plain backspacing, i.e. no auto-undent 
-	and only delete one combining character of a combined character.
+	<br><i>Note:</i>Configuration option <code class=option>plain_BS</code> 
+	(command line option <code class=option>+Bp</code>) switches 
+	the Backarrow key from smart backspacing to plain backspacing, 
+	i.e. no auto-undent and only delete one combining character of 
+	a combined character.
 	Use Shift-Control-Backarrow to perform smart backspacing then.
 
 <h4>Tab expansion</h4>
@@ -2336,7 +2325,7 @@ This manual contains the main topics
 	also saving the current file if needed first.
 
 <a name=encrypted></a>
-<h3>	<img align=absmiddle src=new.gif title=2015.25>Encrypted files</h3>
+<h3>	Encrypted files</h3>
 	Mined edits encrypted files transparently.
 	<br>
 	For reading or writing an encrypted file, a respective filter is 
@@ -2517,8 +2506,7 @@ This manual contains the main topics
 	with a Copy to file command), mined prompts for confirmation.
 	<br>Also, if mined detects that the file being edited has been changed, 
 	it displays a notice and asks for confirmation before saving.
-	To this aim, mined checks the modification time, 
-	<img align=absmiddle src=new.gif title=2015.25>file size, 
+	To this aim, mined checks the modification time, file size, 
 	device and inode (in case the file got replaced by 
 	rename/move/mount operations).
 	This is checked if mined is notified of refocussing the window 
@@ -2551,7 +2539,6 @@ This manual contains the main topics
 <h4>Pipe input</h4>
 	When invoked within a pipe, redirecting input, mined loads its 
 	text buffer from standard input.
-	<img align=absmiddle src=new.gif title=2015.25>
 	Mined does not manipulate the screen mode before data is available 
 	from the pipe, so to some extent it can interwork even with 
 	screen programs providing its input.
@@ -2563,7 +2550,6 @@ This manual contains the main topics
 	ESC w / F2 , F3, or suspend command) only the first one 
 	will write the text buffer to standard output; any subsequent 
 	one is treated as usual (with empty file name).
-	<img align=absmiddle src=new.gif title=2015.25>
 	If mined exits after writing to a pipe, it does not manipulate 
 	the screen mode after beginning to write, so to some extent it 
 	can interwork even with screen programs taking its output.
@@ -2573,7 +2559,6 @@ This manual contains the main topics
 	Mined is binary transparent. It can handle all types of 
 	line ends (Unix (LF), DOS (CRLF), Mac (CR, with option 
 	<code class=option>+R</code>), 
-	<img align=absmiddle src=new.gif title=2015.25>
 	ISO 8859/EBCDIC Next Line (NL, not after auto-detection of 
 	text encoding), and Unicode separators (LS, PS)) 
 	simultaneously in the same editing session. They are indicated 
@@ -2923,7 +2908,6 @@ This manual contains the main topics
 			Georgian character set (not Cyrillic) / 
 			Georgian-PS encoding
 		<li>	"<code class=reverse>AR</code>": 
-			<img align=absmiddle src=new.gif title=2015.25>
 			Armenian character set / ARMSCII encoding
 		</ul>
 		<i>submenu Greek/Semitic:</i>
@@ -2967,16 +2951,13 @@ This manual contains the main topics
 			Japanese character set / 
 			EUC-JP encoding (including 3-byte code points)
 		<li>	"<code class=reverse>JX</code>": 
-			<img align=absmiddle src=new.gif title=2015.25>
 			Japanese character set / 
 			EUC-JIS-2004 (X 0213) encoding
 		<li>	"<code class=reverse>32</code>": 
-			<img align=absmiddle src=new.gif title=2015.25>
 			Japanese character set / 
 			Windows "Shift_JIS" encoding / CP932
 			(including single-byte mappings to Halfwidth Forms)
 		<li>	"<code class=reverse>SX</code>": 
-			<img align=absmiddle src=new.gif title=2015.25>
 			Japanese character set / 
 			Shift_JIS-2004 (X 0213) encoding
 		<li>	"<code class=reverse>KR</code>": 
@@ -2993,7 +2974,6 @@ This manual contains the main topics
 		<li>	"<code class=reverse>TV</code>": 
 			Vietnamese character set / TCVN encoding
 		<li>	"<code class=reverse>WV</code>": 
-			<img align=absmiddle src=new.gif title=2015.25>
 			Vietnamese character set / CP1258 encoding
 		<li>	"<code class=reverse>TI</code>": 
 			Thai character set / TIS-620 encoding
@@ -3035,7 +3015,6 @@ This manual contains the main topics
 		<li>	"<code class=reverse>¦</code>": auto-indentation disabled
 		</ul>
 	<li>TAB expand mode and TAB width
-		<img align=absmiddle src=new.gif title=2015.25>
 		<ul class=items>
 		<li>	"<code class=flag>N</code>":
 		<i>(where N is 2 or 4 or 8)</i>
@@ -3198,8 +3177,7 @@ This manual contains the main topics
 		input lines too long for internal handling; will be 
 		joined into a single line when saving the file)
 	<tr valign=top><td><code class=unilineend>«</code>
-		<td><img align=absmiddle src=new.gif title=2015.25>
-		NL (U+0085, ISO 8859/EBCDIC Next Line)
+		<td>NL (U+0085, ISO 8859/EBCDIC Next Line)
 	<tr valign=top><td><code class=unilineend>«</code>
 		/ <span class=unilineend>&#9166;</span>
 		<td>LS (U+2028, Unicode line separator)
@@ -3286,8 +3264,7 @@ This manual contains the main topics
 	changed with the environment variable <span class=env>MINEDBORDER</span>.
 	The marker of selected items in flag menus can be changed with 
 	the environment variable <span class=env>MINEDMENUMARKER</span>.
-	<br><img align=absmiddle src=new.gif title=2015.25>
-	The apperance of the menu background and borders can be configured 
+	<br>The apperance of the menu background and borders can be configured 
 	in the runtime configuration file <code class=path>$HOME/.minedrc</code>.
 
 </dl>
@@ -3323,7 +3300,6 @@ This manual contains the main topics
 	(Latin-3, ISO 8859-3), Turkish (Latin-5, ISO 8859-9), 
 	Nordic (Latin-6, ISO 8859-10), Baltic (Latin-7, ISO 8859-13), 
 	Celtic (Latin-8, ISO 8859-14), Romanian (Latin-10, ISO 8859-16), 
-	<img align=absmiddle src=new.gif title=2015.25>
 	EBCDIC (CP1047), 
 	<img align=absmiddle src=new-rot.gif title=2022.26>
 	and ISO 6937.
@@ -3362,10 +3338,8 @@ This manual contains the main topics
 	<li><b>German:</b> ESC ö etc. transforms ae to ä, oe to ö
 	<li><b>French:</b> ESC é etc. transforms ae to æ, oe to oe ligature
 	<li><b>Scandinavian:</b> ESC å etc. transforms ae to æ, oe to ø
-	<li><img align=absmiddle src=new.gif title=2015.25>
-	<b>Italian:</b> ESC ì etc. transforms 'e or ´e to è rather than é etc.
-	<li><img align=absmiddle src=new.gif title=2015.25>
-	<b>East European></b> ESC &lt accented letter typical on East European 
+	<li><b>Italian:</b> ESC ì etc. transforms 'e or ´e to è rather than é etc.
+	<li><b>East European></b> ESC &lt accented letter typical on East European 
 	keyboard > (like l with stroke, u with ring, o with double acute, 
 	s with caron, etc)
 	transforms ,e to e with ogonek (rather than cedilla) etc., 
@@ -3385,9 +3359,7 @@ This manual contains the main topics
 	(If language tag begins with "lt")
 	Proper case conversion of accented i with retained i dot.
 	<p><b>Turkish, Azeri, Tatar, Bashkir:</b>
-	(If language tag begins with "tr" or "az"
-	<img align=absmiddle src=new.gif title=2015.25>
-	or "crh" or "tt" or "ba")
+	(If language tag begins with "tr" or "az" or "crh" or "tt" or "ba")
 	Proper case conversion of i<->I with dot above / dotless i<->I.
 	<p><b>Dutch:</b>
 	(If language tag begins with "nl")
@@ -3453,7 +3425,6 @@ This manual contains the main topics
 	Windows Cyrillic (CP1251), and KOI8-RU which is a convenient 
 	merge of KOI8-R (Russian) and KOI8-U (Ukrainian) (which are 
 	also supported separately but not included in the menu), 
-	<img align=absmiddle src=new.gif title=2015.25>
 	and DOS Ukrainian (CP1125 and CP1131).
 	To view and edit a file in one of these encodings, select it 
 	from the Encoding menu ("Cyrillic" or submenu "more NE Eurasian"), 
@@ -3574,7 +3545,6 @@ This manual contains the main topics
 <!p><hr class=sep width=95%>
 <h3>	Armenian</h3>
 <h4>Character sets</h4>
-	<img align=absmiddle src=new.gif title=2015.25>
 	In addition to Unicode, mined supports ARMSCII.
 	To view and edit a file in this encoding, select it from the 
 	Encoding menu (submenu "more NE Eurasian", tell me if that's not 
@@ -3830,7 +3800,6 @@ This manual contains the main topics
 <h4>Character sets</h4>
 	In addition to Unicode, mined supports JIS character sets 
 	in EUC-JP or Shift_JIS (CP932) multi-byte encoding 
-	<img align=absmiddle src=new.gif title=2015.25>
 	and EUC-JIS-2004 (X 0213) or Shift_JIS-2004 (X 0213) encoding.
 	To view and edit a file in one of these encodings, select it 
 	from the Encoding menu (section "Japanese"), or use the 
@@ -3842,7 +3811,6 @@ This manual contains the main topics
 	certain success rate).
 	Set the environment variable <span class=env>MINEDDETECT</span>="JS" 
 	to constrain auto-detection to EUC-JP and Shift_JIS encodings, 
-	<img align=absmiddle src=new.gif title=2015.25>
 	or <span class=env>MINEDDETECT</span>="Xx" to constrain 
 	auto-detection to EUC-JIS X 0213 and Shift_JIS X 0213 encodings.
 	See <a href=#minedconf>Mined configuration</a> for details.
@@ -3904,7 +3872,6 @@ This manual contains the main topics
 <h3>	Vietnamese</h3>
 <h4>Character sets</h4>
 	In addition to Unicode, mined supports VISCII, TCVN and 
-	<img align=absmiddle src=new.gif title=2015.25>
 	Windows Vietnamese (CP1258) character sets.
 	To view and edit a file in one of these encodings, select it 
 	from the Encoding menu (section "Vietnamese"), or use the 
@@ -4081,8 +4048,7 @@ This manual contains the main topics
 	      will only delete the rightmost combining accent 
 	      (preceding the cursor position) while Backarrow would 
 	      delete the whole combined character.
-		<br><i>Note:</i><img align=absmiddle src=new.gif title=2015.25>
-		Configuration option <code class=option>plain_BS</code> 
+		<br><i>Note:</i>Configuration option <code class=option>plain_BS</code> 
 		(command line option <code class=option>+Bp</code>) 
 		switches the Backarrow key from smart backspacing to 
 		plain backspacing, i.e. no auto-undent and only delete 
@@ -4156,7 +4122,6 @@ This manual contains the main topics
 	<p>In the Info menu, attributes that are shown with the character 
 	information can be selected:
 	Unicode script name, Unicode character name,
-	<img align=absmiddle src=new.gif title=2015.25>
 	Unicode named sequence, 
 	Unicode character decomposition, list of input mnemonics.
 	Note that Unicode named sequence information only applies to a 
@@ -4251,7 +4216,6 @@ This manual contains the main topics
 	opening or closing typographic quotation mark, depending on 
 	the text context, or an apostrophe where appropriate.
 	Also, an acute accent key enters a typographic apostrophe.
-	<img align=absmiddle src=new.gif title=2015.25>
 	Alt-" or Alt-' enter the respective quotation marks of the 
 	previous or standby style (see below).
 	<br>
@@ -4352,12 +4316,10 @@ This manual contains the main topics
 		<br><i>otherwise:</i> em dash (U+2014)
 	<tr valign=top>
 		<td width=30><code>- </code> <i>or</i> <code>-TAB</code>
-		<td><i><img align=absmiddle src=new.gif title=2015.25>
-		if leading a line (only white space before):</i> en dash (U+2013)
+		<td><i>if leading a line (only white space before):</i> en dash (U+2013)
 	<tr valign=top>
 		<td width=30><code> - </code>
-		<td><i><img align=absmiddle src=new.gif title=2015.25>
-		if embedded in spaces:</i> minus sign (U+2212)
+		<td><i>if embedded in spaces:</i> minus sign (U+2212)
 	<tr valign=top>
 		<td width=30><code>-</code>
 		<td><i>if an adjacent character is in the Hebrew 
@@ -4378,8 +4340,7 @@ This manual contains the main topics
 		<td><code>`</code>
 		<td>glottal stop (U+02BB modifier letter turned comma)
 	</table></dl>
-	<dd><i>Note:</i> <img align=absmiddle src=new.gif title=2015.25>
-	Mined smartly avoids inappropriate placement of smart replacements 
+	<dd><i>Note:</i> Mined smartly avoids inappropriate placement of smart replacements 
 	as well as double spaces by redundant combination of smart spaces 
 	and explicitly entered spaces, so you can seamlessly type either 
 	<code class=ex>"bonjour"</code> or <code class=ex>" bonjour "</code> 
@@ -4837,8 +4798,7 @@ This manual contains the main topics
 	<tr><td>" <i>or</i> '
 	<td>outer or inner quotation mark of selected quote marks style
 	<tr><td>Alt-" <i>or</i> Alt-'
-	<td><img align=absmiddle src=new.gif title=2015.25>
-	outer or inner quotation mark of previous/standby quote marks style
+	<td>outer or inner quotation mark of previous/standby quote marks style
 	</table>
 	</dl>
 
@@ -4885,7 +4845,7 @@ This manual contains the main topics
 	<td>Unicode line separator (if editing Unicode text)
 	<tr><td>Shift-Enter <i>or</i> HOP Enter
 	<td>Unicode paragraph separator (if editing Unicode text)
-	<tr><td><img align=absmiddle src=new.gif title=2015.25>Control-Shift-Enter
+	<tr><td>Control-Shift-Enter
 	<td>ISO 8859 Next Line (if editing Unicode or ISO 8859 text)
 	</table>
 	<dt>Also, the line end type of a line can be changed from a submenu 
@@ -4902,7 +4862,6 @@ This manual contains the main topics
 	The available mnemonics include RFC1345 mnemonics (extended 
 	to provide generic accent mnemonics for Unicode characters), 
 	mnemonics known from HTML and TeX,
-	<img align=absmiddle src=new.gif title=2015.25>
 	groff glyphs (roff special characters), and useful supplementary mnemonics.
 	See <a href=mnemodoc.html>Character Mnemos reference</a> on 
 	the mined web site for a listing.
@@ -5283,13 +5242,11 @@ This manual contains the main topics
 	<tr><td width=30><code>J</code>
 		<td>EUC-JP
 	<tr><td width=30><code>X</code>
-		<td><img align=absmiddle src=new.gif title=2015.25>
-			EUC-JIS-2004 / EUC-JIS X 0213
+		<td>EUC-JIS-2004 / EUC-JIS X 0213
 	<tr><td width=30><code>S</code>
 		<td>Shift_JIS / CP932
 	<tr><td width=30><code>x</code>
-		<td><img align=absmiddle src=new.gif title=2015.25>
-			Shift_JIS-2004 / Shift_JIS X 0213
+		<td>Shift_JIS-2004 / Shift_JIS X 0213
 	<tr><td width=30><code>K</code>
 		<td>UHC / CP949 (including EUC-KR)
 	<tr><td width=30><code>V</code>
@@ -5297,7 +5254,6 @@ This manual contains the main topics
 	</table></dl>
 	<p><i>Note:</i> For new files, the text encoding is derived from 
 	the locale environment.
-	<img align=absmiddle src=new.gif title=2015.25>
 	With command line option <code class=option>-E-</code> or 
 	<code class=option>-E</code> auto-detection is disabled and 
 	text encoding is always derived from the locale environment.
@@ -5312,7 +5268,7 @@ This manual contains the main topics
 	menu selection feature.
 
 <a name=ebcdic></a>
-<h3>	<img align=absmiddle src=new.gif title=2015.25>EBCDIC support</h3>
+<h3>	EBCDIC support</h3>
 	Mined supports EBCDIC encoded files (transparently transforming 
 	them for internal handling) in the "bracket" codepage CP1047 as 
 	used by the UNIX System Services (USS) on IBM z/OS.
@@ -6115,7 +6071,7 @@ This manual contains the main topics
    <dt>Ctrl-End (on small keypad)
 	<dd>Move to end of line.
 
-   <dt><img align=absmiddle src=new.gif title=2015.25>HOP ESC .
+   <dt>HOP ESC .
 	<dd>Center current position vertically on screen.
 
   <hr align=left width=50%>
@@ -6206,8 +6162,7 @@ This manual contains the main topics
 	<dd>Make a new line by inserting a Unicode paragraph separator 
 	at cursor position 
 	(unless disabled with <code class=option>+u-u</code>).
-   <dt><img align=absmiddle src=new.gif title=2015.25>
-	Control-Shift-Enter <i>(if editing Unicode or ISO 8859 text)</i>
+   <dt>Control-Shift-Enter <i>(if editing Unicode or ISO 8859 text)</i>
 	<dd>Make a new line by inserting a Next Line character (U+0085).
 
    <dt>Ctrl-Alt-Enter
@@ -6321,7 +6276,6 @@ This manual contains the main topics
    <dt>^V ^ ^ <i>or</i> ^V _ _
 	<dd>Enter one of the control characters ^^, ^_.
    <dt>^V ^ ' <i>or</i> ^V ^ "
-	<img align=absmiddle src=new.gif title=2015.25>
 	<i>or</i> ^V ^ ` <i>or</i> ^V ^ ´
 	<dd>Enter one of the straight quote marks ' or " or plain accents 
 	(needed in smart quotes mode)
@@ -6360,8 +6314,7 @@ This manual contains the main topics
 	<a href=https://html.spec.whatwg.org/multipage/named-characters.html>
 	HTML living standard</a>, prepended with a "&"
 	<li>TeX mnemos (macros) and substitutes, leaving out any "\"
-	<li><img align=absmiddle src=new.gif title=2015.25>
-	groff glyphs (roff special characters), mnemonics beginning with "("
+	<li>groff glyphs (roff special characters), mnemonics beginning with "("
 	<li>Supplementary mnemos as listed on the 
 		<a href=mnemodoc.html>mined character mnemos page</a>
 	</ul>
@@ -6485,8 +6438,7 @@ This manual contains the main topics
 		by inspecting the setting of the terminal interface, 
 		see <a href=#backspaceadaptation>Automatic backspace 
 		mode adaptation</a>.
-		<dd><i>Note:</i><img align=absmiddle src=new.gif title=2015.25>
-		Configuration option <code class=option>plain_BS</code> 
+		<dd><i>Note:</i>Configuration option <code class=option>plain_BS</code> 
 		(command line option <code class=option>+Bp</code>) 
 		switches the Backarrow key from smart backspacing to 
 		plain backspacing, i.e. no auto-undent and only delete 
@@ -6497,7 +6449,7 @@ This manual contains the main topics
 	of combined character left of cursor position.
 	If not next to a combined character: delete character left, 
 	avoiding auto-undent function.
-   <dt><img align=absmiddle src=new.gif title=2015.25>Shift-Ctrl-Backarrow <i>(if key properly configured)</i> <i>or</i> Shift-F5 Backarrow
+   <dt>Shift-Ctrl-Backarrow <i>(if key properly configured)</i> <i>or</i> Shift-F5 Backarrow
 	<dd>"Delete smart": Smart backspacing function as described above 
 	as default behaviour of the Backarrow key.
    <dt>Del <i>(on keypad)</i>
@@ -6583,9 +6535,7 @@ This manual contains the main topics
 		<span class=env>LANGUAGE</span>, 
 		<span class=env>TEXTLANG</span>, <span class=env>LC_ALL</span>, 
 		<span class=env>LC_CTYPE</span>, <span class=env>LANG</span>) 
-		begins with "tr" or "az" 
-		<img align=absmiddle src=new.gif title=2015.25>
-		or "crh" or "tt" or "ba"
+		begins with "tr" or "az" or "crh" or "tt" or "ba"
 		<li>case mappings to multiple characters
 		<li>Lithuanian special conditions (locale value begins with "lt")
 		<li>Dutch "IJsselmeer" title casing with Shift-F3 
@@ -6655,13 +6605,13 @@ This manual contains the main topics
    <dt>ESC æ <i>or</i> ESC å <i>or</i> ESC ø
 	<dd>Similar to ESC _, but with Danish transformation preferences.
 	<br>example: ae &rarr; æ, oe &rarr; ø
-   <dt><img align=absmiddle src=new.gif title=2015.25>ESC ì <i>or</i> ESC ò
+   <dt>ESC ì <i>or</i> ESC ò
 	<dd>Similar to ESC _, but with Italian accent preferences (è rather than é).
-   <dt><img align=absmiddle src=new.gif title=2015.25>ESC &lt accented letter typical on East European keyboard >
+   <dt>ESC &lt accented letter typical on East European keyboard >
 	<i>(like l with stroke, u with ring, o with double acute, s with caron, etc)</i>
 	<dd>Similar to ESC _, but with East European accent preferences: 
 	ogonek rather than cedilla, -d becomes d with stroke
-   <dt><img align=absmiddle src=new.gif title=2015.25>ESC &lt special key typical on South European keyboard >
+   <dt>ESC &lt special key typical on South European keyboard >
 	<i>(like n with tilde, g with breve, dotless i)</i>
 	<dd>Like ESC _.
 </dl>
@@ -7924,8 +7874,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	with a 2-letter indication used by mined to indicate the 
 	respective text encoding in the Encoding flag.
 	</li>
-	<li><img align=absmiddle src=new.gif title=2015.25>
-	<code class=option>-E-</code> or <code class=option>-E</code>
+	<li><code class=option>-E-</code> or <code class=option>-E</code>
 	disables text encoding auto-detection which is then 
 	derived from the locale environment.
 	</li>
@@ -8139,7 +8088,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	<td><!man:br>DOS US
 	<tr valign=top><td>CP720
 	<td><!man:br><code>DA</code>
-	<td><!man:br><img align=absmiddle src=new.gif title=2015.25>DOS Arabic
+	<td><!man:br>DOS Arabic
 	<tr valign=top><td>CP737
 	<td><!man:br><code>37</code>
 	<td><!man:br>DOS Greek
@@ -8196,7 +8145,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	<td><!man:br>DOS Ukraine
 	<tr valign=top><td>CP1131
 	<td><!man:br><code>31</code>
-	<td><!man:br><img align=absmiddle src=new.gif title=2015.25>DOS Byelorussian/Ukrainian
+	<td><!man:br>DOS Byelorussian/Ukrainian
 	<tr valign=top><td>CP1250
 	<td><!man:br><code>WE</code>
 	<td><!man:br>Windows Central European
@@ -8223,7 +8172,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	<td><!man:br>Windows Baltic
 	<tr valign=top><td>CP1258
 	<td><!man:br><code>WV</code>
-	<td><!man:br><img align=absmiddle src=new.gif title=2015.25>Windows Vietnamese
+	<td><!man:br>Windows Vietnamese
 	</table></dl>
 
 	<p><i>Note:</i>
@@ -9038,8 +8987,7 @@ key does not matter, e.g. ^K^B, ^KB and ^Kb are identical.
 	standard locations (system-dependent), it should be made 
 	available in the usual command search path.
 	<br>The script offers a choice of configured printers to select 
-	one (using either Windows registry 
-	or <img align=absmiddle src=new.gif title=2015.25>CUPS lpstat).
+	one (using either Windows registry or CUPS lpstat).
 	<br>The script uses either <code>paps</code> or 
 	<code>uniprint</code> for actual formatting (print preprocessing).
 	Under Windows (cygwin/stand-alone/djgpp versions), 
