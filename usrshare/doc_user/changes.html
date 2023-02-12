@@ -1,6 +1,7 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta charset=utf-8>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="style.css">
 <script language="JavaScript" type="text/javascript">
 if (top.select) {
@@ -958,7 +959,7 @@ substitution expression can refer to with numbered references \1 through \9.
 Sub-expressions can be nested.
 
 Tweaked auto-bullet list handling, no auto-bullet after empty line.
-Added ° (degree sign) to item bullet category.
+Added Â° (degree sign) to item bullet category.
 
 Tweaked inconsistent deletion behaviour over combined characters, e.g. ZWSP.
 
@@ -1049,7 +1050,7 @@ Fixed repeat command (ESC nn ...) to not apply smart substitution initially.
 
 Fixed character encoding of some auxiliary file-related messages.
 
-Fixed mnemonic for ¾.
+Fixed mnemonic for Â¾.
 
 Preventing encoding switching when editing EBCDIC file (like UTF-16).
 
@@ -1083,7 +1084,7 @@ Undent removes bullets / numbering levels.
 Cloning TAB characters regardless of TAB expansion mode.
 
 Enhanced smart spaces/dashes/arrows/minus:
-* suppressing double spaces by smart and input spaces (e.g. x -- y, « q »)
+* suppressing double spaces by smart and input spaces (e.g. x -- y, Â«Â qÂ Â»)
 * suppressing smart input handling after cursor has moved
 * new: leading smart dash on line when entering single hyphen before white space: "- "
 * new: smart minus sign when entering single hyphen embedded in spaces: " - "
@@ -1145,8 +1146,8 @@ also to locales Crimean Tatar (crh), Volga Tatar (tt), and Bashkir (ba).
 
 Accented character composing transformation:
 Additional national preferences variations of the mnemonic transformation 
-command ESC _ (similar to ESC ö, ESC é, ESC æ etc.):
-* Italian: ESC ì or ESC ò transforms 'e or ´e to è rather than é etc
+command ESC _ (similar to ESC Ã¶, ESC Ã©, ESC Ã¦ etc.):
+* Italian: ESC Ã¬ or ESC Ã² transforms 'e or Â´e to Ã¨ rather than Ã© etc
 * East European: ESC < accented letter typical on East European keyboard >
   (like l with stroke, u with ring, o with double acute, s with caron, etc) 
   transforms ,e to e with ogonek (rather than cedilla) etc., 
@@ -1528,7 +1529,7 @@ Character function fixes:
   character cannot be encoded in the current text encoding.
 * Fixed Ctrl-F11 to not delete rest of line (since 2012.22).
 * Fixed string conversion (Shift-F11, Shift-F3) to not drop handling of 
-  language-specific cases after special cases (e.g. ßi in Turkish locale).
+  language-specific cases after special cases (e.g. ÃŸi in Turkish locale).
 
 Terminal handling:
 * Fixed HPterm icon string setting sequence (length).
@@ -1555,7 +1556,7 @@ Fixed smart quotes from sometimes inserting apostrophe on double quote key.
 Fixed wrong encoding detection if e.g. LC_ALL=en_GB (since 2012.20).
 
 Fixed input of typographic apostrophe (U+2019) with HOP ' in non-Unicode text.
-Fixed input of typographic apostrophe (U+2019) with HOP ´ in some encodings.
+Fixed input of typographic apostrophe (U+2019) with HOP Â´ in some encodings.
 
 Tweaked prompt whether to quit with unsaved changes to align right 
 so that the file base name is seen and rather the path prefix gets dropped.
@@ -2314,8 +2315,8 @@ Enhanced smart quotes algorithm to better distinguish apostrophe
 automatically (except initial apostrophe).
 
 New input shortcuts for apostrophe and glottal stop / 'okina (for Hawai'ian):
-* HOP ´ (acute accent) enters apostrophe (U+2019).
-* In smart quotes mode, ´ alone also enters apostrophe.
+* HOP Â´ (acute accent) enters apostrophe (U+2019).
+* In smart quotes mode, Â´ alone also enters apostrophe.
 * HOP ` (grave accent) enters glottal stop (U+02BB).
 * In smart quotes mode, ` alone also enters glottal stop.
 
@@ -2607,7 +2608,7 @@ Revised online help page "Unicode Howto".
 
 Character input enhancements:
 -----------------------------
-Character replacement commands (ESC _ , ESC ö etc) also unescape 
+Character replacement commands (ESC _ , ESC Ã¶ etc) also unescape 
 * URL escape notation like %E2%82%AC
 * HTML numeric character entities (&_#x20AC; &_#8364;)
 
@@ -3308,7 +3309,7 @@ Added support for multiple accented character input:
   Control-less Control-` Control-, alpha
   all enter U+1F82 (alpha with psili and varia and ypogegrammeni), etc.
 * Generic handling of accent prefix with precomposed base character, 
-  applying implicit decomposition if needed, so e.g. F6 ü will enter u 
+  applying implicit decomposition if needed, so e.g. F6 Ã¼ will enter u 
   with diaeresis and acute (even without explicitly configured 
   mnemonic) etc.
 
@@ -3333,7 +3334,7 @@ Added character mnemonics:
   additional more intuitive ones like "_ou" for Latin small letter ou 
   and "_alpha" for Latin small letter alpha.
 * Mnemonics combining accents on precomposed characters like 
-  "æ'" in addition to "ae'" so if you have "æ" on your keyboard, 
+  "Ã¦'" in addition to "ae'" so if you have "Ã¦" on your keyboard, 
   you can now enter Latin ae with acute using it, either with a 
   mnemonic sequence (combining it with ') or also using the acute 
   accent prefix function (F6 or Control-1).
@@ -4368,7 +4369,7 @@ Added character composition mnemonics (using generic accent prefixes)
 for Vietnamese double-composed characters, i.e. placing a second accent 
 on Vietnamese base characters that already have a single composition, 
 e.g. if you have mapped your keyboard to have A with circumflex 
-available, you can enter "^VÂ'" (Control-V A-circumflex apostrophe) to 
+available, you can enter "^VÃ‚'" (Control-V A-circumflex apostrophe) to 
 produce the combined character U+1EA4 (A with circumflex and acute).
 
 Added a Thai input method.
@@ -4739,7 +4740,7 @@ The character can then be converted into the current encoding.
 The search function is invoked with HOP search corresponding - 
 e.g. HOP ESC ( - or Alt-F11 .
 The conversion is invoked with the diacritic transformation function, 
-e.g. ESC _ or ESC ö , which was extended for this purpose.
+e.g. ESC _ or ESC Ã¶ , which was extended for this purpose.
 For repeated interactive conversion, both functions can be combined 
 with Alt-Shift-F11 (convert current character, then search next).
 
@@ -4768,7 +4769,7 @@ if clicked there, the menu is placed on the the line end
 
 The diacritic transformation command (ESC _) derives language-specific 
 preferences (such as can be explicitly applied by using the command 
-variations ESC ö etc) from the locale environment.
+variations ESC Ã¶ etc) from the locale environment.
 
 Added a sample xterm key translation to Xdefaults.mined to assign 
 the HOP function to the Scroll Lock and Pause keys in order to 
@@ -4928,7 +4929,7 @@ terminal cannot display GB18030 4-byte encodings, CNS 4-byte
 encodings, EUC-JP 3-byte encodings, respectively.
 
 Revision and improvement of CJK display indications:
-¤  (cyan background) (8-bit terminal): CJK cannot be displayed here
+Â¤  (cyan background) (8-bit terminal): CJK cannot be displayed here
 @  (cyan background) (CJK terminal): CJK code cannot be displayed on terminal
 # (cyan background): invalid CJK code (not assigned in selected encoding)
 # (cyan): illegal (esp. incomplete) CJK code
@@ -4966,10 +4967,10 @@ which are the same as available for two-letter mnemonic input (e.g. ^Vae).
 With Escape commands with diacritic letters that occur on respective 
 national keyboards, the according preference transformations take 
 precedence:
-ESC ö, ESC ä, ESC ü, ESC ß: ae->ä, oe->ö
-ESC é, ESC è, ESC à, ESC ù, ESC ç: oe->oe ligature (Unicode mode, U+0153)
-ESC æ, ESC å, ESC ø: ae->æ, oe->ø
-ESC _, control-F11: ae->æ, oe->oe ligature (Unicode mode, U+0153)
+ESC Ã¶, ESC Ã¤, ESC Ã¼, ESC ÃŸ: ae->Ã¤, oe->Ã¶
+ESC Ã©, ESC Ã¨, ESC Ã , ESC Ã¹, ESC Ã§: oe->oe ligature (Unicode mode, U+0153)
+ESC Ã¦, ESC Ã¥, ESC Ã¸: ae->Ã¦, oe->Ã¸
+ESC _, control-F11: ae->Ã¦, oe->oe ligature (Unicode mode, U+0153)
 
 
 Enhancements in command input:
@@ -4996,7 +4997,7 @@ New function assignments:
 F12	enable memory for file positions in current directory
 F11	(unchanged) low/capital letter toggle
 shift-F11	low/capital toggle for whole word from cursor (like HOP F11)
-control-F11	diacritic transformation, e.g. ae->æ
+control-F11	diacritic transformation, e.g. ae->Ã¦
 ctrl-shift-F11	(like HOP ESC U) transform Unicode value into character
 shift-F2	write file even if unmodified
 control-F2	save file as (prompt for new name, then save)
@@ -5620,7 +5621,7 @@ Fixed some search pattern match bugs:
 - with ^, searching backwards (did not find in current line)
 
 Removed restriction of regular expressions with Unicode characters:
-search patterns ä* etc (UTF-8: Ã¤*, â‚¬* etc) do work now.
+search patterns Ã¤* etc (UTF-8: ÃƒÂ¤*, Ã¢Â‚Â¬* etc) do work now.
 
 
 Manual hints and clarifications:
@@ -6134,7 +6135,7 @@ Some more new or enhanced features:
 -	Mostly unified option environment into one variable, MINED.
 -	Options for conversion between different line end types.
 -	Extended the enter-control-code prefix (^V) to compose characters 
-	if the first following key resembles an accent mark ("'`^°~).
+	if the first following key resembles an accent mark ("'`^Â°~).
 -	A search for identifier at current position function was introduced.
 -	A repeat previous search (one before the last search) function was 
 	introduced.

@@ -15,7 +15,8 @@ s,\(<h.[^>]*>\)[ 	]*,\1,
 s,\(<[^>]*[^> ]\) *class=[^> ]*,\1,g
 
 # fix no-break space
-s, ,\\0,g
+#s, ,\\0,g
+s,Â ,\\0,g
 
 # handle table arrows
 /<noframes>/,/<\/noframes>/ s,&larr;,\\\*(<-,g
