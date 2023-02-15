@@ -116,12 +116,13 @@ uniset:	uniset.tar.gz
 	gzip -dc uniset.tar.gz | tar xvf - uniset
 
 uniset.tar.gz:
+	#https://github.com/mgkuhn/uniset/archive/refs/heads/master.zip
 	$(WGET) https://www.cl.cam.ac.uk/~mgk25/download/uniset.tar.gz
 
 #WIDTH-A:	uniset.tar.gz
 #	tar xvzf uniset.tar.gz WIDTH-A
 
-WIDTH-A:	EastAsianWidth.txt
+WIDTH-A:	EastAsianWidth.txt # uniset
 	$(SH) ./mkwidthA
 
 
@@ -189,7 +190,7 @@ udata_assigned.t:	# UnicodeData.txt Blocks.txt
 
 udata-update:	Blocks.txt udata-add_assigned udata-add_combining WIDTH-A udata-add_ambiguous udata-add_right-to-left
 
-unicode-previous/WIDTH-A:
+unicode-previous/WIDTH-A:	# uniset
 	(cd unicode-previous; ${PWD}/mkwidthA)
 
 udata-add_assigned:
@@ -255,7 +256,7 @@ casespec.t:	mkcasesp # SpecialCasing.txt
 	$(SH) ./mkcasesp
 
 # Unicode character information tables:
-wide.t:	mkwidthW # EastAsianWidth.txt
+wide.t:	mkwidthW # EastAsianWidth.txt # uniset
 	$(SH) ./mkwidthW
 
 softdot.t:	mkpropl # PropList.txt
