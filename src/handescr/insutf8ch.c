@@ -127,7 +127,7 @@ main (argc, argv)
 		if (argv[1][1] == 'd')
 			dec = 1;
 
-	while (gets (buf)) {
+	while (fgets (buf, sizeof buf, stdin)) {
 		char * U_ = strstr (buf, "U+");
 		if (U_) {
 			char * s = U_ + 2;
