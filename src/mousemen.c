@@ -2628,6 +2628,7 @@ local char *
 			|| (! utf8_screen && ! cjk_term && ! mapped_term && unichar >= 0x100)
 			|| unichar < (unsigned long) ' '
 			|| (unichar >= 0x7F && unichar <= 0xA0)
+			|| (! utf8_screen && unichar >= 0x7F)
 			Then
 				If full_menu_bg
 				Then	menubg_on ();
