@@ -34,7 +34,7 @@ OBJDIR:=$(shell echo ../bin/$(SYS).$(ARCH) )
 #	-pedantic
 # (rotten C crap: prototype matches exactly, so why this silly 
 #  warning "promoted argument `c' doesn't match prototype" ???
-GFLAGS= -ansi -Waggregate-return -Winline \
+GFLAGS= -std=gnu90 -Waggregate-return -Winline \
 	-Wimplicit -Wunused -Wswitch -Wchar-subscripts \
 	-Wformat -Wparentheses -Wmissing-braces \
 	-Wuninitialized \
