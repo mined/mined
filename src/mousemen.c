@@ -3125,7 +3125,7 @@ local int
 	If startcol > 0 && startcol + width > XMAX - 1
 	Then	width = XMAX + 1 - startcol;
 	Fi
-	If cjk_width_data_version && (width & 1)
+	If (cjk_width_data_version || cjk_bar_wide) && (width & 1)
 	Then	width ++;
 	Fi
 	return width;
@@ -3142,6 +3142,9 @@ local void
 
 	If width_data_version && cjk_width_data_version
 	&& (! use_vt100_block_graphics || xterm_version > 0 || cjk_term)
+	Then	horizontal_bar_width = 2;
+	Fi
+	If cjk_bar_wide
 	Then	horizontal_bar_width = 2;
 	Fi
 

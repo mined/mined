@@ -43,6 +43,7 @@ int combining_data_version = U500;	/* Unicode 5.0 */
 
 /* special modes */
 int cjk_width_data_version = 0;	/* xterm CJK legacy width mode -cjk_width */
+FLAG cjk_bar_wide = False;	/* CJK mode VT100 wide graphics bar */
 FLAG hangul_jamo_extended = False;	/* U+D7B0... combining Jamo ? */
 FLAG wide_indic = False;	/* Indic scripts handled wide? */
 FLAG wide_extra = False;	/* Some long Unicode chars handled wide? */

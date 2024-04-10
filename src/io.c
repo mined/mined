@@ -1701,14 +1701,14 @@ char *
 asciiblockchar (c)
   character c;
 {
-    if (menu_border_style == 'r') {
+  if (menu_border_style == 'r') {
 	switch (c) {
 		case 'j':	return "/";	/* LR */
 		case 'k':	return "\\";	/* UR */
 		case 'l':	return "/";	/* UL */
 		case 'm':	return "\\";	/* LL */
 		case 'n':	return "+";	/* crossing (not used) */
-		case 'q':	if (cjk_width_data_version) {
+		case 'q':	if (cjk_width_data_version || cjk_bar_wide) {
 					return "--";	/* hor. line */
 				} else {
 					return "-";	/* hor. line */
@@ -1729,14 +1729,14 @@ asciiblockchar (c)
 				}
 		default: return "";
 	}
-    } else {
+  } else {
 	switch (c) {
 		case 'j':	return "+";	/* LR */
 		case 'k':	return "+";	/* UR */
 		case 'l':	return "+";	/* UL */
 		case 'm':	return "+";	/* LL */
 		case 'n':	return "+";	/* crossing (not used) */
-		case 'q':	if (cjk_width_data_version) {
+		case 'q':	if (cjk_width_data_version || cjk_bar_wide) {
 					return "--";	/* hor. line */
 				} else {
 					return "-";	/* hor. line */
@@ -1757,7 +1757,7 @@ asciiblockchar (c)
 				}
 		default: return "";
 	}
-    }
+  }
 }
 
 #ifndef CURSES
@@ -1770,7 +1770,7 @@ character
 vgablockchar (c)
   character c;
 {
-    if (menu_border_style == 'd') {
+  if (menu_border_style == 'd') {
 	switch (c) {
 		case 'j':	return 0xBC;	/* LR */
 		case 'k':	return 0xBB;	/* UR */
@@ -1795,7 +1795,7 @@ vgablockchar (c)
 #endif
 		default:	return c;
 	}
-    } else {
+  } else {
 	switch (c) {
 		case 'j':	return 0xD9;	/* LR */
 		case 'k':	return 0xBF;	/* UR */
@@ -1821,7 +1821,7 @@ vgablockchar (c)
 #endif
 		default:	return c;
 	}
-    }
+  }
 }
 
 #if defined (unix) || defined (vms)
@@ -1839,8 +1839,10 @@ acblockchar (c)
   static char sout [3];
   char * spoi = sout;
 
-  if (c == 'f' || c == 'g') {
-	c = '`';	/* choose one of '`' 'a' '|' 'f' */
+  if (c == 'f') {
+	c = '~';	/* should be wide if cjk_bar_wide */
+  } else if (c == 'g') {
+	c = 'i';	/* should be wide if cjk_bar_wide */
   }
 
   if (* cAC) {
@@ -2805,7 +2807,7 @@ putstring (str)
 /**
    Output a menu border character. Decide which style to use, 
    block graphics (VT100 or VGA), Unicode graphics, ASCII graphics.
-   This and it's setup is a mess and could do with some revision.
+   This and its setup is a mess and could do with some revision.
  */
 void
 putblockchar (c)

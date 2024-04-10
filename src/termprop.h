@@ -67,6 +67,7 @@ extern int combining_data_version;
 
 /* special modes */
 extern int cjk_width_data_version;	/* xterm CJK legacy width mode -cjk_width */
+extern FLAG cjk_bar_wide;		/* CJK mode VT100 wide graphics bar */
 extern FLAG hangul_jamo_extended;	/* U+D7B0... combining Jamo ? */
 extern FLAG wide_indic;		/* Indic scripts handled wide? */
 extern FLAG wide_extra;		/* Some long Unicode chars handled wide? */

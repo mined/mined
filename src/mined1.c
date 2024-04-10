@@ -3018,6 +3018,8 @@ typedef struct {
 	} screen_width;
 
 static screen_width utf8_widths [] = {
+	{"(0q(B"},
+
 	/* detecting combining mode: */
 	{"aÌ¡"},
 
@@ -3073,6 +3075,7 @@ static screen_width utf8_widths [] = {
 };
 
 static screen_width cjk_widths [] = {
+	{"(0q(B"},
 	{"0¡2"},
 	{"¡¤¡±ê¥¦¡Þ¡"},
 	{"Ž¡££"},
@@ -3944,6 +3947,8 @@ terminal_configure_init ()
 	    if (do_width_checks) {
 		acquire_screen_widths (utf8_widths, arrlen (utf8_widths));
 	    }
+	    if (get_screen_width ("(0q(B", utf8_widths, arrlen (utf8_widths)) > 1)
+		cjk_bar_wide = True;
 
 	    if (get_screen_width ("aÌ¡", utf8_widths, arrlen (utf8_widths)) == 1) {
 			combining_screen = True;
@@ -4101,6 +4106,10 @@ terminal_configure_init ()
 			combining_mode = False;
 		}
 		acquire_screen_widths (cjk_widths, arrlen (cjk_widths));
+		if (get_screen_width ("(0q(B", cjk_widths, arrlen (cjk_widths)) > 1)
+			cjk_bar_wide = True;
+printf("explicit_scrollbar_style %d\n", explicit_scrollbar_style);
+
 		if (swidth > 13) {
 			int cwidth = get_screen_width ("0¡2", cjk_widths, arrlen (cjk_widths));
 			if (cwidth > 2) {
