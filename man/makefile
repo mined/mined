@@ -32,7 +32,7 @@ man:	mined.1 uterm.1
 	LC_ALL=C sed -f entities.sed $*-0 | LC_ALL=C sed -e "s,__header__,$(shell $(header) $< )," -e "s,__footer__,$(footer.$*)," -e "s,__date__,$(date)," -e "/^$$/ d" > $*-1
 	rm -f entities.sed
 	# prepend character entities definitions and polish some artefacts
-	LC_ALL=C sed -e "s,^', '," -e '/^.TH/ r predef.1' -e '/^.SH DESCRIPTION/ r note1.add' $*-1 >> $@
+	LC_ALL=C sed -e "s,^', '," -e '/^.TH/ r predef.add' -e '/^.SH DESCRIPTION/ r note1.add' $*-1 >> $@
 	rm -f $* $*-0 $*-1
 
 
