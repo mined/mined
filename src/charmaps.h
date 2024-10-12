@@ -42,6 +42,8 @@ extern struct encoding_table_entry cp720_table [];
 extern unsigned int cp720_table_len;
 extern struct encoding_table_entry isohebr_table [];
 extern unsigned int isohebr_table_len;
+extern struct encoding_table_entry cp856_table [];
+extern unsigned int cp856_table_len;
 extern struct encoding_table_entry cp1255_table [];
 extern unsigned int cp1255_table_len;
 extern struct encoding_table_entry cp1253_table [];

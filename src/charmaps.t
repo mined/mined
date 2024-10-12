@@ -20,6 +20,7 @@
 	{arabic_table, & arabic_table_len, "MacArabic>ISO 8859-6", "Ar", 'A'},
 	{cp720_table, & cp720_table_len, "CP720", "DA"},
 	{isohebr_table, & isohebr_table_len, "ISO 8859-8", "I8"},
+	{cp856_table, & cp856_table_len, "CP856", "DH"},
 	{cp1255_table, & cp1255_table_len, "CP1255>ISO 8859-8", "He", 'E'},
 	{cp1253_table, & cp1253_table_len, "CP1253", "WG"},
 	{cp737_table, & cp737_table_len, "CP737", "37"},
